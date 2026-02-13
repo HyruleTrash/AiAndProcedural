@@ -109,7 +109,7 @@ public class BoidSpawner : MonoBehaviour, IForSpatialHash
     public void UpdateInstance(int index)
     {
         boidInstances[index].transform.position = spatialHash.instances[index].position;
-        // TODO turn based on velocity direction
+        boidInstances[index].transform.forward = boidsNative[index].velocity;
     }
 
     [BurstCompile]
@@ -128,16 +128,15 @@ public class BoidSpawner : MonoBehaviour, IForSpatialHash
 
             instance.position += boid.velocity * dT;
             
-            // Bounce of bounds temp TODO
             if (instance.position.x - instance.boundingRadius < boundsMin.x && boid.velocity.x < 0 ||
                 instance.position.x + instance.boundingRadius > boundsMax.x && boid.velocity.x > 0) 
-                boid.velocity.x = -boid.velocity.x;
+                instance.position.x = -instance.position.x;
             if (instance.position.y - instance.boundingRadius < boundsMin.y && boid.velocity.y < 0 ||
                 instance.position.y + instance.boundingRadius > boundsMax.y && boid.velocity.y > 0) 
-                boid.velocity.y = -boid.velocity.y;
+                instance.position.y = -instance.position.y;
             if (instance.position.z - instance.boundingRadius < boundsMin.z && boid.velocity.z < 0 ||
                 instance.position.z + instance.boundingRadius > boundsMax.z && boid.velocity.z > 0) 
-                boid.velocity.z = -boid.velocity.z;
+                instance.position.z = -instance.position.z;
 
             instances[index] = instance;
             boids[index] = boid;

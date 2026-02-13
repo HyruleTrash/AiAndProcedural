@@ -699,7 +699,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   spatialBounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 10, y: 10, z: 10}
+    m_Extent: {x: 50, y: 50, z: 50}
   cellSize: 2
   showGrid: 0
 --- !u!4 &1505028655
@@ -730,7 +730,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoidSpawner
   boidPrefab: {fileID: 7892807025861074096, guid: 12c18d45171017745b306280b9284e58, type: 3}
-  boidAmount: 100
+  boidAmount: 4000
   spatialHash: {fileID: 1505028654}
   maxSize: 1.2
 --- !u!1 &1696873160

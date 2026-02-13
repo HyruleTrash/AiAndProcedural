@@ -19,11 +19,11 @@ public class SpatialHash : MonoBehaviour
     #endregion
     
     public NativeArray<InstanceInSpatial> instances;
-    private NativeArray<HashAndIndex> hashAndIndices;
-    private NativeList<int> resultIndices;
+    public NativeArray<HashAndIndex> hashAndIndices;
 
     public readonly List<IForSpatialHash> dependantComponents = new ();
     private List<Func<JobHandle, JobHandle>> onUpdateSchedulers = new();
+    private List<Func<JobHandle, JobHandle>> onQuerySchedulers = new();
     
     public struct InstanceInSpatial
     {
@@ -32,7 +32,8 @@ public class SpatialHash : MonoBehaviour
     }
 
     #region Hashing
-    private struct HashAndIndex : IComparable<HashAndIndex>
+
+    public struct HashAndIndex : IComparable<HashAndIndex>
     {
         public int hash;
         public int index;
@@ -97,9 +98,9 @@ public class SpatialHash : MonoBehaviour
         
         dependantComponents.ForEach(comp => comp.PrepareJobs());
 
-        JobHandle dependency = default;
+        JobHandle onUpdateDependancy = default;
         foreach (var scheduler in onUpdateSchedulers)
-            dependency = scheduler(dependency);
+            onUpdateDependancy = scheduler(onUpdateDependancy);
         onUpdateSchedulers.Clear();
 
         var hashJob = new HashInstanceJob
@@ -108,46 +109,29 @@ public class SpatialHash : MonoBehaviour
             hashAndIndices = hashAndIndices,
             cellSize = cellSize
         };
-        var hashHandle = hashJob.Schedule(instances.Length, 64, dependency);
+        var hashHandle = hashJob.Schedule(instances.Length, 64, onUpdateDependancy);
 
         var sortingJob = new SortHashCodesJob { hashAndIndices = hashAndIndices };
         var sortHandle = sortingJob.Schedule(hashHandle);
-
-        sortHandle.Complete();
         
-        // execute queries here
+        var onQueryDependancy = sortHandle;
+        foreach (var scheduler in onQuerySchedulers)
+            onQueryDependancy = scheduler(onQueryDependancy);
+        onQuerySchedulers.Clear();
         
-        // var queryJob = new QueryJob
-        // {
-        //     instances = instancesNative,
-        //     hashAndIndices = hashAndIndices,
-        //     queryPosition = querySphere.position,
-        //     queryRadius = queryRadius,
-        //     cellSize = cellSize,
-        //     resultIndices = new NativeList<int>(Allocator.TempJob)
-        // };
-        // var queryJobHandle = queryJob.Schedule(sortHandle);
-        //
-        // queryJobHandle.Complete();
-        //
-        // if (resultIndices.IsCreated) resultIndices.Dispose();
-        // resultIndices = queryJob.resultIndices;
-
-        // TODO make particle changing things external to this class (such as queries)
-        // foreach (var pr in particleRenderers) pr.material.color = Color.white;
-        // foreach (var i in resultIndices) particleRenderers[i].material.color = Color.red;
+        onQueryDependancy.Complete();
         
         for (var i = 0; i < instances.Length; i++)
             dependantComponents.ForEach(comp => comp.UpdateInstance(i));
     }
 
     public void AddOnUpdateJob(Func<JobHandle, JobHandle> scheduler) => onUpdateSchedulers.Add(scheduler);
+    public void AddOnQueryJob(Func<JobHandle, JobHandle> scheduler) => onQuerySchedulers.Add(scheduler);
 
     private void OnDestroy()
     {
         if (instances.IsCreated) instances.Dispose();
         if (hashAndIndices.IsCreated) hashAndIndices.Dispose();
-        if (resultIndices.IsCreated) resultIndices.Dispose();
     }
     
     private static int3 GridPosition(float3 position, float cellSize) => new(math.floor(position / cellSize));
@@ -175,8 +159,8 @@ public class SpatialHash : MonoBehaviour
         public void Execute() => hashAndIndices.Sort();
     }
 
-    [BurstCompile] // TODO reuse query for grouping boids
-    private struct QueryJob : IJob
+    [BurstCompile]
+    public struct QueryJob : IJob
     {
         [ReadOnly] public NativeArray<InstanceInSpatial> instances;
         [ReadOnly] public NativeArray<HashAndIndex> hashAndIndices;
@@ -185,8 +169,11 @@ public class SpatialHash : MonoBehaviour
         public float cellSize;
         public NativeList<int> resultIndices;
         
-        public void Execute()
+        public void Execute() => TryQuery(queryPosition, queryRadius, cellSize, instances, hashAndIndices, out resultIndices);
+
+        public static void TryQuery(float3 queryPosition, float queryRadius, float cellSize, NativeArray<InstanceInSpatial> instances, NativeArray<HashAndIndex> hashAndIndices, out NativeList<int> resultIndices)
         {
+            resultIndices = new NativeList<int>(Allocator.TempJob);
             var radiusSquared = queryRadius * queryRadius;
             var minGridPos = GridPosition(queryPosition - queryRadius, cellSize);
             var maxGridPos = GridPosition(queryPosition + queryRadius, cellSize);
@@ -214,8 +201,8 @@ public class SpatialHash : MonoBehaviour
                 }
             }
         }
-
-        private int BinarySearchFirst(NativeArray<HashAndIndex> array, int hash)
+        
+        private static int BinarySearchFirst(NativeArray<HashAndIndex> array, int hash)
         {
             var left = 0;
             var right = array.Length - 1;

@@ -902,10 +902,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BoidSpawner
   boidHolder: {fileID: 1605318814}
   boidPrefab: {fileID: 7892807025861074096, guid: 12c18d45171017745b306280b9284e58, type: 3}
-  boidAmount: 4000
   spatialHash: {fileID: 1505028654}
-  minSize: 0.1
-  maxSize: 1.2
+  spawnAmount: 4000
+  size: {x: 0.1, y: 1.2}
+  speed: {x: 1, y: 2}
+  neighborRadius: {x: 5, y: 10}
 --- !u!1 &1605318813
 GameObject:
   m_ObjectHideFlags: 0

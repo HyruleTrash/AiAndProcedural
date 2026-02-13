@@ -8,11 +8,13 @@ using UnityEngine;
 [RequireComponent(typeof(SpatialHash))]
 public class BoidSpawner : MonoBehaviour, IForSpatialHash
 {
+    [SerializeField] private Transform boidHolder;
     [SerializeField] private GameObject boidPrefab;
     [SerializeField] private int boidAmount = 100;
     [SerializeField] private SpatialHash spatialHash;
     
-    [SerializeField] private float maxSize = 2;
+    [SerializeField] private float minSize = 0.1f;
+    [SerializeField] private float maxSize = 2f;
     private NativeArray<Boid> boidsNative;
     private GameObject[] boidInstances;
     private Renderer[] boidRenderers;
@@ -27,7 +29,7 @@ public class BoidSpawner : MonoBehaviour, IForSpatialHash
         if (!spatialHash)
             spatialHash = GetComponent<SpatialHash>();
         
-        if (!spatialHash || !boidPrefab)
+        if (!spatialHash || !boidPrefab || !boidHolder)
             enabled = false;
         else
             enabled = true;
@@ -54,12 +56,9 @@ public class BoidSpawner : MonoBehaviour, IForSpatialHash
     private SpatialHash.InstanceInSpatial CreateBoidInstance(int index)
     {
         // defining initial data
-        Vector3 position = new(
-            UnityEngine.Random.Range(spatialHash.spatialBounds.min.x, spatialHash.spatialBounds.max.x),
-            UnityEngine.Random.Range(spatialHash.spatialBounds.min.y, spatialHash.spatialBounds.max.y),
-            UnityEngine.Random.Range(spatialHash.spatialBounds.min.z, spatialHash.spatialBounds.max.z)
-        );
-        var size = UnityEngine.Random.Range(0.5f, maxSize);
+        Vector3 position = spatialHash.GetRandomInBounds();
+        var size = UnityEngine.Random.Range(minSize, maxSize);
+        
         Vector3 velocity = new(
             UnityEngine.Random.Range(-1f, 1f),
             UnityEngine.Random.Range(-1f, 1f),
@@ -70,7 +69,7 @@ public class BoidSpawner : MonoBehaviour, IForSpatialHash
         // Creating gameObject
         var instance = Instantiate(boidPrefab, position, Quaternion.identity);
         instance.transform.localScale = Vector3.one * size * 2f;
-        instance.transform.SetParent(transform);
+        instance.transform.SetParent(boidHolder);
         // saving
         boidInstances[index] = instance;
         boidRenderers[index] = instance.GetComponent<Renderer>();
@@ -94,12 +93,15 @@ public class BoidSpawner : MonoBehaviour, IForSpatialHash
 
     public void PrepareJobs()
     {
+        var boundsMax = spatialHash.GetBoundsMax();
+        var boundsMin = spatialHash.GetBoundsMin();
         var onUpdateJob = new UpdateBoidJob
         {
             instances = spatialHash.instances,
             boids = boidsNative,
-            boundsMax = spatialHash.spatialBounds.max,
-            boundsMin = spatialHash.spatialBounds.min,
+            boundsMax = boundsMax,
+            boundsMin = boundsMin,
+            boundsSize = boundsMax - boundsMin,
             dT = Time.deltaTime
         };
         
@@ -119,6 +121,7 @@ public class BoidSpawner : MonoBehaviour, IForSpatialHash
         public NativeArray<Boid> boids;
         public float3 boundsMin;
         public float3 boundsMax;
+        public float3 boundsSize;
         public float dT; // DeltaTime
         
         public void Execute(int index)
@@ -128,15 +131,20 @@ public class BoidSpawner : MonoBehaviour, IForSpatialHash
 
             instance.position += boid.velocity * dT;
             
-            if (instance.position.x - instance.boundingRadius < boundsMin.x && boid.velocity.x < 0 ||
-                instance.position.x + instance.boundingRadius > boundsMax.x && boid.velocity.x > 0) 
-                instance.position.x = -instance.position.x;
-            if (instance.position.y - instance.boundingRadius < boundsMin.y && boid.velocity.y < 0 ||
-                instance.position.y + instance.boundingRadius > boundsMax.y && boid.velocity.y > 0) 
-                instance.position.y = -instance.position.y;
-            if (instance.position.z - instance.boundingRadius < boundsMin.z && boid.velocity.z < 0 ||
-                instance.position.z + instance.boundingRadius > boundsMax.z && boid.velocity.z > 0) 
-                instance.position.z = -instance.position.z;
+            if (instance.position.x - instance.boundingRadius > boundsMax.x)
+                instance.position.x -= boundsSize.x;
+            else if (instance.position.x + instance.boundingRadius < boundsMin.x)
+                instance.position.x += boundsSize.x;
+
+            if (instance.position.y - instance.boundingRadius > boundsMax.y)
+                instance.position.y -= boundsSize.y;
+            else if (instance.position.y + instance.boundingRadius < boundsMin.y)
+                instance.position.y += boundsSize.y;
+
+            if (instance.position.z - instance.boundingRadius > boundsMax.z)
+                instance.position.z -= boundsSize.z;
+            else if (instance.position.z + instance.boundingRadius < boundsMin.z)
+                instance.position.z += boundsSize.z;
 
             instances[index] = instance;
             boids[index] = boid;

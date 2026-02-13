@@ -11,7 +11,8 @@ using UnityEngine.UI;
 public class SpatialHash : MonoBehaviour
 {
     #region Settings and Preferences
-    public Bounds spatialBounds = new(Vector3.zero, new Vector3(20, 20, 20));
+    [SerializeField]
+    private Bounds spatialBounds = new(Vector3.zero, new Vector3(20, 20, 20));
     public float cellSize = 2f;
     [SerializeField] 
     private bool showGrid = true;
@@ -66,7 +67,7 @@ public class SpatialHash : MonoBehaviour
 
         void DrawCell(Vector3 position)
         {
-            var cellCenter = spatialBounds.min + position * cellSize + Vector3.one * (cellSize / 2);
+            var cellCenter = (Vector3)GetBoundsMin() + position * cellSize + Vector3.one * (cellSize / 2);
             Gizmos.DrawWireCube(cellCenter, Vector3.one * cellSize);
         }
         
@@ -236,4 +237,14 @@ public class SpatialHash : MonoBehaviour
             return result;
         }
     }
+
+    public float3 GetBoundsMax() => spatialBounds.max + transform.position;
+    public float3 GetBoundsMin() => spatialBounds.min + transform.position;
+
+    public float3 GetRandomInBounds() =>
+        new(
+            UnityEngine.Random.Range(spatialBounds.min.x, spatialBounds.max.x),
+            UnityEngine.Random.Range(spatialBounds.min.y, spatialBounds.max.y),
+            UnityEngine.Random.Range(spatialBounds.min.z, spatialBounds.max.z)
+        );
 }

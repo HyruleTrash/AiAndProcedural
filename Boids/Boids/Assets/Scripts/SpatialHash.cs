@@ -22,9 +22,10 @@ public class SpatialHash : MonoBehaviour
     public NativeArray<HashAndIndex> hashAndIndices;
 
     public readonly List<IForSpatialHash> dependantComponents = new ();
-    private List<Func<JobHandle, JobHandle>> onUpdateSchedulers = new();
-    private List<Func<JobHandle, JobHandle>> onQuerySchedulers = new();
-    
+    private List<Func<JobHandle, JobHandle>> beforeHashingSchedulers = new();
+    private List<Func<JobHandle, JobHandle>> afterHashingSchedulers = new();
+    public Action onQueriesFinished =  delegate { };
+
     public struct InstanceInSpatial
     {
         public float3 position;
@@ -98,35 +99,36 @@ public class SpatialHash : MonoBehaviour
         
         dependantComponents.ForEach(comp => comp.PrepareJobs());
 
-        JobHandle onUpdateDependancy = default;
-        foreach (var scheduler in onUpdateSchedulers)
-            onUpdateDependancy = scheduler(onUpdateDependancy);
-        onUpdateSchedulers.Clear();
-
+        JobHandle beforeHashDependency = default;
+        foreach (var scheduler in beforeHashingSchedulers)
+            beforeHashDependency = scheduler(beforeHashDependency);
+        beforeHashingSchedulers.Clear();
+        
         var hashJob = new HashInstanceJob
         {
             instances = instances,
             hashAndIndices = hashAndIndices,
             cellSize = cellSize
         };
-        var hashHandle = hashJob.Schedule(instances.Length, 64, onUpdateDependancy);
+        var hashHandle = hashJob.Schedule(instances.Length, 64, beforeHashDependency);
 
         var sortingJob = new SortHashCodesJob { hashAndIndices = hashAndIndices };
         var sortHandle = sortingJob.Schedule(hashHandle);
         
-        var onQueryDependancy = sortHandle;
-        foreach (var scheduler in onQuerySchedulers)
-            onQueryDependancy = scheduler(onQueryDependancy);
-        onQuerySchedulers.Clear();
+        var afterHashDependency = sortHandle;
+        foreach (var scheduler in afterHashingSchedulers)
+            afterHashDependency = scheduler(afterHashDependency);
+        afterHashingSchedulers.Clear();
         
-        onQueryDependancy.Complete();
+        afterHashDependency.Complete();
+        onQueriesFinished.Invoke();
         
         for (var i = 0; i < instances.Length; i++)
             dependantComponents.ForEach(comp => comp.UpdateInstance(i));
     }
 
-    public void AddOnUpdateJob(Func<JobHandle, JobHandle> scheduler) => onUpdateSchedulers.Add(scheduler);
-    public void AddOnQueryJob(Func<JobHandle, JobHandle> scheduler) => onQuerySchedulers.Add(scheduler);
+    public void AddBeforeHashJob(Func<JobHandle, JobHandle> scheduler) => beforeHashingSchedulers.Add(scheduler);
+    public void AddAfterHashJob(Func<JobHandle, JobHandle> scheduler) => afterHashingSchedulers.Add(scheduler);
 
     private void OnDestroy()
     {

@@ -501,8 +501,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 165.44467, y: -77.08618}
-  m_SizeDelta: {x: 274.8893, y: 94.1724}
+  m_AnchoredPosition: {x: 114.6, y: -39.4}
+  m_SizeDelta: {x: 190.05, y: 46}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &950734523
 MonoBehaviour:
@@ -735,8 +735,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 172.1, y: -158}
-  m_SizeDelta: {x: 265.7, y: 50}
+  m_AnchoredPosition: {x: 114.5, y: -81.7}
+  m_SizeDelta: {x: 185.8, y: 23.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1491223910
 MonoBehaviour:
@@ -785,14 +785,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19.3
-  m_fontSizeBase: 19.3
+  m_fontSize: 18
+  m_fontSizeBase: 12.3
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -871,8 +871,8 @@ MonoBehaviour:
   spatialBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 100, y: 100, z: 100}
-  cellSize: 4
-  showGrid: 1
+  cellSize: 12.5
+  showGrid: 0
 --- !u!4 &1505028655
 Transform:
   m_ObjectHideFlags: 0
@@ -903,10 +903,17 @@ MonoBehaviour:
   boidHolder: {fileID: 1605318814}
   boidPrefab: {fileID: 7892807025861074096, guid: 12c18d45171017745b306280b9284e58, type: 3}
   spatialHash: {fileID: 1505028654}
-  spawnAmount: 4000
-  size: {x: 0.1, y: 1.2}
-  speed: {x: 1, y: 2}
-  neighborRadius: {x: 5, y: 10}
+  spawnAmount: 8000
+  size: {x: 0.2, y: 0.5}
+  maxSpeedDefaults: {x: 18, y: 20}
+  minSpeedDefaults: {x: 10, y: 15}
+  visionThreshold: {x: -0.2, y: -0.8}
+  neighborCheckRadius: {x: 10, y: 20}
+  avoidanceRadius: {x: 5, y: 10}
+  turningSpeed: 6
+  separationWeight: 1
+  cohesionWeight: 1
+  alignmentWeight: 2
 --- !u!1 &1605318813
 GameObject:
   m_ObjectHideFlags: 0
@@ -1024,7 +1031,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.45
+  m_fontSize: 18
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1

@@ -11,9 +11,9 @@ public class Cell
         walls = (walls & ~wallToRemove);
     }
 
-    public int GetNumWalls()
+    public static int GetNumWalls(Wall walls)
     {
-        int numWalls = 0;
+        var numWalls = 0;
         if (((walls & Wall.DOWN) != 0)) { numWalls++; }
         if (((walls & Wall.UP) != 0)) { numWalls++; }
         if (((walls & Wall.LEFT) != 0)) { numWalls++; }
@@ -21,25 +21,22 @@ public class Cell
         return numWalls;
     }
 
-    public bool HasWall(Wall wallDirection)
-    {
-        return (walls & wallDirection) != 0;
-    }
-    
+    public bool HasWall(Wall wallDirection) => (walls & wallDirection) != 0;
+
     public List<Cell> GetNeighbours(Cell[,] grid)
     {
-        List<Cell> result = new List<Cell>();
-        for (int x = -1; x < 2; x++)
+        var result = new List<Cell>();
+        for (var x = -1; x < 2; x++)
         {
-            for (int y = -1; y < 2; y++)
+            for (var y = -1; y < 2; y++)
             {
-                int cellX = this.gridPosition.x + x;
-                int cellY = this.gridPosition.y + y;
+                var cellX = this.gridPosition.x + x;
+                var cellY = this.gridPosition.y + y;
                 if (cellX < 0 || cellX >= grid.GetLength(0) || cellY < 0 || cellY >= grid.GetLength(1) || Mathf.Abs(x) == Mathf.Abs(y))
                 {
                     continue;
                 }
-                Cell canditateCell = grid[cellX, cellY];
+                var canditateCell = grid[cellX, cellY];
                 result.Add(canditateCell);
             }
         }

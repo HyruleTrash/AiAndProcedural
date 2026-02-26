@@ -52,7 +52,7 @@ public class Agent : MonoBehaviour
             var r = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -10));
 
             var mousePos = MouseToWorld();
-            int2 targetPos = Vector3ToVector2Int(mousePos);
+            var targetPos = Vector3ToVector2Int(mousePos);
             targetVisual.transform.position = Vector2IntToVector3(targetPos);
             FindPathToTarget(Vector3ToVector2Int(transform.position), targetPos, maze.grid);
         }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
@@ -7,31 +8,38 @@ public class CameraController : MonoBehaviour
     public float zoomSpeed = 2;
     public float lerpSpeed = 1;
     private Vector3 targetPos;
-    // Start is called before the first frame update
-    void Start()
-    {
-        targetPos = new Vector3(0, yPos, 0);
-    }
 
-    // Update is called once per frame
+    void Start() => targetPos = new Vector3(0, yPos, 0);
+
     void Update()
     {
-        var vert = Input.GetAxis("Vertical");
-        var hor = Input.GetAxis("Horizontal");
+        float vert = 0f;
+        float hor = 0f;
 
-        if(vert != 0 || hor != 0)
+        if (Keyboard.current != null)
         {
-            targetPos += (Vector3.forward * vert + hor * Vector3.right).normalized * moveSpeed;
+            if (Keyboard.current.wKey.isPressed) vert += 1;
+            if (Keyboard.current.sKey.isPressed) vert -= 1;
+            if (Keyboard.current.dKey.isPressed) hor += 1;
+            if (Keyboard.current.aKey.isPressed) hor -= 1;
         }
 
-        var scroll = Input.GetAxis("Mouse ScrollWheel");
-        if(scroll != 0)
+        if (vert != 0 || hor != 0)
+        {
+            targetPos += (Vector3.forward * vert + Vector3.right * hor).normalized * moveSpeed;
+        }
+
+        var scroll = 0f;
+        if (Mouse.current != null) scroll = Mouse.current.scroll.ReadValue().y;
+
+        if (scroll != 0)
         {
             yPos += -Mathf.Sign(scroll) * zoomSpeed;
             yPos = Mathf.Clamp(yPos, 1, 100);
             targetPos = new Vector3(targetPos.x, yPos, targetPos.z);
         }
 
-        transform.position = targetPos;//Vector3.Lerp(transform.position, targetPos, lerpSpeed * Time.deltaTime);
+        // transform.position = targetPos;
+        transform.position = Vector3.Lerp(transform.position, targetPos, lerpSpeed * Time.deltaTime);
     }
 }

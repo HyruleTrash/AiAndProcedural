@@ -672,13 +672,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6428c5efcaaebd44d8148775449b6a33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 10
-  height: 10
+  width: 20
+  height: 20
   scaleFactor: 1
   cellPrefab: {fileID: 8932503495734551348, guid: be3d5e704eab71c4aa3e4cdd60fda5de,
     type: 3}
   desiredWallpercentage: 0.55
-  seed: 1234
+  seed: 43770
 --- !u!4 &1444179295
 Transform:
   m_ObjectHideFlags: 0

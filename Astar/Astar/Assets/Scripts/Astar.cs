@@ -157,10 +157,16 @@ public class AStarPathFind
             handle.Complete();
             
             tries += openNodes.Length;
-            // TODO handle nodesToAdd
 
+            // update arrays/lists
+            nodes.AddRange(breadthFirstJob.nodesToAdd.AsArray());
+            foreach (var index in breadthFirstJob.openNodesToRemove) openNodes.RemoveAt(index);
+            openNodes.AddRange(breadthFirstJob.openNodesToAdd.AsArray());
+            closedNodes.AddRange(breadthFirstJob.closedNodesToAdd.AsArray());
+            openNodes.Sort(new AddNodeJob.CompareNodeOrder(nodes));
+            
             if (breadthFirstJob.found) 
-                found = nodes[breadthFirstJob.foundIndex];
+                found = nodes[breadthFirstJob.foundIndex];{}
         }
 
         if (found == null)
@@ -191,7 +197,7 @@ public class AStarPathFind
 [BurstCompile]
 public struct AddNodeJob : IJob
 {
-    private int2 posToAdd;
+    private readonly int2 posToAdd;
     
     private NativeList<Node> nodes;
     private NativeList<int> openNodes;
@@ -204,7 +210,7 @@ public struct AddNodeJob : IJob
     private readonly int gridHeight;
     private readonly NativeArray<CellData> grid;
 
-    private struct CompareNodeOrder : IComparer<int>
+    public struct CompareNodeOrder : IComparer<int>
     {
         private NativeList<Node> openNodes;
 
@@ -233,7 +239,8 @@ public struct AddNodeJob : IJob
 
     private void AddNode(int2 pos, int id)
     {
-        var node = new Node(pos, pos.ManhattanDistance(startPos),
+        var node = new Node(pos, 
+            pos.ManhattanDistance(startPos),
             pos.ManhattanDistance(endPos), id);
         nodes.Add(node);
         closedNodes.Add(node.id);
@@ -353,12 +360,13 @@ public struct AddNodeJob : IJob
 [BurstCompile]
 public struct AStarBreadthFirstJob : IJobParallelFor
 {
-    private readonly NativeList<Node> existingNodes;
+    private readonly NativeList<Node> nodes;
     public NativeList<Node> nodesToAdd;
     private readonly NativeList<int> openNodesRead;
-    private NativeList<int> openNodesWrite;
+    public NativeList<int> openNodesToRemove;
+    public NativeList<int> openNodesToAdd;
     private readonly NativeList<int> closedNodesRead;
-    private NativeList<int> closedNodesWrite;
+    public NativeList<int> closedNodesToAdd;
     
     private readonly int2 startPos;
     private readonly int2 endPos;
@@ -375,12 +383,11 @@ public struct AStarBreadthFirstJob : IJobParallelFor
         int2 startPos, int2 endPos, NativeArray<CellData> grid, int gridWidth, int gridHeight)
     {
         nodesToAdd = new NativeList<Node>(Allocator.TempJob);
-        existingNodes = nodes;
-        
-        openNodesWrite = new NativeList<int>(Allocator.TempJob);
+        this.nodes = nodes;
+        openNodesToRemove = new NativeList<int>(Allocator.TempJob);
+        openNodesToAdd = new NativeList<int>(Allocator.TempJob);
         openNodesRead = openNodes;
-        
-        closedNodesWrite = new NativeList<int>(Allocator.TempJob);
+        closedNodesToAdd = new NativeList<int>(Allocator.TempJob);
         closedNodesRead = closedNodes;
         
         this.startPos = startPos;
@@ -396,9 +403,9 @@ public struct AStarBreadthFirstJob : IJobParallelFor
 
     public void Execute(int index)
     {
-        var current = existingNodes[index];
-        openNodes.RemoveAt(0);
-        closedNodes.Add(current.id);
+        var current = nodes[index];
+        openNodesToRemove.Add(index);
+        closedNodesToAdd.Add(current.id);
 
         // target has been found
         if (current.position.x == endPos.x && current.position.y == endPos.y)
@@ -408,8 +415,11 @@ public struct AStarBreadthFirstJob : IJobParallelFor
             return;
         }
             
-        var neighbors = AddNodeJob.GetNeighbors(existingNodes, current, startPos, endPos, gridWidth, gridHeight);
-        AddNodeJob.CheckNeighborsAndAddToOpen(neighbors, current, existingNodes, openNodes, closedNodes, gridWidth, grid);
+        var neighbors = AddNodeJob.GetNeighbors(nodes, current, startPos, endPos, gridWidth, gridHeight);
+        AddNodeJob.CheckNeighborsAndAddToOpen(neighbors, current, 
+            nodes, nodesToAdd, 
+            openNodesRead, openNodesToAdd, closedNodesRead, 
+            gridWidth, grid);
     }
 }
 

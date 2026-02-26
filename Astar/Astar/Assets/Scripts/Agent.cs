@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 public class Agent : MonoBehaviour
 {
     public int moveButton = 0;
     public float moveSpeed = 3;
     private Astar Astar = new();
-    private List<int2> path = new();
+    private List<Vector2Int> path = new();
     private readonly Plane ground = new(Vector3.up, 0f);
     private MeshRenderer agentRenderer;
     private GameObject targetVisual;
@@ -25,7 +24,7 @@ public class Agent : MonoBehaviour
         line.material.color = agentRenderer.material.color;
     }
 
-    private void FindPathToTarget(int2 startPos, int2 endPos, Cell[,] grid)
+    private void FindPathToTarget(Vector2Int startPos, Vector2Int endPos, Cell[,] grid)
     {
         path = Astar.FindPathToTarget(startPos, endPos, grid);
         DrawPath();
@@ -83,8 +82,8 @@ public class Agent : MonoBehaviour
         return worldPos;
     }
 
-    private int2 Vector3ToVector2Int(Vector3 pos) => new(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.z));
-    private Vector3 Vector2IntToVector3(int2 pos, float YPos = 0) => new(Mathf.RoundToInt(pos.x), YPos, Mathf.RoundToInt(pos.y));
+    private Vector2Int Vector3ToVector2Int(Vector3 pos) => new(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.z));
+    private Vector3 Vector2IntToVector3(Vector2Int pos, float YPos = 0) => new(Mathf.RoundToInt(pos.x), YPos, Mathf.RoundToInt(pos.y));
 
     private void OnDrawGizmos()
     {

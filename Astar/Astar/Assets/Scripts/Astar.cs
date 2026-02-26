@@ -9,40 +9,39 @@ using Unity.Mathematics;
 
 public class Astar
 {
+    private NativeList<Node> nodes;
+    private NativeList<int> openNodes;
+    private NativeList<int> closedNodes;
+
+    private NativeArray<CellData> flatGrid;
+    
     public List<int2> FindPathToTarget(int2 startPos, int2 endPos, Cell[,] grid)
     {
-        // turn grid to a job usable one
-        var currentGrid = GetCellData(grid);
+        InitData(grid);
         
         // start astar job
-        var calculatePathJob = new CalculateAStarPathJob(
-            startPos,
-            endPos,
-            currentGrid,
-            grid.GetLength(0),
-            grid.GetLength(1),
-            new NativeList<int2>(Allocator.TempJob));
-        var handle = calculatePathJob.Schedule();
-        handle.Complete();
-
-        calculatePathJob.nodes.Dispose();
-        calculatePathJob.openNodes.Dispose();
-        calculatePathJob.closedNodes.Dispose();
+        var pathFinder = new AStarPathFind(startPos, endPos, grid, nodes, openNodes, closedNodes, flatGrid);
+        var resultPath = pathFinder.StartJobLoop();
+        CleanupData();
         
         // check and handle result
-        if (calculatePathJob.resultPath.Length <= 0) return new List<int2>();
+        if (resultPath.Length <= 0) return new List<int2>();
+        var result = ResultToUsableData(resultPath);
+        resultPath.Dispose();
         
-        Debug.Log($"Path found {startPos}, {endPos}");
-        var result = new List<int2>();
-        foreach (var pos in calculatePathJob.resultPath) result.Add(pos);
-        calculatePathJob.resultPath.Dispose();
-        
-        result.Reverse(0, result.Count);
         return result;
     }
     
     public static int GetGridIndex(int2 pos, int gridWidth) => pos.y * gridWidth + pos.x;
 
+    private void InitData(Cell[,] grid)
+    {
+        flatGrid = GetCellData(grid);
+        nodes = new NativeList<Node>(Allocator.TempJob);
+        openNodes = new NativeList<int>(Allocator.TempJob);
+        closedNodes = new NativeList<int>(Allocator.TempJob);
+    }
+    
     private NativeArray<CellData> GetCellData(Cell[,] grid)
     {
         var currentGrid = new NativeArray<CellData>(grid.GetLength(0) * grid.GetLength(1), Allocator.TempJob);
@@ -55,6 +54,23 @@ public class Astar
             }
         }
         return currentGrid;
+    }
+
+    private void CleanupData()
+    {
+        flatGrid.Dispose();
+        nodes.Dispose();
+        openNodes.Dispose();
+        closedNodes.Dispose();
+    }
+    
+    
+    private List<int2> ResultToUsableData(NativeList<int2> native)
+    {
+        var result = new List<int2>();
+        foreach (var pos in native) result.Add(pos);
+        result.Reverse(0, result.Count);
+        return result;
     }
 }
 
@@ -85,85 +101,108 @@ public struct CellData
     public bool HasWall(Wall wallDirection) => (walls & wallDirection) != 0;
 }
 
-[BurstCompile]
-public struct CalculateAStarPathJob : IJob
+public class AStarPathFind
 {
-    public NativeList<int2> resultPath;
-
+    private NativeList<Node> nodes;
+    private NativeList<int> openNodes;
+    private NativeList<int> closedNodes;
+    private NativeArray<CellData> flatGrid;
+    
     private readonly int2 startPos;
     private readonly int2 endPos;
-    private readonly NativeArray<CellData> grid;
-    private readonly int gridWidth;
-    private readonly int gridHeight;
-    
-    public NativeList<Node> nodes;
-    public NativeList<int> openNodes;
-    public NativeList<int> closedNodes;
+    private readonly Cell[,] grid;
 
-    public CalculateAStarPathJob(
-        int2 startPos,
-        int2 endPos,
-        NativeArray<CellData> grid,
-        int gridWidth,
-        int gridHeight,
-        NativeList<int2> resultPath)
+    public AStarPathFind(int2 startPos, int2 endPos, Cell[,] grid, NativeList<Node> nodes, NativeList<int> openNodes,
+        NativeList<int> closedNodes, NativeArray<CellData> flatGrid)
     {
         this.startPos = startPos;
         this.endPos = endPos;
         this.grid = grid;
-        this.gridWidth = gridWidth;
-        this.gridHeight = gridHeight;
-        this.resultPath = resultPath;
-        
-        nodes = new NativeList<Node>(Allocator.TempJob);
-        openNodes = new NativeList<int>(Allocator.TempJob);
-        closedNodes = new NativeList<int>(Allocator.TempJob);
+        this.nodes = nodes;
+        this.openNodes = openNodes;
+        this.closedNodes = closedNodes;
+        this.flatGrid = flatGrid;
     }
 
-    public void Execute()
+    public NativeList<int2> StartJobLoop()
     {
-        AddStartNode();
+        var addStartNodeJob = new AddNodeJob(
+            startPos,
+            nodes,
+            openNodes,
+            closedNodes,
+            startPos,
+            endPos,
+            grid.GetLength(0),
+            grid.GetLength(1),
+            flatGrid);
+        var handle = addStartNodeJob.Schedule();
+        handle.Complete();
+        
         if (openNodes.Length <= 0)
-            return;
-
-        Node? current = null;
+            return default;
+        
         var tries = -1;
-        var maxTries = gridWidth * gridHeight;
+        var maxTries = grid.LongLength;
+        Node? found = null;
+        
         while (openNodes.Length > 0 && tries < maxTries)
         {
-            tries++;
-            current = GetLowestFAndRemoveFromOpen();
+            var breadthFirstJob = new AStarBreadthFirstJob(
+                nodes, openNodes, closedNodes,
+                startPos, endPos,
+                flatGrid, grid.GetLength(0), grid.GetLength(1)
+                );
+            handle = breadthFirstJob.Schedule(openNodes.Length, 64);
+            handle.Complete();
             
-            if (current.Value.position.x == endPos.x && current.Value.position.y == endPos.y) // target has been found
-                break;
-            
-            var neighbors = GetNeighbors(current.Value);
-            CheckNeighborsAndAddToOpen(neighbors, current.Value);
+            tries += openNodes.Length;
+            // TODO handle nodesToAdd
+
+            if (breadthFirstJob.found) 
+                found = nodes[breadthFirstJob.foundIndex];
         }
-        if (current == null)
-            return;
 
-        CalcResultPath(current.Value);
-    }
-
-    private void AddStartNode()
-    {
-        var startNode = new Node(startPos, 0,
-            startPos.ManhattanDistance(endPos), 0);
-        nodes.Add(startNode);
-        closedNodes.Add(startNode.id);
-        var neighbors = GetNeighbors(startNode);
-        CheckNeighborsAndAddToOpen(neighbors, startNode);
+        if (found == null)
+            return default;
+        
+        return CalcResultPath(found.Value);
     }
     
-    private Node GetLowestFAndRemoveFromOpen()
+    private NativeList<int2> CalcResultPath(Node found)
     {
-        var index = openNodes[0];
-        var toReturn = nodes[index];
-        openNodes.RemoveAt(0);
-        closedNodes.Add(toReturn.id);
-        return toReturn;
+        var current = found;
+        var resultPath = new NativeList<int2>(Allocator.TempJob);
+        resultPath.Add(current.position);
+        
+        while (true)
+        {
+            if (current.parentId == -1)
+                break;
+            var parent = nodes[current.parentId];
+            resultPath.Add(parent.position);
+            current = parent;
+        }
+        
+        return resultPath;
     }
+}
+
+[BurstCompile]
+public struct AddNodeJob : IJob
+{
+    private int2 posToAdd;
+    
+    private NativeList<Node> nodes;
+    private NativeList<int> openNodes;
+    private NativeList<int> closedNodes;
+    
+    private readonly int2 startPos;
+    private readonly int2 endPos;
+    
+    private readonly int gridWidth;
+    private readonly int gridHeight;
+    private readonly NativeArray<CellData> grid;
 
     private struct CompareNodeOrder : IComparer<int>
     {
@@ -173,15 +212,53 @@ public struct CalculateAStarPathJob : IJob
         public int Compare(int x, int y) => openNodes[x].FScore.CompareTo(openNodes[y].FScore);
     }
     
-    private void AddToOpen(Node toAdd)
+    public AddNodeJob(int2 posToAdd, NativeList<Node> nodes, NativeList<int> openNodes,
+        NativeList<int> closedNodes, int2 startPos, int2 endPos, int gridWidth, int gridHeight, NativeArray<CellData> grid)
     {
-        toAdd.id = nodes.Length;
-        nodes.Add(toAdd);
-        openNodes.Add(toAdd.id);
-        openNodes.Sort(new CompareNodeOrder(nodes));
+        this.posToAdd = posToAdd;
+        
+        this.nodes = nodes;
+        this.openNodes = openNodes;
+        this.closedNodes = closedNodes;
+        
+        this.startPos = startPos;
+        this.endPos = endPos;
+        
+        this.gridWidth = gridWidth;
+        this.gridHeight = gridHeight;
+        this.grid = grid;
     }
     
-    private NativeList<Node> GetNeighbors(Node current)
+    public void Execute() => AddNode(posToAdd, 0);
+
+    private void AddNode(int2 pos, int id)
+    {
+        var node = new Node(pos, pos.ManhattanDistance(startPos),
+            pos.ManhattanDistance(endPos), id);
+        nodes.Add(node);
+        closedNodes.Add(node.id);
+        
+        var neighbors = GetNeighbors(nodes, node, startPos, endPos, gridWidth, gridHeight);
+        
+        var nodesToAdd = new NativeList<Node>(Allocator.Temp);
+        var openNodesWrite = new NativeList<int>(Allocator.Temp);
+        CheckNeighborsAndAddToOpen(neighbors, node, 
+            nodes, nodesToAdd, 
+            openNodes, openNodesWrite, closedNodes, 
+            gridWidth, grid);
+        
+        nodes.AddRange(nodesToAdd.AsArray());
+        openNodes.AddRange(openNodesWrite.AsArray());
+        openNodes.Sort(new CompareNodeOrder(nodes));
+    }
+
+    #region NeighborLogic
+    public static NativeList<Node> GetNeighbors(NativeList<Node> nodes,
+        Node current,
+        int2 startPos,
+        int2 endPos,
+        int gridWidth,
+        int gridHeight)
     {
         var result = new NativeList<Node>(Allocator.TempJob);
         for (var x = -1; x < 2; x++)
@@ -210,32 +287,37 @@ public struct CalculateAStarPathJob : IJob
         return result;
     }
     
-    private void CheckNeighborsAndAddToOpen(NativeList<Node> neighbors, Node center)
+    public static void CheckNeighborsAndAddToOpen(NativeList<Node> neighbors,
+        Node center,
+        NativeList<Node> nodes, NativeList<Node> nodesToAdd,
+        NativeList<int> openNodesRead, NativeList<int> openNodesWrite,
+        NativeList<int> closedNodesRead,
+        int gridWidth, NativeArray<CellData> grid)
     {
         for (var i = 0; i < neighbors.Length; i++)
         {
             var neighbor = neighbors[i];
                 
-            if (!CheckTraversable(center, neighbor) || NodeIdListContains(neighbor.id, closedNodes))
+            if (!CheckTraversable(center, neighbor, gridWidth, grid) || NodeIdListContains(neighbor.id, closedNodesRead))
                 continue;
 
-            if (!NodeIdListContains(neighbor.id, openNodes) || neighbor.FScore < center.FScore)
-            {
-                neighbor.parentId = center.id;
-                if (!NodeIdListContains(neighbor.id, openNodes))
-                    AddToOpen(neighbor);
-            }
+            if (NodeIdListContains(neighbor.id, openNodesRead) && !(neighbor.FScore < center.FScore)) continue;
+            neighbor.parentId = center.id;
+            
+            if (NodeIdListContains(neighbor.id, openNodesRead)) continue;
+            neighbor.id = nodes.Length + nodesToAdd.Length;
+            nodesToAdd.Add(neighbor);
+            openNodesWrite.Add(neighbor.id);
         }
         neighbors.Dispose();
     }
 
-    private bool CheckTraversable(Node current, Node neighbor)
+    public static bool CheckTraversable(Node current, Node neighbor, int gridWidth, NativeArray<CellData> grid)
     {
         var cell = grid[Astar.GetGridIndex(current.position, gridWidth)];
         var direction = neighbor.position - current.position;
         
         // ignore node if there's a wall
-        Debug.Log($"dir {direction}\nleft: {cell.HasWall(Wall.LEFT)}, right: {cell.HasWall(Wall.RIGHT)}, up: {cell.HasWall(Wall.UP)}, down: {cell.HasWall(Wall.DOWN)}");
         if ((direction.x < 0 && cell.HasWall(Wall.LEFT))
             || (direction.x > 0 && cell.HasWall(Wall.RIGHT))
             || (direction.y < 0 && cell.HasWall(Wall.DOWN))
@@ -243,7 +325,9 @@ public struct CalculateAStarPathJob : IJob
             return false;
         return true;
     }
+    #endregion
 
+    #region ListExtentions
     private static bool NodeIdListContains(int toFind, NativeList<int> list)
     {
         foreach (var id in list)
@@ -263,21 +347,69 @@ public struct CalculateAStarPathJob : IJob
         }
         return false;
     }
+    #endregion
+}
 
-    private void CalcResultPath(Node found)
+[BurstCompile]
+public struct AStarBreadthFirstJob : IJobParallelFor
+{
+    private readonly NativeList<Node> existingNodes;
+    public NativeList<Node> nodesToAdd;
+    private readonly NativeList<int> openNodesRead;
+    private NativeList<int> openNodesWrite;
+    private readonly NativeList<int> closedNodesRead;
+    private NativeList<int> closedNodesWrite;
+    
+    private readonly int2 startPos;
+    private readonly int2 endPos;
+    
+    private readonly NativeArray<CellData> grid;
+    private readonly int gridWidth;
+    private readonly int gridHeight;
+    
+    public bool found;
+    public int foundIndex;
+
+    public AStarBreadthFirstJob(NativeList<Node> nodes,
+        NativeList<int> openNodes, NativeList<int> closedNodes,
+        int2 startPos, int2 endPos, NativeArray<CellData> grid, int gridWidth, int gridHeight)
     {
-        var current = found;
+        nodesToAdd = new NativeList<Node>(Allocator.TempJob);
+        existingNodes = nodes;
         
-        resultPath.Add(current.position);
+        openNodesWrite = new NativeList<int>(Allocator.TempJob);
+        openNodesRead = openNodes;
         
-        while (true)
+        closedNodesWrite = new NativeList<int>(Allocator.TempJob);
+        closedNodesRead = closedNodes;
+        
+        this.startPos = startPos;
+        this.endPos = endPos;
+        
+        this.grid = grid;
+        this.gridWidth = gridWidth;
+        this.gridHeight = gridHeight;
+        
+        found = false;
+        foundIndex = -1;
+    }
+
+    public void Execute(int index)
+    {
+        var current = existingNodes[index];
+        openNodes.RemoveAt(0);
+        closedNodes.Add(current.id);
+
+        // target has been found
+        if (current.position.x == endPos.x && current.position.y == endPos.y)
         {
-            if (current.parentId == -1)
-                break;
-            var parent = nodes[current.parentId];
-            resultPath.Add(parent.position);
-            current = parent;
+            found = true;
+            foundIndex = index;
+            return;
         }
+            
+        var neighbors = AddNodeJob.GetNeighbors(existingNodes, current, startPos, endPos, gridWidth, gridHeight);
+        AddNodeJob.CheckNeighborsAndAddToOpen(neighbors, current, existingNodes, openNodes, closedNodes, gridWidth, grid);
     }
 }
 
@@ -285,7 +417,6 @@ public static class Int2Extensions
 {
     public static int ManhattanDistance(this int2 a, int2 b)
     {
-        
         var dx = Mathf.Abs(a.x - b.x);
         var dy = Mathf.Abs(a.y - b.y);
         return dx + dy;

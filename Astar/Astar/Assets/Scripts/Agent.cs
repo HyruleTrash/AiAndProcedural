@@ -1,17 +1,20 @@
 ﻿using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
+
 public class Agent : MonoBehaviour
 {
     public int moveButton = 0;
     public float moveSpeed = 3;
     private Astar Astar = new();
-    private List<int2> path = new();
+    private List<Vector2Int> path = new();
     private readonly Plane ground = new(Vector3.up, 0f);
     private MeshRenderer agentRenderer;
     private GameObject targetVisual;
     private MazeGeneration maze;
     private LineRenderer line;
+    private Camera cam;
     
     private void Awake()
     {
@@ -23,9 +26,10 @@ public class Agent : MonoBehaviour
         line = GetComponent<LineRenderer>();
         line.material.color = agentRenderer.material.color;
         line.material.color = agentRenderer.material.color;
+        cam = Camera.main;
     }
 
-    private void FindPathToTarget(int2 startPos, int2 endPos, Cell[,] grid)
+    private void FindPathToTarget(Vector2Int startPos, Vector2Int endPos, Cell[,] grid)
     {
         path = Astar.FindPathToTarget(startPos, endPos, grid);
         DrawPath();
@@ -46,10 +50,9 @@ public class Agent : MonoBehaviour
     //Move to clicked position
     public void Update()
     {
-        if (Input.GetMouseButtonDown(moveButton))
+        if (moveButton == 0 && Mouse.current.leftButton.isPressed || moveButton == 1 && Mouse.current.rightButton.isPressed)
         {
-            Debug.Log("Click");
-            var r = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -10));
+            cam.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -10));
 
             var mousePos = MouseToWorld();
             var targetPos = Vector3ToVector2Int(mousePos);
@@ -57,25 +60,23 @@ public class Agent : MonoBehaviour
             FindPathToTarget(Vector3ToVector2Int(transform.position), targetPos, maze.grid);
         }
 
-        if (path != null && path.Count > 0)
+        if (path == null || path.Count <= 0) return;
+        if (transform.position != Vector2IntToVector3(path[0]))
         {
-            if (transform.position != Vector2IntToVector3(path[0]))
-            {
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(Vector2IntToVector3(path[0]) - transform.position), 360f * Time.deltaTime);
-                transform.position = Vector3.MoveTowards(transform.position, Vector2IntToVector3(path[0]), moveSpeed * Time.deltaTime);
-            }
-            else
-            {
-                path.RemoveAt(0);
-                DrawPath();
-            }
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(Vector2IntToVector3(path[0]) - transform.position), 360f * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, Vector2IntToVector3(path[0]), moveSpeed * Time.deltaTime);
+        }
+        else
+        {
+            path.RemoveAt(0);
+            DrawPath();
         }
 
     }
 
     private Vector3 MouseToWorld()
     {
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        var ray = cam.ScreenPointToRay(Input.mousePosition);
 
         ground.Raycast(ray, out var distToGround);
         var worldPos = ray.GetPoint(distToGround);
@@ -83,8 +84,8 @@ public class Agent : MonoBehaviour
         return worldPos;
     }
 
-    private int2 Vector3ToVector2Int(Vector3 pos) => new(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.z));
-    private Vector3 Vector2IntToVector3(int2 pos, float YPos = 0) => new(Mathf.RoundToInt(pos.x), YPos, Mathf.RoundToInt(pos.y));
+    private Vector2Int Vector3ToVector2Int(Vector3 pos) => new(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.z));
+    private Vector3 Vector2IntToVector3(Vector2Int pos, float YPos = 0) => new(Mathf.RoundToInt(pos.x), YPos, Mathf.RoundToInt(pos.y));
 
     private void OnDrawGizmos()
     {

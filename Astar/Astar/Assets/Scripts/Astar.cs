@@ -37,7 +37,7 @@ public class Astar
         foreach (var pos in calculatePathJob.resultPath) result.Add(pos);
         calculatePathJob.resultPath.Dispose();
         
-        // result.Reverse(0, result.Count);
+        result.Reverse(0, result.Count);
         return result;
     }
 
@@ -141,6 +141,9 @@ public struct CalculateAStarPathJob : IJob
             {
                 var neighbor = neighbors[i];
                 
+                var cell = grid[GetGridIndex(neighbor.position, gridHeight)];
+                Debug.Log($"{neighbor.position}\nleft: {cell.HasWall(Wall.LEFT)}, right: {cell.HasWall(Wall.RIGHT)}, up: {cell.HasWall(Wall.UP)}, down: {cell.HasWall(Wall.DOWN)}");
+                
                 if (!CheckTraversable(current.Value, neighbor) || IntListContains(neighbor.id, closedNodes))
                     continue;
 
@@ -188,7 +191,7 @@ public struct CalculateAStarPathJob : IJob
             AddToOpen(node);
     }
 
-    private static int GetGridIndex(int2 pos, int gridWidth) => pos.y * gridWidth + pos.x;
+    private static int GetGridIndex(int2 pos, int gridHeight) => pos.y * gridHeight + pos.x;
     
     private Node CreateNode(int2 pos, int parentId = -1)
     {
@@ -199,8 +202,6 @@ public struct CalculateAStarPathJob : IJob
 
     private NativeList<Node> GetNeighbors(Node current)
     {
-        var cell = grid[GetGridIndex(current.position, gridWidth)];
-        
         var result = new NativeList<Node>(Allocator.TempJob);
         for (var x = -1; x < 2; x++)
         {
@@ -211,27 +212,34 @@ public struct CalculateAStarPathJob : IJob
                 if (cellX < 0 || cellX >= gridWidth || cellY < 0 || cellY >= gridHeight || Mathf.Abs(x) == Mathf.Abs(y))
                     continue;
                 
-                // ignore node if there's a wall
-                if ((x < 0 && cell.HasWall(Wall.LEFT)) ||
-                    (x > 0 && cell.HasWall(Wall.RIGHT)) ||
-                    (y < 0 && cell.HasWall(Wall.DOWN)) ||
-                    (y > 0 && cell.HasWall(Wall.UP)))
-                    continue;
+                var neighborPos = new int2(cellX, cellY);
                 
                 // check if cell exists or not
-                if (NodeListContainsPos(new int2(cellX, cellY), nodes))
+                if (NodeListContainsPos(neighborPos, nodes))
                     continue;
                 
-                var candidateCell = CreateNode(new int2(cellX, cellY), current.id);
+                var candidateCell = CreateNode(neighborPos, current.id);
                 result.Add(candidateCell);
             }
         }
         return result;
     }
 
-    private static bool CheckTraversable(Node current, Node neighbor)
+    private bool CheckTraversable(Node current, Node neighbor)
     {
-        // TODO: maybe add different types of cells here
+        var cell = grid[GetGridIndex(current.position, gridHeight)];
+        var direction = neighbor.position - current.position;
+        
+        // ignore node if there's a wall
+        // Debug.Log($"left: {cell.HasWall(Wall.LEFT)}, dir: {direction}, pos {current.position}");
+        // Debug.Log($"left: {cell.HasWall(Wall.LEFT)}, right: {cell.HasWall(Wall.RIGHT)}, up: {cell.HasWall(Wall.UP)}, down: {cell.HasWall(Wall.DOWN)}");
+        // if (
+        //     (direction.x < 0 && cell.HasWall(Wall.LEFT)) 
+        //     // (direction.x > 0 && cell.HasWall(Wall.RIGHT)) ||
+        //     // (direction.y < 0 && cell.HasWall(Wall.DOWN)) ||
+        //     // (direction.y > 0 && cell.HasWall(Wall.UP))
+        // )
+        //     return true;
         return true;
     }
 

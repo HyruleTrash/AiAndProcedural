@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -12,7 +13,8 @@ public class Agent : MonoBehaviour
     private readonly Plane ground = new(Vector3.up, 0f);
     private MeshRenderer agentRenderer;
     private GameObject targetVisual;
-    private MazeGeneration maze;
+    [NonSerialized]
+    public MazeGeneration maze;
     private LineRenderer line;
     private Camera cam;
     
@@ -29,9 +31,11 @@ public class Agent : MonoBehaviour
         cam = Camera.main;
     }
 
+    public void CallAStar(Vector2Int startPos, Vector2Int endPos, Cell[,] grid) => path = Astar.FindPathToTarget(startPos, endPos, grid);
+
     private void FindPathToTarget(Vector2Int startPos, Vector2Int endPos, Cell[,] grid)
     {
-        path = Astar.FindPathToTarget(startPos, endPos, grid);
+        CallAStar(startPos, endPos, grid);
         DrawPath();
     }
 
@@ -60,7 +64,7 @@ public class Agent : MonoBehaviour
             FindPathToTarget(Vector3ToVector2Int(transform.position), targetPos, maze.grid);
         }
 
-        if (path == null || path.Count <= 0) return;
+        if (!IsMoving()) return;
         if (transform.position != Vector2IntToVector3(path[0]))
         {
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(Vector2IntToVector3(path[0]) - transform.position), 360f * Time.deltaTime);
@@ -71,8 +75,9 @@ public class Agent : MonoBehaviour
             path.RemoveAt(0);
             DrawPath();
         }
-
     }
+
+    public bool IsMoving() => !(path == null || path.Count <= 0);
 
     private Vector3 MouseToWorld()
     {
@@ -84,7 +89,7 @@ public class Agent : MonoBehaviour
         return worldPos;
     }
 
-    private Vector2Int Vector3ToVector2Int(Vector3 pos) => new(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.z));
+    public Vector2Int Vector3ToVector2Int(Vector3 pos) => new(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.z));
     private Vector3 Vector2IntToVector3(Vector2Int pos, float YPos = 0) => new(Mathf.RoundToInt(pos.x), YPos, Mathf.RoundToInt(pos.y));
 
     private void OnDrawGizmos()

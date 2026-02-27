@@ -290,6 +290,7 @@ GameObject:
   - component: {fileID: 519720385}
   - component: {fileID: 519720384}
   - component: {fileID: 519720386}
+  - component: {fileID: 519720387}
   m_Layer: 0
   m_Name: Agent_Red
   m_TagString: Untagged
@@ -437,6 +438,20 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 0
+--- !u!114 &519720387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519720383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 207699fc0dbbe9640adf377789bb0e7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  agent: {fileID: 519720384}
+  foodManager: {fileID: 1444179296}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -653,6 +668,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1444179295}
   - component: {fileID: 1444179293}
+  - component: {fileID: 1444179296}
   m_Layer: 0
   m_Name: Maze
   m_TagString: Untagged
@@ -694,6 +710,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1444179296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444179292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2103543931f81140b87702aa51c1d3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  maze: {fileID: 1444179293}
+  foodCount: 10
+  foodPrefab: {fileID: 6392477593847451374, guid: 46b3de04f6701d54db4eeb9035109b62,
+    type: 3}
+  seed: 43770
 --- !u!1 &1627894951
 GameObject:
   m_ObjectHideFlags: 0

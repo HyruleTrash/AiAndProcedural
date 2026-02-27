@@ -57,7 +57,7 @@ public class Astar
 
         Node current = null;
         var tries = -1;
-        var maxTries = grid.LongLength;
+        var maxTries = grid.Length;
         while (openNodes.Count > 0 && tries < maxTries)
         {
             tries++;

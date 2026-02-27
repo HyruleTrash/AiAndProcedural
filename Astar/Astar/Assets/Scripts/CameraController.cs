@@ -13,8 +13,8 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        float vert = 0f;
-        float hor = 0f;
+        var vert = 0f;
+        var hor = 0f;
 
         if (Keyboard.current != null)
         {

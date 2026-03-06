@@ -12,6 +12,8 @@ namespace Player
         [SerializeField]
         private Movement movementComponent;
         [SerializeField]
+        private WalkAnimManager walkAnimManager;
+        [SerializeField]
         private LookAt lookAtComponent;
         [SerializeField]
         private InputActionAsset inputActionAsset;
@@ -24,18 +26,21 @@ namespace Player
             movementComponent ??= GetComponent<Movement>();
             lookAtComponent ??= GetComponent<LookAt>();
             enabled = healthComponent && lookAtComponent&& movementComponent && playerCamera && inputActionAsset != null;
+            walkAnimManager ??= GetComponent<WalkAnimManager>();
         }
 
         private void Start()
         {
             movementComponent.Connect(inputActionAsset);
-            lookAtComponent.Connect(inputActionAsset);
+            lookAtComponent.Connect(inputActionAsset, playerCamera);
+            walkAnimManager?.Connect(movementComponent);
         }
 
         private void OnDestroy()
         {
             movementComponent.Disconnect();
             lookAtComponent.Disconnect();
+            walkAnimManager?.Disconnect();
         }
     }
 }

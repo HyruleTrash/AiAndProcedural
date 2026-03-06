@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace Player
@@ -11,6 +12,8 @@ namespace Player
         private string actionNameMovement = "Move";
         [SerializeField]
         private Rigidbody2D rb;
+        [Header("Events"), Space]
+        public UnityEvent<bool> isMovingChanged;
         [Header("Config")]
         [SerializeField]
         private float speed = 5f;
@@ -29,6 +32,8 @@ namespace Player
         private InputAction moveAction;
         private Vector2 inputDirection;
 
+        private bool isWalking;
+
         private void OnValidate()
         {
             rb ??= GetComponent<Rigidbody2D>();
@@ -41,6 +46,7 @@ namespace Player
             moveAction = inputActionAsset.FindAction(actionNameMovement);
             moveAction.performed += OnMoveActionPerformed;
             moveAction.canceled += OnMoveActionStopped;
+            moveAction.Enable();
         }
         
         public void Disconnect()
@@ -49,13 +55,20 @@ namespace Player
             moveAction.canceled -= OnMoveActionStopped;
         }
 
-        private void OnMoveActionPerformed(InputAction.CallbackContext ctx) => inputDirection = ctx.ReadValue<Vector2>();
-        private void OnMoveActionStopped(InputAction.CallbackContext ctx) => inputDirection = ctx.ReadValue<Vector2>();
+        private void OnMoveActionPerformed(InputAction.CallbackContext ctx) => UpdateMovementData(ctx);
+        private void OnMoveActionStopped(InputAction.CallbackContext ctx) => UpdateMovementData(ctx);
+
+        private void UpdateMovementData(InputAction.CallbackContext ctx)
+        {
+            inputDirection = ctx.ReadValue<Vector2>();
+            isWalking = inputDirection != Vector2.zero;
+            isMovingChanged.Invoke(isWalking);
+        }
 
         private void Update()
         {
             var currentDirection = rb.linearVelocity.normalized;
-            if (inputDirection != Vector2.zero)
+            if (isWalking)
             {
                 var changingDirStrength = (-Vector2.Dot(inputDirection, currentDirection) + 1) * turningStrength;
                 if (changingDirStrength <= applyTurnMin)
@@ -67,6 +80,8 @@ namespace Player
             {
                 if (rb.linearVelocity.magnitude >= applyDragMin)
                     rb.AddForce(-currentDirection * (drag * Time.deltaTime), ForceMode2D.Impulse);
+                else
+                    rb.linearVelocity = Vector3.zero;
             }
 
             // Limit velocity

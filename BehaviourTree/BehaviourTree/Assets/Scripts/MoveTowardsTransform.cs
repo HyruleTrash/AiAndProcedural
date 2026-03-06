@@ -28,12 +28,16 @@ public class MoveTowardsTransform : MonoBehaviour
     private Vector3 lastTargetPosition;
 
     private void Start() => lastTargetPosition = toLerpTowards.position;
-    private void OnValidate() =>
+    private void OnValidate()
+    {
+        if (!enabled)
+            return;
         enabled = toLerpTowards &&
                   speed > 0 &&
                   curve != null &&
                   curveStrength > 0 &&
                   ((pixelSnapping && pixelPerUnit > 0) || !pixelSnapping);
+    }
 
     private void LateUpdate()
     {

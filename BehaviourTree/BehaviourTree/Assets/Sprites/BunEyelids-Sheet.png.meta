@@ -1,31 +1,10 @@
 fileFormatVersion: 2
-guid: 1f300de522a657e4398c84114c0e83e2
+guid: 20fe249b9a2aeab49a4f46f0b337c494
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2048198329758910074
-    second: Gob-Sheet_0
-  - first:
-      213: 4762324689293633121
-    second: Gob-Sheet_1
-  - first:
-      213: 4039410249908525254
-    second: Gob-Sheet_2
-  - first:
-      213: 2404181476404368326
-    second: Gob-Sheet_3
-  - first:
-      213: -3387719621034157621
-    second: Gob-Sheet_4
-  - first:
-      213: 8071225409116843032
-    second: Gob-Sheet_5
-  - first:
-      213: -6501202664959354854
-    second: Gob-Sheet_6
-  - first:
-      213: 6994460612633340450
-    second: Gob-Sheet_7
+      213: -3101593073419602839
+    second: BunEyelids-Sheet_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -147,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Gob-Sheet_0
+      name: BunEyelids-Sheet_0
       rect:
         serializedVersion: 2
         x: 0
@@ -162,14 +141,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 689fb2d88765393e0800000000000000
-      internalID: -2048198329758910074
+      spriteID: 964330d588de4f4d0800000000000000
+      internalID: -3101593073419602839
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Gob-Sheet_1
+      name: BunEyelids-Sheet_1
       rect:
         serializedVersion: 2
         x: 32
@@ -182,16 +161,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 1666b62b21d271240800000000000000
-      internalID: 4762324689293633121
+      spriteID: 92e3cd7be170a8c498be77e63e5a57a9
+      internalID: -901554515
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Gob-Sheet_2
+      name: BunEyelids-Sheet_2
       rect:
         serializedVersion: 2
         x: 64
@@ -204,16 +183,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 6c89ed7783ede0830800000000000000
-      internalID: 4039410249908525254
+      spriteID: 46841b1a66cd8fa4bb07cb9ade73d48f
+      internalID: -1212223024
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Gob-Sheet_3
+      name: BunEyelids-Sheet_3
       rect:
         serializedVersion: 2
         x: 96
@@ -226,98 +205,10 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6c318ac905e5d5120800000000000000
-      internalID: 2404181476404368326
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Gob-Sheet_4
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: bc953ad14f66cf0d0800000000000000
-      internalID: -3387719621034157621
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Gob-Sheet_5
-      rect:
-        serializedVersion: 2
-        x: 160
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 81c24841fb0c20070800000000000000
-      internalID: 8071225409116843032
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Gob-Sheet_6
-      rect:
-        serializedVersion: 2
-        x: 192
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a18564efe9617c5a0800000000000000
-      internalID: -6501202664959354854
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Gob-Sheet_7
-      rect:
-        serializedVersion: 2
-        x: 224
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5679c50d08e99bc4c99900b4bf986639
-      internalID: 1785017990
+      spriteID: cfe23905f4dd2a045b36cdee2110a829
+      internalID: -1159896968
       vertices: []
       indices: 
       edges: []
@@ -326,7 +217,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d4a73a04aeec44240b51f8b131a33264
+    spriteID: 421d7127be7b111499eb0798782ea544
     internalID: 0
     vertices: []
     indices: 
@@ -336,16 +227,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Gob-Sheet_0: -2048198329758910074
-      Gob-Sheet_1: 4762324689293633121
-      Gob-Sheet_2: 4039410249908525254
-      Gob-Sheet_3: 2404181476404368326
-      Gob-Sheet_4: -3387719621034157621
-      Gob-Sheet_5: 8071225409116843032
-      Gob-Sheet_6: -6501202664959354854
-      Gob-Sheet_7: 1785017990
+      BunEyelids-Sheet_0: -3101593073419602839
+      BunEyelids-Sheet_1: -901554515
+      BunEyelids-Sheet_2: -1212223024
+      BunEyelids-Sheet_3: -1159896968
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

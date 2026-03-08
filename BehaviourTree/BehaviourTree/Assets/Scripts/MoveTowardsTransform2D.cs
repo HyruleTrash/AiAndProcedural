@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MoveTowardsTransform : MonoBehaviour
+public class MoveTowardsTransform2D : MonoBehaviour
 {
     [SerializeField]
     private float pixelPerUnit;

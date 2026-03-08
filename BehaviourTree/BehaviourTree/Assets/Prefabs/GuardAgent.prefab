@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8796548595161777231}
   - component: {fileID: 6080417087587159030}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bun-Sheet_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,7 +101,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5203254595636501986}
   - component: {fileID: 2725910952475887305}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bun-Sheet_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,7 +192,12 @@ GameObject:
   m_Component:
   - component: {fileID: 718638265631208099}
   - component: {fileID: 3594006571395319824}
-  m_Layer: 0
+  - component: {fileID: 3361814247816804559}
+  - component: {fileID: 2041330060117044577}
+  - component: {fileID: 6642311259004584047}
+  - component: {fileID: 8536328020357266385}
+  - component: {fileID: 5066370728963695947}
+  m_Layer: 8
   m_Name: GuardAgent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -245,6 +250,89 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3361814247816804559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3651979035673865797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03a0dbb69a6b4da8883d2ba261adcc0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthComponent
+  maxHealth: 100
+  currentHealth: 100
+  onHealthChange:
+    m_PersistentCalls:
+      m_Calls: []
+  onHealthDepleted:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &2041330060117044577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3651979035673865797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67f47d26bbe043a8bb256b71795336ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Guard.WeaponHandler
+  weaponRef: {fileID: 0}
+--- !u!114 &6642311259004584047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3651979035673865797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e07d578d958ad748a908d9e84b21913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Guard.GuardManager
+  healthComponent: {fileID: 3361814247816804559}
+  weaponHandler: {fileID: 2041330060117044577}
+  navigateToPosition: {fileID: 5066370728963695947}
+--- !u!195 &8536328020357266385
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3651979035673865797}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &5066370728963695947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3651979035673865797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce93e8c6b264ced9774ae7f9a6d8848, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NavigateToPosition
+  navMeshAgent: {fileID: 8536328020357266385}
 --- !u!1 &4267251172977268418
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,7 +343,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5367731683471151156}
   - component: {fileID: 3151141804027593397}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bun-Sheet_6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -346,7 +434,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7799284777288537524}
   - component: {fileID: 7431207659675889722}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bun-Sheet_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -437,7 +525,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2327604583335315935}
   - component: {fileID: 6348218833579124252}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bun-Sheet_7
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -528,7 +616,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7562000679679602654}
   - component: {fileID: 3475233519039196592}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bun-Sheet_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -619,7 +707,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3148344454701819061}
   - component: {fileID: 6915609928430676098}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BunEyelids-Sheet_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -710,7 +798,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2241814735997442529}
   - component: {fileID: 3789857867959049385}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bun-Sheet_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -801,7 +889,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5245302798360957572}
   - component: {fileID: 3841508990328525100}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bun-Sheet_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -195,8 +195,7 @@ GameObject:
   - component: {fileID: 3361814247816804559}
   - component: {fileID: 2041330060117044577}
   - component: {fileID: 6642311259004584047}
-  - component: {fileID: 8536328020357266385}
-  - component: {fileID: 5066370728963695947}
+  - component: {fileID: 1173360958856995541}
   m_Layer: 8
   m_Name: GuardAgent
   m_TagString: Untagged
@@ -226,6 +225,7 @@ Transform:
   - {fileID: 5367731683471151156}
   - {fileID: 2327604583335315935}
   - {fileID: 3148344454701819061}
+  - {fileID: 447140030692370349}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &3594006571395319824
@@ -297,30 +297,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Guard.GuardManager
   healthComponent: {fileID: 3361814247816804559}
   weaponHandler: {fileID: 2041330060117044577}
-  navigateToPosition: {fileID: 5066370728963695947}
---- !u!195 &8536328020357266385
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3651979035673865797}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!114 &5066370728963695947
+  navigateToPosition: {fileID: 5170207481882274005}
+  visionCone: {fileID: 1173360958856995541}
+--- !u!114 &1173360958856995541
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -329,10 +308,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 3651979035673865797}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ce93e8c6b264ced9774ae7f9a6d8848, type: 3}
+  m_Script: {fileID: 11500000, guid: 3f2bcbbbe6bb4919bf6b8d6a2bc38aa0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NavigateToPosition
-  navMeshAgent: {fileID: 8536328020357266385}
+  m_EditorClassIdentifier: Assembly-CSharp::VisionCone
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 192
+  viewDistance: 5.71
+  fieldOfView: 1
 --- !u!1 &4267251172977268418
 GameObject:
   m_ObjectHideFlags: 0
@@ -879,6 +862,74 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &8840599671280709237
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 447140030692370349}
+  - component: {fileID: 6699246887862366432}
+  - component: {fileID: 5170207481882274005}
+  m_Layer: 8
+  m_Name: NavAgent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &447140030692370349
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8840599671280709237}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 718638265631208099}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!195 &6699246887862366432
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8840599671280709237}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &5170207481882274005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8840599671280709237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce93e8c6b264ced9774ae7f9a6d8848, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NavigateToPosition
+  navMeshAgent: {fileID: 6699246887862366432}
 --- !u!1 &9087999668336801696
 GameObject:
   m_ObjectHideFlags: 0

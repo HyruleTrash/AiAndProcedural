@@ -18,6 +18,10 @@ public class NavigateToPosition : MonoBehaviour
     public void SetTargetPosition(Vector2 position)
     {
         targetPosition = position;
-        navMeshAgent.SetDestination(targetPosition);
+        navMeshAgent.enabled = true;
+        try { navMeshAgent.SetDestination(targetPosition); }
+        catch (Exception _) {
+            // ignored
+        }
     }
 }

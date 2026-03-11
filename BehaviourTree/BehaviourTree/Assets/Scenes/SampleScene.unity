@@ -6014,6 +6014,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &847187199
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 847187200}
+  m_Layer: 0
+  m_Name: temp
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &847187200
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847187199}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.12945, y: -0.07453, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &907870588
 GameObject:
   m_ObjectHideFlags: 0
@@ -6025,7 +6056,6 @@ GameObject:
   - component: {fileID: 907870590}
   - component: {fileID: 907870589}
   - component: {fileID: 907870591}
-  - component: {fileID: 907870592}
   m_Layer: 0
   m_Name: ground
   m_TagString: Untagged
@@ -6161,22 +6191,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   curveStrength: 20
   velocitySmooth: 10
---- !u!114 &907870592
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 907870588}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: NavMeshPlus::NavMeshPlus.Components.NavMeshModifier
-  m_OverrideArea: 0
-  m_Area: 0
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!1 &1037985461
 GameObject:
   m_ObjectHideFlags: 0
@@ -6238,7 +6252,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.33333334
+  m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 50e29e960be2d4b488d716df0b742072, type: 2}
   m_BuildHeightMesh: 0
@@ -6625,19 +6639,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.04107981
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.041666668
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.91784036
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.9166667
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8569690723128360113, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_Enabled
@@ -6769,13 +6783,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1173360958856995541, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1173360958856995541, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: fieldOfView
+      value: 129
+      objectReference: {fileID: 0}
+    - target: {fileID: 1173360958856995541, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: viewDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1173360958856995541, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: layerMask.m_Bits
+      value: 192
+      objectReference: {fileID: 0}
+    - target: {fileID: 1173360958856995541, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: offsetRotation.w
+      value: -0.70710677
+      objectReference: {fileID: 0}
+    - target: {fileID: 1173360958856995541, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: offsetRotation.z
+      value: 0.70710677
+      objectReference: {fileID: 0}
+    - target: {fileID: 1173360958856995541, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: targetLayerMask.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 1173360958856995541, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: obstacleLayerMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 3651979035673865797, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
       propertyPath: m_Name
       value: GuardAgent
-      objectReference: {fileID: 0}
-    - target: {fileID: 8536328020357266385, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6794,3 +6836,4 @@ SceneRoots:
   - {fileID: 907870590}
   - {fileID: 1452721020}
   - {fileID: 1037985464}
+  - {fileID: 847187200}

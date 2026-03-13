@@ -21,5 +21,7 @@ namespace Guard
             if (weaponRef) return weaponRef.damage;
             return 0;
         }
+        
+        public bool HasWeapon() => weaponRef;
     }
 }

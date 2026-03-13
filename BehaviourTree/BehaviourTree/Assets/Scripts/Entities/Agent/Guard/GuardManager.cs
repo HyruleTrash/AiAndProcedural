@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using BehaviourTree;
 using UnityEngine;
 
@@ -19,6 +20,12 @@ namespace Guard
         private NavigateToPosition navigateToPosition;
         [SerializeField]
         private VisionCone visionCone;
+        [SerializeField] 
+        private float attackRange;
+
+        [HideInInspector, SerializeReference] 
+        private WeaponSpawner weaponSpawnerRef;
+        private GameObject[] currentlyRegisteredPlayers;
 
         private void OnValidate()
         {
@@ -28,6 +35,8 @@ namespace Guard
             visionCone ??= GetComponent<VisionCone>();
             navigateToPosition ??= GetComponentInChildren<NavigateToPosition>();
             enabled = healthComponent && weaponHandler && navigateToPosition;
+
+            weaponSpawnerRef = FindFirstObjectByType<WeaponSpawner>();
         }
 
         private void Update()
@@ -38,14 +47,30 @@ namespace Guard
 
         private void OnEnable()
         {
-            behaviourTree.Initialize(new SelectorNode(new []
+            behaviourTree.Initialize(new SelectorNode(new INode[]
             {
                 new SequenceNode(new INode[]
                 {
                     new TaskNode(CanSeePlayer),
                     new ParallelNode(new INode[]
                     {
-                        new InvertNode(new TaskNode(IsCurrentWaypointNull)) // this is wrong
+                        new ConditionNode(IsCurrentWaypointNull, isInverted: true, toExecute:
+                            new TaskNode(() => SetCurrentWaypoint(null))),
+                        new SelectorNode(new INode[]
+                        {
+                            new ConditionNode(HasWeapon, isInverted: true, toExecute:
+                                new TaskNode(() => SetCurrentWaypoint(GetNearestWeaponPosition()))),
+                            new SequenceNode(new INode[]
+                            {
+                                new InvertNode(new TaskNode(HasWeapon)),
+                                new SelectorNode(new INode[]
+                                {
+                                    new ConditionNode(IsPlayerInAttackRange, new TaskNode(TryAttackPlayer)),
+                                    new ConditionNode(IsPlayerInAttackRange, isInverted: true, toExecute: 
+                                        new TaskNode(() => SetCurrentWaypoint(GetPlayerPosition())))
+                                })
+                            })
+                        })
                     })
                 }),
                 new SequenceNode(new INode[]
@@ -61,35 +86,56 @@ namespace Guard
                 })
             }));
         }
+        
+        private bool CanSeePlayer()
+        {
+            currentlyRegisteredPlayers = visionCone.GetCurrentlySeenObjects();
+            return currentlyRegisteredPlayers.Length > 0;
+        }
 
-        private object GetNextWaypoint()
+        #region Waypoint
+        private bool IsCurrentWaypointNull() => navigateToPosition.GetTargetPosition() == null;
+        private bool SetCurrentWaypoint(Vector2? getNearestWayPoint)
+        {
+            navigateToPosition.SetTargetPosition(getNearestWayPoint);
+            return !IsCurrentWaypointNull();
+        }
+        private Vector2 GetNextWaypoint()
         {
             throw new NotImplementedException();
         }
-
-        private object GetNearestWayPoint()
+        private Vector2 GetNearestWayPoint()
         {
             throw new NotImplementedException();
         }
-
-        private bool SetCurrentWaypoint(object getNearestWayPoint)
-        {
-            throw new NotImplementedException();
-        }
-
         private bool IsAgentNearCurrentWaypoint()
         {
             throw new NotImplementedException();
         }
+        #endregion
 
-        private bool IsCurrentWaypointNull()
+        #region Weapon
+        private bool HasWeapon() => weaponHandler.HasWeapon();
+        private Vector2 GetNearestWeaponPosition() => !weaponSpawnerRef
+            ? transform.position.xy()
+            : weaponSpawnerRef.GetNearest(transform.position.xy()).instance.transform.position.xy();
+        #endregion
+
+        #region Player
+        private Vector2 GetPlayerPosition()
+        {
+            if (currentlyRegisteredPlayers.Length <= 0)
+                return transform.position;
+            return currentlyRegisteredPlayers.First().transform.position;
+        }
+        private bool TryAttackPlayer()
         {
             throw new NotImplementedException();
         }
-
-        private bool CanSeePlayer()
+        private bool IsPlayerInAttackRange()
         {
-            throw new NotImplementedException();
+            return Vector2.Distance(GetPlayerPosition(), transform.position) <= attackRange;
         }
+        #endregion
     }
 }

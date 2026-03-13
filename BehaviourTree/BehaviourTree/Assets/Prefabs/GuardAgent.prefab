@@ -196,6 +196,9 @@ GameObject:
   - component: {fileID: 2041330060117044577}
   - component: {fileID: 6642311259004584047}
   - component: {fileID: 1173360958856995541}
+  - component: {fileID: 5821734936938172839}
+  - component: {fileID: 4152693378148508209}
+  - component: {fileID: 5178100051775823461}
   m_Layer: 8
   m_Name: GuardAgent
   m_TagString: Untagged
@@ -290,15 +293,23 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3651979035673865797}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e07d578d958ad748a908d9e84b21913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Guard.GuardManager
+  behaviourTree: {fileID: 5821734936938172839}
   healthComponent: {fileID: 3361814247816804559}
   weaponHandler: {fileID: 2041330060117044577}
   navigateToPosition: {fileID: 5170207481882274005}
   visionCone: {fileID: 1173360958856995541}
+  waypointManager:
+    waypoints: []
+    minimumDistanceToWaypoint: 0
+    loopType: 0
+    direction: 1
+  attackRange: 0
+  weaponSpawnerRef: {fileID: 0}
 --- !u!114 &1173360958856995541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,11 +322,62 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f2bcbbbe6bb4919bf6b8d6a2bc38aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VisionCone
-  layerMask:
+  offsetRotation: {x: 0, y: 0, z: 0, w: 0}
+  targetLayerMask:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 0
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
   viewDistance: 5.71
   fieldOfView: 1
+--- !u!114 &5821734936938172839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3651979035673865797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd7056ea1ddb476439d23dc0d0176093, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviourTree.BehaviourTree
+--- !u!195 &4152693378148508209
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3651979035673865797}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &5178100051775823461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3651979035673865797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce93e8c6b264ced9774ae7f9a6d8848, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NavigateToPosition
+  navMeshAgent: {fileID: 4152693378148508209}
 --- !u!1 &4267251172977268418
 GameObject:
   m_ObjectHideFlags: 0

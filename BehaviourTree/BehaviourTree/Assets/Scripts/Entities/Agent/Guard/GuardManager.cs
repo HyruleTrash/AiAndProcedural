@@ -9,17 +9,20 @@ namespace Guard
      RequireComponent(typeof(BehaviourTree.BehaviourTree), typeof(NavigateToPosition))]
     public class GuardManager : MonoBehaviour
     {
+        [Header("Required Components")]
         [SerializeField]
         private BehaviourTree.BehaviourTree behaviourTree;
         [SerializeField]
         private HealthComponent healthComponent;
         [SerializeField]
         private WeaponHandler weaponHandler;
-        private IDamager damager;
         [SerializeField] 
         private NavigateToPosition navigateToPosition;
         [SerializeField]
         private VisionCone visionCone;
+        [Space]
+        [SerializeField]
+        private WaypointManager waypointManager;
         [SerializeField] 
         private float attackRange;
 
@@ -34,7 +37,7 @@ namespace Guard
             weaponHandler ??= GetComponent<WeaponHandler>();
             visionCone ??= GetComponent<VisionCone>();
             navigateToPosition ??= GetComponentInChildren<NavigateToPosition>();
-            enabled = healthComponent && weaponHandler && navigateToPosition;
+            enabled = healthComponent && weaponHandler && navigateToPosition && waypointManager.OnValidate();
 
             weaponSpawnerRef = FindFirstObjectByType<WeaponSpawner>();
         }
@@ -44,6 +47,8 @@ namespace Guard
             transform.position += navigateToPosition.transform.localPosition;
             navigateToPosition.transform.localPosition = Vector3.zero;
         }
+        
+        private void OnDrawGizmosSelected() => waypointManager.OnDrawGizmosSelected();
 
         private void OnEnable()
         {
@@ -100,17 +105,13 @@ namespace Guard
             navigateToPosition.SetTargetPosition(getNearestWayPoint);
             return !IsCurrentWaypointNull();
         }
-        private Vector2 GetNextWaypoint()
-        {
-            throw new NotImplementedException();
-        }
-        private Vector2 GetNearestWayPoint()
-        {
-            throw new NotImplementedException();
-        }
+        private Vector2 GetNextWaypoint() => waypointManager.GetNextWaypoint(navigateToPosition.GetTargetPosition());
+        private Vector2 GetNearestWayPoint() => waypointManager.GetNearestWayPoint(transform.position.xy());
         private bool IsAgentNearCurrentWaypoint()
         {
-            throw new NotImplementedException();
+            var currentWaypoint = navigateToPosition.GetTargetPosition();
+            if (currentWaypoint == null) return false;
+            return Vector2.Distance(currentWaypoint.Value, transform.position) <= waypointManager.minimumDistanceToWaypoint;
         }
         #endregion
 
@@ -130,7 +131,17 @@ namespace Guard
         }
         private bool TryAttackPlayer()
         {
-            throw new NotImplementedException();
+            if (currentlyRegisteredPlayers.Length <= 0)
+                return false;
+            var player = currentlyRegisteredPlayers.First();
+            
+            if (Vector2.Distance(player.transform.position, transform.position) > attackRange)
+                return false;
+            
+            var damageable = player.GetComponent<IDamageable>();
+            if (damageable == null || !damageable.CanTakeDamage()) return false;
+            damageable.TakeDamage(weaponHandler.GetDamage());
+            return true;
         }
         private bool IsPlayerInAttackRange()
         {

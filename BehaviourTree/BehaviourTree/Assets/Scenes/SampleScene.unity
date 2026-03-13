@@ -6819,6 +6819,82 @@ PrefabInstance:
       propertyPath: m_Name
       value: GuardAgent
       objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: attackRange
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.loopType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.minimumDistanceToWaypoint
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[0].x
+      value: -3.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[0].y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[1].x
+      value: -2.67
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[1].y
+      value: -1.14
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[2].x
+      value: 3.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[2].y
+      value: -1.14
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[3].x
+      value: 3.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[3].y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[4].x
+      value: 3.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[4].y
+      value: 1.14
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[5].x
+      value: 0.43
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[5].y
+      value: 1.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[6].x
+      value: -2.62
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: waypointManager.waypoints.Array.data[6].y
+      value: 1.14
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -3,7 +3,7 @@
     public enum NodeState
     {
         Failed,
-        Running,
+        Running, // unused
         Success
     }
 }

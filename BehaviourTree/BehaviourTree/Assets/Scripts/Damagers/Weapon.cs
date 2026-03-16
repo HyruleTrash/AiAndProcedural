@@ -9,8 +9,7 @@ public class Weapon : ScriptableObject
         get => prefab;
         private set => prefab = value;
     }
-    [SerializeField]
-    private float attackRange = 1f;
+    public float attackRange = 1f;
     public float damage = 1f;
 
     public bool IsInRange(Vector2 origin, GameObject other) => Vector2.Distance(origin, other.transform.position) <= attackRange;

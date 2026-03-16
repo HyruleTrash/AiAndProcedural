@@ -5,26 +5,30 @@ using UnityEngine;
 
 namespace Guard
 {
-    [RequireComponent(typeof(HealthComponent), typeof(WeaponHandler), typeof(VisionCone)),
-     RequireComponent(typeof(BehaviourTree.BehaviourTree), typeof(NavigateToPosition))]
+    /// <summary>
+    /// Manages a guard instance their components and connects its functions
+    /// </summary>
+    [RequireComponent(typeof(HealthComponent), typeof(WeaponHandler)),
+     RequireComponent(typeof(BehaviourTree.BehaviourTree), typeof(Animator), typeof(Movement))]
     public class GuardManager : MonoBehaviour
     {
+        private static readonly int HasWeapon1 = Animator.StringToHash("HasWeapon");
+
         [Header("Required Components")]
+        [SerializeField]
+        private Animator animator;
         [SerializeField]
         private BehaviourTree.BehaviourTree behaviourTree;
         [SerializeField]
         private HealthComponent healthComponent;
         [SerializeField]
         private WeaponHandler weaponHandler;
-        [SerializeField] 
-        private NavigateToPosition navigateToPosition;
+        [SerializeField]
+        private Movement movementComponent;
         [SerializeField]
         private VisionCone visionCone;
-        [Space]
         [SerializeField]
-        private WaypointManager waypointManager;
-        [SerializeField] 
-        private float attackRange;
+        private RotateTowardsPoint visionConeRotation;
 
         [HideInInspector, SerializeReference] 
         private WeaponSpawner weaponSpawnerRef;
@@ -32,26 +36,28 @@ namespace Guard
 
         private void OnValidate()
         {
+            // Get all required references
             behaviourTree ??= GetComponent<BehaviourTree.BehaviourTree>();
             healthComponent ??= GetComponent<HealthComponent>();
             weaponHandler ??= GetComponent<WeaponHandler>();
-            visionCone ??= GetComponent<VisionCone>();
-            navigateToPosition ??= GetComponentInChildren<NavigateToPosition>();
-            enabled = healthComponent && weaponHandler && navigateToPosition && waypointManager.OnValidate();
+            visionCone ??= GetComponentInChildren<VisionCone>();
+            visionConeRotation ??= GetComponentInChildren<RotateTowardsPoint>();
+            movementComponent ??= GetComponent<Movement>();
+            animator ??= GetComponent<Animator>();
+            
+            enabled = healthComponent &&
+                      weaponHandler &&
+                      visionCone &&
+                      movementComponent &&
+                      animator &&
+                      behaviourTree;
 
             weaponSpawnerRef = FindFirstObjectByType<WeaponSpawner>();
         }
 
-        private void Update()
-        {
-            transform.position += navigateToPosition.transform.localPosition;
-            navigateToPosition.transform.localPosition = Vector3.zero;
-        }
-        
-        private void OnDrawGizmosSelected() => waypointManager.OnDrawGizmosSelected();
-
         private void OnEnable()
         {
+            // Initialize behaviourTree
             behaviourTree.Initialize(new SelectorNode(new INode[]
             {
                 new SequenceNode(new INode[]
@@ -59,20 +65,20 @@ namespace Guard
                     new TaskNode(CanSeePlayer),
                     new ParallelNode(new INode[]
                     {
-                        new ConditionNode(IsCurrentWaypointNull, isInverted: true, toExecute:
-                            new TaskNode(() => SetCurrentWaypoint(null))),
+                        new ConditionNode(movementComponent.IsCurrentWaypointNull, isInverted: true, toExecute:
+                            new TaskNode(() => movementComponent.SetCurrentWaypoint(null))),
                         new SelectorNode(new INode[]
                         {
                             new ConditionNode(HasWeapon, isInverted: true, toExecute:
-                                new TaskNode(() => SetCurrentWaypoint(GetNearestWeaponPosition()))),
+                                new TaskNode(() => movementComponent.SetCurrentWaypoint(GetNearestWeaponPosition()))),
                             new SequenceNode(new INode[]
                             {
-                                new InvertNode(new TaskNode(HasWeapon)),
+                                new TaskNode(HasWeapon),
                                 new SelectorNode(new INode[]
                                 {
                                     new ConditionNode(IsPlayerInAttackRange, new TaskNode(TryAttackPlayer)),
                                     new ConditionNode(IsPlayerInAttackRange, isInverted: true, toExecute: 
-                                        new TaskNode(() => SetCurrentWaypoint(GetPlayerPosition())))
+                                        new TaskNode(() => movementComponent.SetCurrentWaypoint(GetPlayerPosition())))
                                 })
                             })
                         })
@@ -83,59 +89,57 @@ namespace Guard
                     new InvertNode(new TaskNode(CanSeePlayer)),
                     new ParallelNode(new INode[]
                     {
-                        new ConditionNode(IsCurrentWaypointNull, 
-                            new TaskNode(() => SetCurrentWaypoint(GetNearestWayPoint()))),
-                        new ConditionNode(IsAgentNearCurrentWaypoint, 
-                            new TaskNode(() => SetCurrentWaypoint(GetNextWaypoint())))
+                        new ConditionNode(movementComponent.IsCurrentWaypointNull, 
+                            new TaskNode(() => movementComponent.SetCurrentWaypoint(movementComponent.GetNearestWayPoint()))),
+                        new ConditionNode(movementComponent.IsAgentNearCurrentWaypoint, 
+                            new TaskNode(() => movementComponent.SetCurrentWaypoint(movementComponent.GetNextWaypoint())))
                     })
                 })
             }));
         }
+
+        private void FixedUpdate() => visionConeRotation.UpdateRotation(movementComponent.GetCurrentWaypoint());
+
+        #region Weapon management
         
+        private bool HasWeapon()
+        {
+            var state = weaponHandler.HasWeapon();
+            animator.SetBool(HasWeapon1, state);
+            return state;
+        }
+
+        private Vector2 GetNearestWeaponPosition() => !weaponSpawnerRef
+            ? transform.position.xy()
+            : weaponSpawnerRef.GetNearest(transform.position.xy()).instance.transform.position.xy();
+        
+        #endregion
+        
+        #region Player related
+        
+        /// <summary>
+        /// Registers seen players, and returns true if it saw at least one
+        /// </summary>
         private bool CanSeePlayer()
         {
             currentlyRegisteredPlayers = visionCone.GetCurrentlySeenObjects();
             return currentlyRegisteredPlayers.Length > 0;
         }
-
-        #region Waypoint
-        private bool IsCurrentWaypointNull() => navigateToPosition.GetTargetPosition() == null;
-        private bool SetCurrentWaypoint(Vector2? getNearestWayPoint)
-        {
-            navigateToPosition.SetTargetPosition(getNearestWayPoint);
-            return !IsCurrentWaypointNull();
-        }
-        private Vector2 GetNextWaypoint() => waypointManager.GetNextWaypoint(navigateToPosition.GetTargetPosition());
-        private Vector2 GetNearestWayPoint() => waypointManager.GetNearestWayPoint(transform.position.xy());
-        private bool IsAgentNearCurrentWaypoint()
-        {
-            var currentWaypoint = navigateToPosition.GetTargetPosition();
-            if (currentWaypoint == null) return false;
-            return Vector2.Distance(currentWaypoint.Value, transform.position) <= waypointManager.minimumDistanceToWaypoint;
-        }
-        #endregion
-
-        #region Weapon
-        private bool HasWeapon() => weaponHandler.HasWeapon();
-        private Vector2 GetNearestWeaponPosition() => !weaponSpawnerRef
-            ? transform.position.xy()
-            : weaponSpawnerRef.GetNearest(transform.position.xy()).instance.transform.position.xy();
-        #endregion
-
-        #region Player
+        
         private Vector2 GetPlayerPosition()
         {
             if (currentlyRegisteredPlayers.Length <= 0)
                 return transform.position;
-            return currentlyRegisteredPlayers.First().transform.position;
+            return currentlyRegisteredPlayers.First().transform.position.xy();
         }
+        
         private bool TryAttackPlayer()
         {
             if (currentlyRegisteredPlayers.Length <= 0)
                 return false;
             var player = currentlyRegisteredPlayers.First();
             
-            if (Vector2.Distance(player.transform.position, transform.position) > attackRange)
+            if (Vector2.Distance(player.transform.position, transform.position) > weaponHandler.Weapon.attackRange)
                 return false;
             
             var damageable = player.GetComponent<IDamageable>();
@@ -143,10 +147,9 @@ namespace Guard
             damageable.TakeDamage(weaponHandler.GetDamage());
             return true;
         }
-        private bool IsPlayerInAttackRange()
-        {
-            return Vector2.Distance(GetPlayerPosition(), transform.position) <= attackRange;
-        }
+        
+        private bool IsPlayerInAttackRange() => Vector2.Distance(GetPlayerPosition(), transform.position) <= weaponHandler.Weapon.attackRange;
+        
         #endregion
     }
 }

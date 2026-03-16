@@ -20,7 +20,7 @@ public class NavigateToPosition : MonoBehaviour
         targetPosition = position;
         if (targetPosition == null)
             return;
-        
+
         navMeshAgent.enabled = true;
         try { navMeshAgent.SetDestination(targetPosition.Value); }
         catch (Exception _) {

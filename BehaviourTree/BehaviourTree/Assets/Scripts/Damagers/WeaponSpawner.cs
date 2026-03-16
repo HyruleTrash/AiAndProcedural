@@ -38,7 +38,7 @@ public class WeaponSpawner : MonoBehaviour
             while (true)
             {
                 var spawnPosition = bounds.RandomPoint(transform);
-                if (AlingPositionToTilemap(ref spawnPosition))
+                if (AlignPositionToTilemap(ref spawnPosition))
                     continue;
                 
                 liveWeapons.Add(new WeaponInstance
@@ -51,13 +51,37 @@ public class WeaponSpawner : MonoBehaviour
         }
     }
 
-    public WeaponInstance GetNearest(Vector2 posToCheck) => liveWeapons.First(instance => Vector2.Distance(instance.instance.transform.position.xy(), posToCheck) < cellSize);
+    public WeaponInstance GetNearest(Vector2 posToCheck)
+    {
+        CleanWeaponInstances();
+        
+        var closestInstance = liveWeapons.First();
+        var distance = Vector3.Distance(posToCheck, closestInstance.instance.transform.position);
+        foreach (var weaponInstance in liveWeapons)
+        {
+            var newDist = Vector2.Distance(weaponInstance.instance.transform.position.xy(), posToCheck);
+            if (!(newDist < distance)) continue;
+            distance = newDist;
+            closestInstance = weaponInstance;
+        }
+        return closestInstance;
+    }
+
+    private void CleanWeaponInstances()
+    {
+        for (var i = liveWeapons.Count - 1; i >= 0; i--)
+        {
+            var x = liveWeapons[i];
+            if (!x.instance)
+                liveWeapons.RemoveAt(i);
+        }
+    }
 
     /// <summary>
     /// Aligns position to tilemap
     /// </summary>
     /// <returns>false if position invalid</returns>
-    public bool AlingPositionToTilemap(ref Vector3 worldPosition)
+    public bool AlignPositionToTilemap(ref Vector3 worldPosition)
     {
         var cellPosition = tilemap.WorldToCell(worldPosition);
 

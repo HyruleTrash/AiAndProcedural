@@ -36,6 +36,6 @@ public class ScaleBasedOnLookDirection : MonoBehaviour
         }
 
         flipped = childrenToFlip[0].transform.localScale.x < 0;
-        directionChanged.Invoke();
+        directionChanged?.Invoke();
     }
 }

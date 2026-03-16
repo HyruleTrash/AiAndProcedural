@@ -1,19 +1,23 @@
-﻿using UnityEngine;
+﻿using DefaultNamespace;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace Player
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class Movement : MonoBehaviour
+    public class Movement : MonoBehaviour, IEntityMovement
     {
         [Header("Required Components")]
         [SerializeField] 
         private string actionNameMovement = "Move";
         [SerializeField]
         private Rigidbody2D rb;
+        
         [Header("Events"), Space]
         public UnityEvent<bool> isMovingChanged;
+        public UnityEvent<bool> IsMovingChanged => isMovingChanged;
+
         [Header("Config")]
         [SerializeField]
         private float speed = 5f;

@@ -7,6 +7,8 @@ namespace Guard
     {
         [SerializeReference]
         private Weapon weaponRef;
+        public Weapon Weapon => weaponRef;
+
         public void SetWeapon(Weapon toSet) => weaponRef = toSet;
 
         private void OnValidate()

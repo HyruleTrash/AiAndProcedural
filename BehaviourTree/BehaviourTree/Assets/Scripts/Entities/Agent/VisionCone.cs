@@ -63,7 +63,6 @@ public class VisionCone : MonoBehaviour
         var color = Color.red;
         Gizmos.color = color;
         
-        // Debug.Log(seen.Length);
         foreach (var obj in seen)
         {
             if (!obj) continue;

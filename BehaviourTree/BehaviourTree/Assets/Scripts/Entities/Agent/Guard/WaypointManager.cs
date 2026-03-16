@@ -51,10 +51,10 @@ namespace Guard
                     nextIndex = Math.Clamp(nextIndex, 0, waypoints.Count - 1);
                     break;
                 case WaypointLoopType.Loop: 
-                    if (nextIndex >= waypoints.Count)
-                        nextIndex = waypoints.Count - 1;
-                    if (nextIndex >= waypoints.Count)
+                    if (nextIndex >= waypoints.Count && direction)
                         nextIndex = 0;
+                    if (nextIndex < 0 && !direction)
+                        nextIndex = waypoints.Count - 1;
                     break;
                 default:
                     nextIndex = Math.Clamp(nextIndex, 0, waypoints.Count - 1);

@@ -121,14 +121,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03a0dbb69a6b4da8883d2ba261adcc0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthComponent
-  maxHealth: 100
-  currentHealth: 100
+  maxHealth: 5
+  currentHealth: 5
   onHealthChange:
     m_PersistentCalls:
       m_Calls: []
   onHealthDepleted:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2460320074406923812}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  maxInvincibilityTime: 1
 --- !u!114 &845260783212184499
 MonoBehaviour:
   m_ObjectHideFlags: 0

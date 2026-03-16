@@ -119,23 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &282025742 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7161708778849797658, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
-  m_PrefabInstance: {fileID: 6473233248030428448}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &282025745
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 282025742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01aca3162103eee49bb115aa030eca21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RotateTowardsPoint
 --- !u!1 &314217510
 GameObject:
   m_ObjectHideFlags: 0
@@ -6656,19 +6639,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: -0.041551247
+      value: 0.13729128
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.28460038
+      value: 0.07017544
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 1.0831025
+      value: 0.72541744
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.4288499
+      value: 0.8576998
       objectReference: {fileID: 0}
     - target: {fileID: 8569690723128360113, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_Enabled
@@ -6747,10 +6730,6 @@ PrefabInstance:
       propertyPath: playerCamera
       value: 
       objectReference: {fileID: 519420031}
-    - target: {fileID: 7046323857239168938, guid: 0b7ca9baef0da404e99a0baa582bba78, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6804,17 +6783,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1830522376451523591, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: minDistance
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3651979035673865797, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
       propertyPath: m_Name
       value: GuardAgent
       objectReference: {fileID: 0}
+    - target: {fileID: 6642311259004584047, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: lookAtSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8502198934254775108, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1066496961, guid: 426e8b0f5b5134c4c891ae9d608c9a67, type: 3}
+    - target: {fileID: 8502198934254775108, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7161708778849797658, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 282025745}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4bd9f955a279d3f4a99d8e5299624d9e, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

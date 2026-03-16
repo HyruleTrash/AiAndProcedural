@@ -17,6 +17,8 @@ public class VisionCone : MonoBehaviour
     [SerializeField, Range(0, 360)]
     private float fieldOfView;
     public float FieldOfView { get => fieldOfView; private set => fieldOfView = value; }
+    [SerializeField]
+    private float minDistance = 0.1f;
 
     public Vector3 DirFromAngle(float angleInDegrees, bool isGlobal)
     {
@@ -27,33 +29,35 @@ public class VisionCone : MonoBehaviour
     public GameObject[] GetCurrentlySeenObjects()
     {
         var hits = Physics2D.CircleCastAll(transform.position, viewDistance, Vector2.up, 0, targetLayerMask);
-        if (hits.Length == 0)
-            return Array.Empty<GameObject>();
+        return hits.Length == 0 ? Array.Empty<GameObject>() : AreTransformsInCone(hits.Select(hit => hit.collider.gameObject).ToArray());
+    }
 
-        var visibleHits = hits.Where(raycastHit =>
+    public GameObject[] AreTransformsInCone(GameObject[] gameObjects)
+    {
+        var visibleHits = gameObjects.Where(obj =>
         {
-            var target = raycastHit.collider.transform;
+            if (!obj.activeInHierarchy) return false;
+            
+            var target = obj.transform;
             var dirToTarget = (target.position - transform.position).normalized;
 
             var angle = Vector3.Angle(transform.right, dirToTarget);
-            if (!(angle < fieldOfView / 2))
-                return false;
+            if (!(angle < fieldOfView / 2)) return false;
             
             var distToTarget = Vector2.Distance(transform.position, target.transform.position);
+            if (distToTarget < minDistance) return true;
+            
             var result = Physics2D.Raycast(transform.position, dirToTarget, distToTarget + 1,
                 obstacleLayerMask + targetLayerMask);
             if (!result) return false;
             
-            if ((obstacleLayerMask.value & (1 << result.collider.gameObject.layer)) != 0)
-                return false;
-            if ((targetLayerMask.value & (1 << result.collider.gameObject.layer)) != 0)
-                return true;
+            if ((obstacleLayerMask.value & (1 << result.collider.gameObject.layer)) != 0) return false;
+            if ((targetLayerMask.value & (1 << result.collider.gameObject.layer)) != 0) return true;
 
             return false;
         }).ToArray();
         
-        var objects = visibleHits.Select(raycastHit => raycastHit.collider?.gameObject).ToArray();
-        return objects;
+        return visibleHits;
     }
 
     private void OnDrawGizmosSelected()

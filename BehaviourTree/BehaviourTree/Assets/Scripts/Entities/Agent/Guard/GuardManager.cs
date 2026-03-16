@@ -13,6 +13,7 @@ namespace Guard
     public class GuardManager : MonoBehaviour
     {
         private static readonly int HasWeapon1 = Animator.StringToHash("HasWeapon");
+        private static readonly int Attack = Animator.StringToHash("Attack");
 
         [Header("Required Components")]
         [SerializeField]
@@ -29,10 +30,13 @@ namespace Guard
         private VisionCone visionCone;
         [SerializeField]
         private RotateTowardsPoint visionConeRotation;
-
+        [Space]
+        [SerializeField] 
+        private float lookAtSpeed = 1;
         [HideInInspector, SerializeReference] 
         private WeaponSpawner weaponSpawnerRef;
-        private GameObject[] currentlyRegisteredPlayers;
+        private GameObject[] currentlyRegisteredPlayers = {};
+        private Vector2 lastLookAtPosition;
 
         private void OnValidate()
         {
@@ -44,6 +48,7 @@ namespace Guard
             visionConeRotation ??= GetComponentInChildren<RotateTowardsPoint>();
             movementComponent ??= GetComponent<Movement>();
             animator ??= GetComponent<Animator>();
+            lookAtSpeed = Mathf.Clamp(lookAtSpeed, 1, float.PositiveInfinity);
             
             enabled = healthComponent &&
                       weaponHandler &&
@@ -63,23 +68,18 @@ namespace Guard
                 new SequenceNode(new INode[]
                 {
                     new TaskNode(CanSeePlayer),
-                    new ParallelNode(new INode[]
+                    new SelectorNode(new INode[]
                     {
-                        new ConditionNode(movementComponent.IsCurrentWaypointNull, isInverted: true, toExecute:
-                            new TaskNode(() => movementComponent.SetCurrentWaypoint(null))),
-                        new SelectorNode(new INode[]
+                        new ConditionNode(HasWeapon, isInverted: true, toExecute:
+                            new TaskNode(() => movementComponent.SetCurrentWaypoint(GetNearestWeaponPosition()))),
+                        new SequenceNode(new INode[]
                         {
-                            new ConditionNode(HasWeapon, isInverted: true, toExecute:
-                                new TaskNode(() => movementComponent.SetCurrentWaypoint(GetNearestWeaponPosition()))),
-                            new SequenceNode(new INode[]
+                            new TaskNode(HasWeapon),
+                            new SelectorNode(new INode[]
                             {
-                                new TaskNode(HasWeapon),
-                                new SelectorNode(new INode[]
-                                {
-                                    new ConditionNode(IsPlayerInAttackRange, new TaskNode(TryAttackPlayer)),
-                                    new ConditionNode(IsPlayerInAttackRange, isInverted: true, toExecute: 
-                                        new TaskNode(() => movementComponent.SetCurrentWaypoint(GetPlayerPosition())))
-                                })
+                                new ConditionNode(IsPlayerInAttackRange, new TaskNode(TryAttackPlayer)),
+                                new ConditionNode(IsPlayerInAttackRange, isInverted: true, toExecute: 
+                                    new TaskNode(() => movementComponent.SetCurrentWaypoint(GetPlayerPosition())))
                             })
                         })
                     })
@@ -98,7 +98,17 @@ namespace Guard
             }));
         }
 
-        private void FixedUpdate() => visionConeRotation.UpdateRotation(movementComponent.GetCurrentWaypoint());
+        private void FixedUpdate()
+        {
+            lastLookAtPosition = Vector2.Lerp(lastLookAtPosition, movementComponent.GetCurrentWaypoint(), Time.fixedDeltaTime * lookAtSpeed);
+            visionConeRotation.UpdateRotation(lastLookAtPosition);
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(lastLookAtPosition, 0.1f);
+        }
 
         #region Weapon management
         
@@ -122,14 +132,17 @@ namespace Guard
         /// </summary>
         private bool CanSeePlayer()
         {
+            if (currentlyRegisteredPlayers.Length > 0 &&
+                visionCone.AreTransformsInCone(new[] { currentlyRegisteredPlayers.First() }).Length > 0)
+                return true;
             currentlyRegisteredPlayers = visionCone.GetCurrentlySeenObjects();
             return currentlyRegisteredPlayers.Length > 0;
         }
         
-        private Vector2 GetPlayerPosition()
+        private Vector2? GetPlayerPosition()
         {
             if (currentlyRegisteredPlayers.Length <= 0)
-                return transform.position;
+                return null;
             return currentlyRegisteredPlayers.First().transform.position.xy();
         }
         
@@ -138,18 +151,25 @@ namespace Guard
             if (currentlyRegisteredPlayers.Length <= 0)
                 return false;
             var player = currentlyRegisteredPlayers.First();
-            
             if (Vector2.Distance(player.transform.position, transform.position) > weaponHandler.Weapon.attackRange)
                 return false;
             
             var damageable = player.GetComponent<IDamageable>();
             if (damageable == null || !damageable.CanTakeDamage()) return false;
+            
+            animator.SetTrigger(Attack);
             damageable.TakeDamage(weaponHandler.GetDamage());
             return true;
         }
         
-        private bool IsPlayerInAttackRange() => Vector2.Distance(GetPlayerPosition(), transform.position) <= weaponHandler.Weapon.attackRange;
-        
+        private bool IsPlayerInAttackRange()
+        {
+            var playerPos = GetPlayerPosition();
+            if (playerPos.HasValue)
+                return Vector2.Distance(playerPos.Value, transform.position) <= weaponHandler.Weapon.attackRange;
+            return false;
+        }
+
         #endregion
     }
 }

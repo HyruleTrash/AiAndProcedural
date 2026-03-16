@@ -568,7 +568,6 @@ Transform:
   - {fileID: 2241814735997442529}
   - {fileID: 5367731683471151156}
   - {fileID: 2327604583335315935}
-  - {fileID: 3148344454701819061}
   - {fileID: 447140030692370349}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -614,6 +613,7 @@ MonoBehaviour:
   onHealthDepleted:
     m_PersistentCalls:
       m_Calls: []
+  maxInvincibilityTime: 1
 --- !u!114 &2041330060117044577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -646,6 +646,7 @@ MonoBehaviour:
   movementComponent: {fileID: 4710195350467760268}
   visionCone: {fileID: 1830522376451523591}
   visionConeRotation: {fileID: 2446528260589838532}
+  lookAtSpeed: 1
   weaponSpawnerRef: {fileID: 0}
 --- !u!114 &5821734936938172839
 MonoBehaviour:
@@ -1050,6 +1051,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3148344454701819061}
   - {fileID: 541018232929276339}
   m_Father: {fileID: 718638265631208099}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1083,7 +1085,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 718638265631208099}
+  m_Father: {fileID: 7562000679679602654}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6915609928430676098
 SpriteRenderer:
@@ -1198,6 +1200,7 @@ MonoBehaviour:
     m_Bits: 64
   viewDistance: 10
   fieldOfView: 157
+  minDistance: 0.1
 --- !u!114 &2446528260589838532
 MonoBehaviour:
   m_ObjectHideFlags: 0

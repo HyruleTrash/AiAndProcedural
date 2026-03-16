@@ -43,7 +43,7 @@ AnimationClip:
     - time: 1.4833333
       value: {fileID: 0}
     attribute: m_Sprite
-    path: BunEyelids-Sheet_0
+    path: Bun-Sheet_4/BunEyelids-Sheet_0
     classID: 212
     script: {fileID: 0}
     flags: 2
@@ -55,7 +55,7 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 1763768512
+      path: 3693060573
       attribute: 0
       script: {fileID: 0}
       typeID: 212

@@ -24,10 +24,8 @@ public class WeaponSpawner : MonoBehaviour
     private Bounds bounds;
     [SerializeField]
     private int spawnAmount;
-    [SerializeField]
-    private int cellSize;
 
-    private void OnValidate() => enabled = tilemap && spawnAmount > 0 && cellSize > 0 && bounds.extents.magnitude > 0;
+    private void OnValidate() => enabled = tilemap && spawnAmount > 0 && bounds.extents.magnitude > 0;
     private void Start() => Spawn();
 
     public void Spawn()
@@ -38,13 +36,14 @@ public class WeaponSpawner : MonoBehaviour
             while (true)
             {
                 var spawnPosition = bounds.RandomPoint(transform);
-                if (AlignPositionToTilemap(ref spawnPosition))
+                var posCheck = AlignPositionToTilemap(spawnPosition);
+                if (!posCheck.Item1)
                     continue;
                 
                 liveWeapons.Add(new WeaponInstance
                 {
                     weapon = weapon,
-                    instance = Instantiate(weapon.Prefab, spawnPosition, Quaternion.identity)
+                    instance = Instantiate(weapon.Prefab, posCheck.Item2, Quaternion.identity)
                 });
                 break;
             }
@@ -80,16 +79,16 @@ public class WeaponSpawner : MonoBehaviour
     /// <summary>
     /// Aligns position to tilemap
     /// </summary>
-    /// <returns>false if position invalid</returns>
-    public bool AlignPositionToTilemap(ref Vector3 worldPosition)
+    /// <returns>false if position invalid, and a position aligned to the grid</returns>
+    public Tuple<bool, Vector3> AlignPositionToTilemap(Vector3 worldPosition)
     {
         var cellPosition = tilemap.WorldToCell(worldPosition);
 
-        if (!tilemap.HasTile(cellPosition))
-            return false;
+        if (tilemap.HasTile(cellPosition))
+            return new Tuple<bool, Vector3>(false, Vector3.zero);
 
-        worldPosition = tilemap.GetCellCenterWorld(cellPosition);
-        return true;
+        var newPos = tilemap.CellToWorld(cellPosition) + (Vector3)(new Vector2(0.5f, 0.5f));
+        return new Tuple<bool, Vector3>(true, newPos);
     }
 
     private void OnDrawGizmosSelected()

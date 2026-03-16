@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using BehaviourTree;
+using TMPro;
 using UnityEngine;
 
 namespace Guard
@@ -30,7 +31,9 @@ namespace Guard
         private VisionCone visionCone;
         [SerializeField]
         private RotateTowardsPoint visionConeRotation;
-        [Space]
+        [Space, Header("Config")]
+        [SerializeField]
+        private TextMeshPro stateText;
         [SerializeField] 
         private float lookAtSpeed = 1;
         [HideInInspector, SerializeReference] 
@@ -71,10 +74,15 @@ namespace Guard
                     new SelectorNode(new INode[]
                     {
                         new ConditionNode(HasWeapon, isInverted: true, toExecute:
-                            new TaskNode(() => movementComponent.SetCurrentWaypoint(GetNearestWeaponPosition()))),
+                            new ParallelNode(new INode[]
+                            {
+                                new TaskNode(() => SetStateText("Searching 4 weapon")),
+                                new TaskNode(() => movementComponent.SetCurrentWaypoint(GetNearestWeaponPosition()))
+                            })),
                         new SequenceNode(new INode[]
                         {
                             new TaskNode(HasWeapon),
+                            new TaskNode(() => SetStateText("Attacking player")),
                             new SelectorNode(new INode[]
                             {
                                 new ConditionNode(IsPlayerInAttackRange, new TaskNode(TryAttackPlayer)),
@@ -87,6 +95,8 @@ namespace Guard
                 new SequenceNode(new INode[]
                 {
                     new InvertNode(new TaskNode(CanSeePlayer)),
+                    new ConditionNode(() => movementComponent.GetCurrentWaypoint() != GetNearestWeaponPosition(),
+                        new TaskNode(() => SetStateText("Patrolling"))),
                     new ParallelNode(new INode[]
                     {
                         new ConditionNode(movementComponent.IsCurrentWaypointNull, 
@@ -104,10 +114,19 @@ namespace Guard
             visionConeRotation.UpdateRotation(lastLookAtPosition);
         }
 
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(lastLookAtPosition, 0.1f);
+        }
+
+        /// <summary>
+        /// Sets the non required state text to sometheing
+        /// </summary>
+        private bool SetStateText(string text)
+        {
+            if (stateText) stateText.text = $"State: {text}";
+            return true;
         }
 
         #region Weapon management

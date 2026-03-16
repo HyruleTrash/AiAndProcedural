@@ -6,8 +6,10 @@ public class HealthComponent : MonoBehaviour, IDamageable
 {
     [SerializeField] 
     private float maxHealth = 100f;
+    public float MaxHealth => maxHealth;
     [SerializeField] 
     private float currentHealth = 100f;
+    [Space]
     public UnityEvent<float> onHealthChange;
     public UnityEvent onHealthDepleted;
     [SerializeField]

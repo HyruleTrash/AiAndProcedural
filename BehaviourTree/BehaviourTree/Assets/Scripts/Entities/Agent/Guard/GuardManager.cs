@@ -66,44 +66,48 @@ namespace Guard
         private void OnEnable()
         {
             // Initialize behaviourTree
+            var sawPlayer = new SelectorNode(new INode[]
+            {
+                new ConditionNode(HasWeapon, isInverted: true, toExecute:
+                    new ParallelNode(new INode[]
+                    {
+                        new TaskNode(() => SetStateText("Searching 4 weapon")),
+                        new TaskNode(() => movementComponent.SetCurrentWaypoint(GetNearestWeaponPosition()))
+                    })),
+                new SequenceNode(new INode[]
+                {
+                    new TaskNode(HasWeapon),
+                    new TaskNode(() => SetStateText("Attacking player")),
+                    new SelectorNode(new INode[]
+                    {
+                        new ConditionNode(IsPlayerInAttackRange, new TaskNode(TryAttackPlayer)),
+                        new ConditionNode(IsPlayerInAttackRange, isInverted: true, toExecute:
+                            new TaskNode(() => movementComponent.SetCurrentWaypoint(GetPlayerPosition())))
+                    })
+                })
+            });
+
+            var cantSeePlayer = new ParallelNode(new INode[]
+            {
+                new ConditionNode(movementComponent.IsCurrentWaypointNull, 
+                    new TaskNode(() => movementComponent.SetCurrentWaypoint(movementComponent.GetNearestWayPoint()))),
+                new ConditionNode(movementComponent.IsAgentNearCurrentWaypoint, 
+                    new TaskNode(() => movementComponent.SetCurrentWaypoint(movementComponent.GetNextWaypoint())))
+            });
+            
             behaviourTree.Initialize(new SelectorNode(new INode[]
             {
                 new SequenceNode(new INode[]
                 {
                     new TaskNode(CanSeePlayer),
-                    new SelectorNode(new INode[]
-                    {
-                        new ConditionNode(HasWeapon, isInverted: true, toExecute:
-                            new ParallelNode(new INode[]
-                            {
-                                new TaskNode(() => SetStateText("Searching 4 weapon")),
-                                new TaskNode(() => movementComponent.SetCurrentWaypoint(GetNearestWeaponPosition()))
-                            })),
-                        new SequenceNode(new INode[]
-                        {
-                            new TaskNode(HasWeapon),
-                            new TaskNode(() => SetStateText("Attacking player")),
-                            new SelectorNode(new INode[]
-                            {
-                                new ConditionNode(IsPlayerInAttackRange, new TaskNode(TryAttackPlayer)),
-                                new ConditionNode(IsPlayerInAttackRange, isInverted: true, toExecute: 
-                                    new TaskNode(() => movementComponent.SetCurrentWaypoint(GetPlayerPosition())))
-                            })
-                        })
-                    })
+                    sawPlayer
                 }),
                 new SequenceNode(new INode[]
                 {
                     new InvertNode(new TaskNode(CanSeePlayer)),
                     new ConditionNode(() => movementComponent.GetCurrentWaypoint() != GetNearestWeaponPosition(),
                         new TaskNode(() => SetStateText("Patrolling"))),
-                    new ParallelNode(new INode[]
-                    {
-                        new ConditionNode(movementComponent.IsCurrentWaypointNull, 
-                            new TaskNode(() => movementComponent.SetCurrentWaypoint(movementComponent.GetNearestWayPoint()))),
-                        new ConditionNode(movementComponent.IsAgentNearCurrentWaypoint, 
-                            new TaskNode(() => movementComponent.SetCurrentWaypoint(movementComponent.GetNextWaypoint())))
-                    })
+                    cantSeePlayer
                 })
             }));
         }

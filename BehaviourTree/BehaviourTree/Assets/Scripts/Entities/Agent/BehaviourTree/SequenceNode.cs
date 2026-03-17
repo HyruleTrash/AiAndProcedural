@@ -2,11 +2,11 @@
 {
     public class SequenceNode : CompositeNode
     {
-        public SequenceNode(INode[] toTrigger) : base(toTrigger) { }
+        public SequenceNode(INode[] children) : base(children) { }
 
         public override NodeState Call()
         {
-            foreach (var child in toTrigger)
+            foreach (var child in children)
             {
                 var result = child.Call();
                 if (result == NodeState.Failed) return NodeState.Failed;

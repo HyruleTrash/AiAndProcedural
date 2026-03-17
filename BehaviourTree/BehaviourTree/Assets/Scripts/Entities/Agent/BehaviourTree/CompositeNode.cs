@@ -2,11 +2,11 @@
 {
     public abstract class CompositeNode : INode
     {
-        protected INode[] toTrigger;
+        protected readonly INode[] children;
 
-        protected CompositeNode(INode[] toTrigger)
+        protected CompositeNode(INode[] children)
         {
-            this.toTrigger = toTrigger;
+            this.children = children;
         }
 
         public abstract NodeState Call();

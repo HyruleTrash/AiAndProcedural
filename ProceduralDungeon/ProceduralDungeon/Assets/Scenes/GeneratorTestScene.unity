@@ -706,8 +706,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 847187200}
+  - component: {fileID: 847187201}
   m_Layer: 0
-  m_Name: temp
+  m_Name: Generator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -722,12 +723,29 @@ Transform:
   m_GameObject: {fileID: 847187199}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.12945, y: -0.07453, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &847187201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847187199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9d181d104f4409995730d67bade49e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Generation.GenerationManager
+  mainSeed: 
+  worldGenerator:
+    areaData:
+    - {fileID: 11400000, guid: f7738525e4c97394db7963f5ef02cbbe, type: 2}
+    - {fileID: 11400000, guid: b4b810f794fb4ae47a5f096a3a8ce503, type: 2}
 --- !u!1 &907870588
 GameObject:
   m_ObjectHideFlags: 0
@@ -1533,20 +1551,36 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
+      propertyPath: orthographic size
+      value: 3.4375
+      objectReference: {fileID: 0}
+    - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.140625
+      value: 0.04107981
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.11672474
+      value: 0.07528958
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.71875
+      value: 0.91784036
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.76655054
+      value: 0.84942085
+      objectReference: {fileID: 0}
+    - target: {fileID: 6881396737788365567, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
+      propertyPath: m_AssetsPPU
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 6881396737788365567, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
+      propertyPath: m_RefResolutionX
+      value: 782
+      objectReference: {fileID: 0}
+    - target: {fileID: 6881396737788365567, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
+      propertyPath: m_RefResolutionY
+      value: 440
       objectReference: {fileID: 0}
     - target: {fileID: 8569690723128360113, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_Enabled

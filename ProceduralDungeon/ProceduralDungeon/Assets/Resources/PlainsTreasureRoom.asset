@@ -15,19 +15,19 @@ MonoBehaviour:
   roomType: 3
   weight: 0.5
   rooms:
-  - 1111n10x1n1001n1111n
-  - 1111n1001n10x1n1111n
-  - 1111n1001n1x01n1111n
+  - {fileID: 2800000, guid: 9bf9623c83e11ae4183daebccafe4ff2, type: 3}
+  - {fileID: 2800000, guid: 3bc58b4a08961864fbece372621eed94, type: 3}
+  - {fileID: 2800000, guid: 537aa176927711242b73d4d282691231, type: 3}
   roomData:
-  - layout: 1111n10x1n1001n1111n
-    size: 16
+  - layout: 11111111n10000001n10000001n10000001n10000001n10x00001n10000001n11111111
+    size: 64
     contentPoints:
-    - {x: 3, y: 1}
-  - layout: 1111n1001n10x1n1111n
-    size: 16
+    - {x: 7, y: 5}
+  - layout: 11111111n10000001n10000001n10000001n10000001n10000x01n10000001n11111111
+    size: 64
     contentPoints:
-    - {x: 3, y: 2}
-  - layout: 1111n1001n1x01n1111n
-    size: 16
+    - {x: 7, y: 5}
+  - layout: 11111111n10000001n10x00001n10000001n10000001n10000001n10000001n11111111
+    size: 64
     contentPoints:
-    - {x: 3, y: 2}
+    - {x: 7, y: 2}

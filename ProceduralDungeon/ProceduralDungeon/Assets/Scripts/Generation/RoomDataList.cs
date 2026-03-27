@@ -14,16 +14,20 @@ namespace Generation
         public RoomType roomType;
         [SerializeField]
         private float weight;
+        #if UNITY_EDITOR
         [SerializeField] 
-        private List<string> rooms;
+        private List<Texture2D> rooms;
+        #endif
         [SerializeField, HideInInspector]
         private List<RoomData> roomData;
 
         #if UNITY_EDITOR
         private void OnValidate()
         {
+            if (roomData == null)
+                return;
             roomData = new List<RoomData>();
-            foreach (var room in rooms) roomData.Add(new RoomData(room));
+            foreach (var room in rooms.Where(room => room != null)) roomData.Add(new RoomData(room));
             EditorUtility.SetDirty(this);
         }
         #endif

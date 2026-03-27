@@ -15,8 +15,8 @@ MonoBehaviour:
   roomType: 0
   weight: 1
   rooms:
-  - 1111n1001n1001n1111n
+  - {fileID: 2800000, guid: f2c83e868f4068e4fa4d32a7b3120f95, type: 3}
   roomData:
-  - layout: 1111n1001n1001n1111n
-    size: 16
+  - layout: 11111111n10000001n10000001n10000001n10000001n10000001n10000001n11111111
+    size: 64
     contentPoints: []

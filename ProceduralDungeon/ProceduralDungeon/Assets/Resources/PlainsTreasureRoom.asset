@@ -15,6 +15,19 @@ MonoBehaviour:
   roomType: 3
   weight: 0.5
   rooms:
-  - 1111n1001n1001n1111n
-  - 1111n1001n1001n1111n
-  - 1111n1001n1001n1111n
+  - 1111n10x1n1001n1111n
+  - 1111n1001n10x1n1111n
+  - 1111n1001n1x01n1111n
+  roomData:
+  - layout: 1111n10x1n1001n1111n
+    size: 16
+    contentPoints:
+    - {x: 3, y: 1}
+  - layout: 1111n1001n10x1n1111n
+    size: 16
+    contentPoints:
+    - {x: 3, y: 2}
+  - layout: 1111n1001n1x01n1111n
+    size: 16
+    contentPoints:
+    - {x: 3, y: 2}

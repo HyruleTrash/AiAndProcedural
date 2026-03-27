@@ -76,7 +76,14 @@ namespace Generation
             if (c >= '0' && c <= '9') return c - '0';
             if (c >= 'A' && c <= 'F') return c - 'A' + 10;
             if (c >= 'a' && c <= 'f') return c - 'a' + 10;
-            return (int)c % 16;
+            return c % 16;
+        }
+
+        public static int RandomRange(int min, int max, string randomSeed)
+        {
+            var seed = ParseSeed(randomSeed);
+            var normalized = (double)seed / ulong.MaxValue;
+            return (int)(normalized * (max - min)) + min;
         }
     }
 }

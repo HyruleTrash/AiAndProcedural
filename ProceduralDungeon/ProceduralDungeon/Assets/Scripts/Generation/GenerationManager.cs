@@ -20,5 +20,10 @@ namespace Generation
             Debug.Log($"Seed has been set: {mainSeed}");
         }
         #endif
+
+        public void GenerateWorld()
+        {
+            worldGenerator.Generate(mainSeed);
+        }
     }
 }

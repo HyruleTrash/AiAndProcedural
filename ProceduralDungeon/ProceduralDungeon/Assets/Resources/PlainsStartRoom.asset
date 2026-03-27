@@ -16,3 +16,7 @@ MonoBehaviour:
   weight: 1
   rooms:
   - 1111n1001n1001n1111n
+  roomData:
+  - layout: 1111n1001n1001n1111n
+    size: 16
+    contentPoints: []

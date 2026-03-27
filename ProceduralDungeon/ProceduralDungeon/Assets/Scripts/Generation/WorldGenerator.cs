@@ -11,9 +11,13 @@ namespace Generation
         [SerializeField]
         private List<AreaData> areaData;
 
-        // public RoomData[,] Generate(string seed)
-        // {
-        //     
-        // }
+        public RoomData[,] Generate(string seed)
+        {
+            currentSeed = seed;
+            List<AreaData> backlog = new(areaData);
+            List<AreaGenData> hadAreas = new();
+
+            return null;
+        }
     }
 }

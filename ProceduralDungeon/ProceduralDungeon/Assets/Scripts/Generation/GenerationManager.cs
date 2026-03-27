@@ -1,4 +1,5 @@
-﻿using NaughtyAttributes;
+﻿using System;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace Generation
@@ -14,7 +15,8 @@ namespace Generation
         [Button]
         public void GenerateMainSeed()
         {
-            // TODO
+            mainSeed = RNG.ParseSeed((ulong)DateTime.Now.Ticks);
+            mainSeed = RNG.MutateNext(mainSeed);
             Debug.Log($"Seed has been set: {mainSeed}");
         }
         #endif

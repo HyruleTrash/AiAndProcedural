@@ -9,6 +9,7 @@ namespace Generation
     {
         private AreaType areaType;
         private int size;
+        public int Size { get => size; set => size = value; }
         private List<RoomDataList> roomTypes;
         
         public AreaGenData(AreaType areaType, int size, List<RoomDataList> roomTypes)

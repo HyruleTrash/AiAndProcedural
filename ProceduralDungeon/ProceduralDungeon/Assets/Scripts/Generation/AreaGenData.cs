@@ -20,7 +20,7 @@ namespace Generation
             foreach (var list in roomTypes) this.roomTypes.Add(new(list));
         }
 
-        public RoomTypeDataList PickTypeList(ref string seed)
+        public RoomTypeDataList PickTypeList(ref WorldGenerator.WorldGenData genData, ref string seed)
         {
             RoomTypeDataList foundTypeList;
             while (true)
@@ -29,7 +29,7 @@ namespace Generation
                 seed = RNG.MutateNext(seed);
                 foundTypeList = roomTypes[foundIndex];
                 
-                if (foundTypeList && foundTypeList.roomType != WorldGenerator.lastHadRoomType) break;
+                if (foundTypeList && foundTypeList.roomType != genData.lastHadRoomType) break;
             }
             return foundTypeList;
         }

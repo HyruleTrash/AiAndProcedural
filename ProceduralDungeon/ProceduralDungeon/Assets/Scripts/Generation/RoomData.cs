@@ -17,7 +17,13 @@ namespace Generation
         
         [SerializeField] 
         private int size;
+        [SerializeField] 
+        private int width;
+        [SerializeField] 
+        private int height;
         public int Size { get => size; private set => size = value; }
+        public int Width { get => width; private set => width = value; }
+        public int Height { get => height; private set => height = value; }
         
         [SerializeField]
         private Vector2[] contentPoints;
@@ -27,6 +33,8 @@ namespace Generation
         {
             layout = GetStringLayout(texture);
             Size = texture.height * texture.width;
+            width = texture.width;
+            height = texture.height;
             contentPoints = GetContentPoints(layout);
         }
 

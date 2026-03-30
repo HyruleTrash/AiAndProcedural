@@ -14,7 +14,7 @@ namespace Generation
         [SerializeField]
         private Vector2Int minMaxSize; // x is min, y is max
         [SerializeField, Expandable]
-        private List<RoomDataList> roomTypes;
+        private List<RoomTypeDataList> roomTypes;
 
         public AreaGenData GetAreaGenData(string seed)
         {

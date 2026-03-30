@@ -10,13 +10,28 @@ namespace Generation
         private AreaType areaType;
         private int size;
         public int Size { get => size; set => size = value; }
-        private List<RoomDataList> roomTypes;
+        private List<RoomTypeDataList> roomTypes;
         
-        public AreaGenData(AreaType areaType, int size, List<RoomDataList> roomTypes)
+        public AreaGenData(AreaType areaType, int size, List<RoomTypeDataList> roomTypes)
         {
             this.areaType = areaType;
             this.size = size;
-            this.roomTypes = new List<RoomDataList>(roomTypes);
+            this.roomTypes = new List<RoomTypeDataList>();
+            foreach (var list in roomTypes) this.roomTypes.Add(new(list));
+        }
+
+        public RoomTypeDataList PickTypeList(ref string seed)
+        {
+            RoomTypeDataList foundTypeList;
+            while (true)
+            {
+                var foundIndex = RNG.RandomRange(0, roomTypes.Count, seed);
+                seed = RNG.MutateNext(seed);
+                foundTypeList = roomTypes[foundIndex];
+                
+                if (foundTypeList && foundTypeList.roomType != WorldGenerator.lastHadRoomType) break;
+            }
+            return foundTypeList;
         }
     }
 }

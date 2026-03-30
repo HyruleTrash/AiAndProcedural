@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 #if UNITY_EDITOR
+using Unity.Mathematics;
 using UnityEditor;
 #endif
 
 namespace Generation
 {
-    [CreateAssetMenu(fileName = "RoomDataList", menuName = "Generation/RoomDataList")]
-    public class RoomDataList : ScriptableObject
+    [CreateAssetMenu(fileName = "RoomTypeDataList", menuName = "Generation/RoomTypeDataList")]
+    public class RoomTypeDataList : ScriptableObject
     {
         public RoomType roomType;
         [SerializeField]
@@ -20,19 +21,31 @@ namespace Generation
         #endif
         [SerializeField, HideInInspector]
         private List<RoomData> roomData;
+        [SerializeField, HideInInspector]
+        public int smallestRoomSize;
 
-        #if UNITY_EDITOR
+        public RoomTypeDataList(RoomTypeDataList other)
+        {
+            this.roomType = other.roomType;
+            this.weight = other.weight;
+            this.roomData = other.GetRoomData();
+        }
+
+        private List<RoomData> GetRoomData() => roomData;
+
+#if UNITY_EDITOR
         private void OnValidate()
         {
             if (roomData == null)
                 return;
             roomData = new List<RoomData>();
             foreach (var room in rooms.Where(room => room != null)) roomData.Add(new RoomData(room));
+            smallestRoomSize = roomData.Select(room => room.Size).Prepend(int.MaxValue).Min();
             EditorUtility.SetDirty(this);
         }
         #endif
 
-        public RoomData TryGetRoom(int size, string randomSeed, RoomData[] lastRooms = null)
+        public RoomData TryGetRoom(int size, ref string randomSeed, RoomData[] lastRooms = null)
         {
             var pool = roomData.Where(room => room.Size <= size).ToList();
             var usedSeed = randomSeed;
@@ -54,6 +67,11 @@ namespace Generation
                 pool.RemoveAt(index);
             }
             return pool[index];
+        }
+
+        public void OnPicked(AreaGenData pickedArea)
+        {
+            // TODO implement areagen mutation logic here
         }
     }
 }

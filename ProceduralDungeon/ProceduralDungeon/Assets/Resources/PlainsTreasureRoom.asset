@@ -21,13 +21,20 @@ MonoBehaviour:
   roomData:
   - layout: 11111111n10000001n10000001n10000001n10000001n10x00001n10000001n11111111
     size: 64
+    width: 8
+    height: 8
     contentPoints:
     - {x: 7, y: 5}
   - layout: 11111111n10000001n10000001n10000001n10000001n10000x01n10000001n11111111
     size: 64
+    width: 8
+    height: 8
     contentPoints:
     - {x: 7, y: 5}
   - layout: 11111111n10000001n10x00001n10000001n10000001n10000001n10000001n11111111
     size: 64
+    width: 8
+    height: 8
     contentPoints:
     - {x: 7, y: 2}
+  smallestRoomSize: 64

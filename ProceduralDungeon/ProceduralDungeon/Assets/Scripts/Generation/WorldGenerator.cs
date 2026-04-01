@@ -20,8 +20,7 @@ namespace Generation
         private MonoBehaviour owner;
         private Action<GenerationResult> onUpdate;
 
-        public static readonly Vector2Int[] CardinalDirections = new Vector2Int[]
-        {
+        public static readonly Vector2Int[] CardinalDirections = {
             Vector2Int.up,    // (0, 1)
             Vector2Int.down,  // (0, -1)
             Vector2Int.left,  // (-1, 0)

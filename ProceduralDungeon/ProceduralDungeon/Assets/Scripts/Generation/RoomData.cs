@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Generation
@@ -25,13 +27,30 @@ namespace Generation
         private Vector2[] contentPoints;
         public Vector2[] ContentPoints { get => contentPoints; private set => contentPoints = value; }
 
+        [SerializeField]
+        private List<DoorPointListItem> doorPoints;
+
+        [Serializable]
+        public struct DoorPointListItem
+        {
+            public Vector2Int key;
+            public List<DoorPointGroup> value;
+        }
+        
+        [Serializable]
+        public class DoorPointGroup
+        {
+            public List<Vector2Int> points = new();
+        }
+
         public RoomData(Texture2D texture)
         {
             layout = GetStringLayout(texture);
             Size = texture.height * texture.width;
             width = texture.width;
             height = texture.height;
-            contentPoints = GetContentPoints(layout);
+            contentPoints = GetContentPoints(layout, width);
+            doorPoints = FillDoorPoints(layout, width, height);
         }
 
         /// <summary>
@@ -69,44 +88,116 @@ namespace Generation
                     if (!found) 
                         Debug.Log($"Unexpected color: {pixel}");
                 }
-                if (y < texture.height - 1) result.Append(lookupInstance.GetTile("NextLine")?.text);
             }
     
             return result.ToString();
         }
 
-        // TODO delegate this logic to the lookup table to make it more abstract
-        private static Vector2[] GetContentPoints(string layout)
+        private static Vector2[] GetContentPoints(string layout, int width)
         {
             var contentPoints = new List<Vector2>();
             
-            var height = 0;
-            var width = -1;
+            var lookupInstance = RoomTileLookup.LookupInstance;
+            var contentChar = lookupInstance.GetTile("Content")?.text;
             
-            var widthCount = -1;
-            foreach (var c in layout)
+            for (var i = 0; i < layout.Length; i++)
             {
-                switch (c)
-                {
-                    case 'x':
-                        contentPoints.Add(new Vector2(width, height));
-                        goto case '1';
-                    case '0':
-                    case '1':
-                        widthCount++;
-                        continue;
-                    case 'n':
-                    {
-                        height++;
-                        if (widthCount > width)
-                            width = widthCount;
-                        widthCount = -1;
-                        break;
-                    }
-                }
+                var c = layout[i];
+                if (c  == contentChar)
+                    contentPoints.Add(new Vector2Int(i % width, i / width));
             }
-            
+
             return contentPoints.ToArray();
+        }
+        
+        private static List<DoorPointListItem> FillDoorPoints(string layout, int width, int height)
+        {
+            var lookupInstance = RoomTileLookup.LookupInstance;
+            
+            var result = new List<DoorPointListItem>()
+            {
+                new(){key = Vector2Int.up, value = new()},
+                new(){key = Vector2Int.down, value = new()},
+                new(){key = Vector2Int.left, value = new()},
+                new(){key = Vector2Int.right, value = new()}
+            };
+
+            var hadIndeces = new List<int>();
+            var doorwayChar = lookupInstance.GetTile("Doorway")?.text;
+            if (doorwayChar == null)
+                throw new Exception("Doorway character not found");
+
+            for (var i = 0; i < layout.Length; i++)
+            {
+                var c = layout[i];
+                if (c != doorwayChar.Value || hadIndeces.Contains(i))
+                    continue;
+
+                var doorPointGroup = new DoorPointGroup();
+                doorPointGroup.points.Add(new Vector2Int(i % width, i / width));
+                hadIndeces.Add(i);
+                GetDoorPointNeighbours(doorPointGroup, i, layout, ref hadIndeces, doorwayChar.Value, width);
+                var key = GetDirectionGetDoorPointGroup(doorPointGroup, width, height);
+                result.First(a => a.key == key).value.Add(doorPointGroup);
+            }
+
+            return result;
+        }
+
+        private static void GetDoorPointNeighbours(DoorPointGroup doorPointGroup, int originIndex, string layout,
+            ref List<int> hadIndeces, char doorwayChar, int width)
+        {
+            var indecesToCheck = new List<int>()
+            {
+                originIndex + width,
+                originIndex - width,
+            };
+            
+            var x = originIndex % width; // check x to prevent wrapping to the next row
+            if (x < width - 1) indecesToCheck.Add(originIndex + 1);
+            if (x > 0) indecesToCheck.Add(originIndex - 1);
+
+            while (indecesToCheck.Count > 0)
+            {
+                var current = indecesToCheck.Last();
+                if (hadIndeces.Contains(current) || current < 0 || current > layout.Length - 1 || layout[current] != doorwayChar)
+                {
+                    hadIndeces.Add(current);
+                    indecesToCheck.RemoveAt(indecesToCheck.Count - 1);
+                    continue;
+                }
+
+                doorPointGroup.points.Add(new Vector2Int(current % width, current / width));
+                hadIndeces.Add(current);
+                indecesToCheck.RemoveAt(indecesToCheck.Count - 1);
+                
+                x = current % width; // check x to prevent wrapping to the next row
+                if (x < width - 1) indecesToCheck.Add(current + 1);
+                if (x > 0) indecesToCheck.Add(current - 1);
+                
+                indecesToCheck.Add(current + width);
+                indecesToCheck.Add(current - width);
+            }
+        }
+        
+        private static Vector2Int GetDirectionGetDoorPointGroup(DoorPointGroup doorPointGroup, int width, int height)
+        {
+            var average = doorPointGroup.points.Aggregate(Vector2.zero, (current, point) => current + point);
+            average /= doorPointGroup.points.Count;
+            
+            var dir = (average - new Vector2(width / 2f, height / 2f)).normalized;
+
+            var smallestDot = -2f;
+            var foundDir = Vector2Int.zero;
+            foreach (var cardinalDirection in WorldGenerator.CardinalDirections)
+            {
+                var dot = Vector2.Dot(cardinalDirection, dir);
+                if (!(dot > smallestDot)) continue;
+                smallestDot = dot;
+                foundDir = cardinalDirection;
+            }
+
+            return foundDir;
         }
 
         public override string ToString()

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlainsData
   m_EditorClassIdentifier: Assembly-CSharp::Generation.AreaData
   areaType: 0
-  minMaxSize: {x: 5, y: 10}
+  minMaxSize: {x: 80, y: 160}
   roomTypes:
   - {fileID: 11400000, guid: b90fe34fb92776a4c859c64389efb540, type: 2}
   - {fileID: 11400000, guid: 544b4736d5755d24ca4e7136ee3cc25b, type: 2}

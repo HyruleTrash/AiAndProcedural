@@ -9,24 +9,40 @@ namespace Generation
     {
         private AreaType areaType;
         private int size;
-        public int Size { get => size; set => size = value; }
         private List<RoomTypeDataList> roomTypes;
+        public AreaType AreaType { get => areaType; private set => areaType = value; }
+        public int Size { get => size; set => size = value; }
         
         public AreaGenData(AreaType areaType, int size, List<RoomTypeDataList> roomTypes)
         {
             this.areaType = areaType;
             this.size = size;
             this.roomTypes = new List<RoomTypeDataList>();
-            foreach (var list in roomTypes) this.roomTypes.Add(new(list));
+            foreach (var list in roomTypes) this.roomTypes.Add(list.Duplicate());
         }
 
-        public RoomTypeDataList PickTypeList(ref WorldGenerator.WorldGenData genData, ref string seed)
+        public RoomTypeDataList PickTypeList(WorldGenerator.WorldGenData genData)
         {
             RoomTypeDataList foundTypeList;
+            var indexPool = new List<int>();
+
+            for (var i = 0; i < roomTypes.Count; i++) // TODO pool creation from weight can be turned into a interface abstract method
+            {
+                var list = roomTypes[i];
+                var counter = 0f;
+                while (true)
+                {
+                    indexPool.Add(i);
+                    counter += list.Weight;
+                    if (counter >= 1f)
+                        break;
+                }
+            }
+
             while (true)
             {
-                var foundIndex = RNG.RandomRange(0, roomTypes.Count, seed);
-                seed = RNG.MutateNext(seed);
+                var foundIndex = indexPool[RNG.RandomRange(0, indexPool.Count, genData.currentSeed)];
+                genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                 foundTypeList = roomTypes[foundIndex];
                 
                 if (foundTypeList && foundTypeList.roomType != genData.lastHadRoomType) break;

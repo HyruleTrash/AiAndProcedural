@@ -24,16 +24,22 @@ namespace Generation
         [SerializeField, HideInInspector]
         public int smallestRoomSize;
 
-        public RoomTypeDataList(RoomTypeDataList other)
+        public float Weight
         {
-            this.roomType = other.roomType;
-            this.weight = other.weight;
-            this.roomData = other.GetRoomData();
+            get => weight;
+            private set => weight = value;
         }
 
-        private List<RoomData> GetRoomData() => roomData;
+        public RoomTypeDataList Duplicate()
+        {
+            var newInstance = CreateInstance<RoomTypeDataList>();
+            newInstance.roomType = roomType;
+            newInstance.weight = weight;
+            newInstance.roomData = roomData;
+            return newInstance;
+        }
 
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
         private void OnValidate()
         {
             if (roomData == null)
@@ -45,10 +51,10 @@ namespace Generation
         }
         #endif
 
-        public RoomData TryGetRoom(int size, ref string randomSeed, RoomData[] lastRooms = null)
+        public RoomData TryGetRoom(WorldGenerator.WorldGenData genData, int size, RoomData[] lastRooms = null)
         {
             var pool = roomData.Where(room => room.Size <= size).ToList();
-            var usedSeed = randomSeed;
+            var usedSeed = genData.currentSeed;
             int index;
             
             while (true)
@@ -66,6 +72,7 @@ namespace Generation
                 usedSeed = RNG.MutateNext(usedSeed);
                 pool.RemoveAt(index);
             }
+            genData.currentSeed = usedSeed;
             return pool[index];
         }
 

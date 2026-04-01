@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace Generation
         private int roomRepetitionAllowance = 2;
         [SerializeField]
         private int walkDirectionRepetitionAllowance = 2;
+
+        private MonoBehaviour owner;
         
         public static readonly Vector2Int[] CardinalDirections = new Vector2Int[]
         {
@@ -23,106 +26,10 @@ namespace Generation
             Vector2Int.left,  // (-1, 0)
             Vector2Int.right  // (1, 0)
         };
-        
-        public class Grid
-        {
-            private List<RoomInstance> rooms = new();
-
-            public RoomInstance GetRoomAtPosition(Vector2Int position)
-            {
-                foreach (var instance in rooms)
-                {
-                    var center = instance.position;
-                    var room = instance.dataRef;
-
-                    var min = new Vector2Int(
-                        center.x - room.Width / 2,
-                        center.y - room.Height / 2
-                    );
-                    var max = new Vector2Int(
-                        center.x + room.Width / 2,
-                        center.y + room.Height / 2
-                    );
-
-                    var inside =
-                        position.x >= min.x &&
-                        position.x <= max.x &&
-                        position.y >= min.y &&
-                        position.y <= max.y;
-
-                    if (inside)
-                        return instance;
-                }
-
-                return null;
-            }
-
-            public bool CheckRoomPossible(RoomData roomToCheck, Vector2Int center)
-            {
-                var newMin = new Vector2Int(
-                    center.x - roomToCheck.Width / 2,
-                    center.y - roomToCheck.Height / 2
-                );
-                var newMax = new Vector2Int(
-                    center.x + roomToCheck.Width / 2,
-                    center.y + roomToCheck.Height / 2
-                );
-
-                foreach (var instance in rooms)
-                {
-                    var otherCenter = instance.position;
-                    var other = instance.dataRef;
-
-                    var otherMin = new Vector2Int(
-                        otherCenter.x - other.Width / 2,
-                        otherCenter.y - other.Height / 2
-                    );
-
-                    var otherMax = new Vector2Int(
-                        otherCenter.x + other.Width / 2,
-                        otherCenter.y + other.Height / 2
-                    );
-
-                    var overlaps =
-                        newMin.x < otherMax.x &&
-                        newMax.x > otherMin.x &&
-                        newMin.y < otherMax.y &&
-                        newMax.y > otherMin.y;
-
-                    if (overlaps)
-                        return false;
-                }
-
-                return true;
-            }
-
-            public RoomInstance PlaceRoom(RoomData room, Vector2Int center)
-            {
-                var roomInstance = new RoomInstance
-                {
-                    position = center,
-                    dataRef = room
-                };
-                rooms.Add(roomInstance);
-                return roomInstance;
-            }
-        }
-        
-        public class RoomInstance : IComparable
-        {
-            public Vector2Int position;
-            public RoomData dataRef;
-                
-            public int CompareTo(object obj)
-            {
-                if (obj is RoomInstance other)
-                    return (position.y.CompareTo(other.position.y) + position.x.CompareTo(other.position.x)) / 2;
-                return 0;
-            }
-        }
 
         public class WorldGenData
         {
+            public string currentSeed;
             public RoomType lastHadRoomType;
             public List<RoomData> hadRooms = new();
             public Vector2Int currentWalkDirection = Vector2Int.zero;
@@ -132,7 +39,11 @@ namespace Generation
             public Grid grid = new();
             public int walkDirRepeated = 0;
 
-            public WorldGenData(List<AreaData> areaData) => backlog = new List<AreaData>(areaData);
+            public WorldGenData(List<AreaData> areaData, string seed)
+            {
+                currentSeed = seed;
+                backlog = new List<AreaData>(areaData);
+            }
 
             public void AddToHadRooms(RoomData foundRoom, int roomRepetitionAllowance)
             {
@@ -142,44 +53,63 @@ namespace Generation
             }
         }
 
-        public Grid Generate(string seed)
+        public static YieldInstruction GetWaitTime() => new WaitForSeconds(0.1f);
+        
+        public void SetOwner(MonoBehaviour owner) => this.owner = owner;
+
+        public class GenerationResult
+        {
+            public Grid grid;
+        }
+        public IEnumerator Generate(string seed, GenerationResult result, Action onFinish)
         {
             currentSeed = seed;
-            var genData = new WorldGenData(areaData);
+            var genData = new WorldGenData(areaData, seed);
 
-            WalkthroughAreas(ref genData, seed);
+            Debug.Log("Starting generator");
+            yield return owner.StartCoroutine(WalkthroughAreas(genData));
 
             // TODO spawn bossroom
             
-            return genData.grid;
+            result.grid = genData.grid;
+            
+            onFinish.Invoke();
         }
 
-        private void WalkthroughAreas(ref WorldGenData genData, string seed)
+        private IEnumerator WalkthroughAreas(WorldGenData genData)
         {
             while (genData.backlog.Count > 0)
             {
-                var foundIndex = RNG.RandomRange(0, genData.backlog.Count, seed);
-                seed = RNG.MutateNext(seed);
+                Debug.Log($"Walking through area backlog, current count: {genData.backlog.Count}");
+                var foundIndex = RNG.RandomRange(0, genData.backlog.Count, genData.currentSeed);
+                genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                 
-                var pickedArea = genData.backlog[foundIndex].GetAreaGenData(seed);
-                seed = RNG.MutateNext(seed);
+                var pickedArea = genData.backlog[foundIndex].GetAreaGenData(genData.currentSeed);
+                genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                 
                 genData.backlog.RemoveAt(foundIndex);
-                WalkthroughArea(ref genData, ref pickedArea, ref seed);
+                yield return owner.StartCoroutine(WalkthroughArea(genData, pickedArea));
                 genData.hadAreas.Add(pickedArea);
+                
+                yield return GetWaitTime();
             }
         }
 
-        private void WalkthroughArea(ref WorldGenData genData, ref AreaGenData pickedArea, ref string seed)
+        private IEnumerator WalkthroughArea(WorldGenData genData, AreaGenData pickedArea)
         {
             while (pickedArea.Size > 0)
             {
+                Debug.Log($"Walking through area, current size left: {pickedArea.Size}");
                 var foundRoom = genData.grid.GetRoomAtPosition(genData.currentPosition);
 
                 if (foundRoom == null)
                 {
-                    foundRoom = AddRoom(ref genData, ref pickedArea, ref seed);
-                    seed = RNG.MutateNext(seed);
+                    Debug.Log("Current walk position empty, trying to add room");
+                    var result = new AddRoomResult();
+                    yield return owner.StartCoroutine(AddRoom(genData, pickedArea, result));
+                    Debug.Log("Room added");
+                    foundRoom = result.instance;
+                    genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                 }
                 genData.currentPosition = foundRoom.position;
                 
@@ -188,16 +118,18 @@ namespace Generation
                 if (pickedArea.Size <= 0)
                     break;
                 
-                Walk(ref genData, foundRoom, ref seed);
+                Walk(genData, foundRoom);
+                
+                yield return GetWaitTime();
             }
         }
 
-        private void Walk(ref WorldGenData genData, RoomInstance currentRoom, ref string seed)
+        private void Walk(WorldGenData genData, RoomInstance currentRoom)
         {
             while (true)
             {
-                var index = RNG.RandomRange(0, CardinalDirections.Length, seed);
-                seed = RNG.MutateNext(seed);
+                var index = RNG.RandomRange(0, CardinalDirections.Length, genData.currentSeed);
+                genData.currentSeed = RNG.MutateNext(genData.currentSeed);
 
                 if (CardinalDirections[index] == genData.currentWalkDirection)
                     genData.walkDirRepeated++;
@@ -217,40 +149,71 @@ namespace Generation
             );
         }
 
-        private RoomInstance AddRoom(ref WorldGenData genData, ref AreaGenData pickedArea, ref string seed)
+        private class AddRoomResult
         {
-            var pickedTypeList = pickedArea.PickTypeList(ref genData, ref seed);
+            public RoomInstance instance = null;
+        }
+        private IEnumerator AddRoom(WorldGenData genData, AreaGenData pickedArea, AddRoomResult result)
+        {
+            var pickedTypeList = pickedArea.PickTypeList(genData);
             pickedTypeList.OnPicked(pickedArea);
-            seed = RNG.MutateNext(seed);
+            genData.currentSeed = RNG.MutateNext(genData.currentSeed);
 
-            RoomData foundRoom;
-            Vector2Int center;
-            while (true)
+            GetRoomResult getRoomResult = new();
+            yield return owner.StartCoroutine(TryGetRoom(genData, pickedTypeList, pickedArea, getRoomResult));
+
+            if (getRoomResult.foundRoom == null)
             {
-                foundRoom = pickedTypeList.TryGetRoom(
-                    RNG.RandomRange(pickedTypeList.smallestRoomSize, pickedArea.Size, seed), 
-                    ref seed,
-                    genData.hadRooms.ToArray());
-                
-                // TODO, foundRoom is null due to there being no rooms small enough to fill the needed area size
-                // TODO add a fallback for this
-                
-                center = genData.currentPosition + new Vector2Int(
-                    genData.currentWalkDirection.x * (foundRoom.Width / 2),
-                    genData.currentWalkDirection.y * (foundRoom.Height / 2)
-                );
-                if (genData.grid.CheckRoomPossible(foundRoom, center))
-                    break;
+                result.instance = null;
+                yield break;
             }
             
-            var placedRoom = genData.grid.PlaceRoom(foundRoom, center);
+            var placedRoom = genData.grid.PlaceRoom(getRoomResult.foundRoom, getRoomResult.center.Value);
 
-            genData.AddToHadRooms(foundRoom, roomRepetitionAllowance);
+            genData.AddToHadRooms(getRoomResult.foundRoom, roomRepetitionAllowance);
             
-            pickedArea.Size -= foundRoom.Size;
+            pickedArea.Size -= getRoomResult.foundRoom.Size;
             genData.lastHadRoomType = pickedTypeList.roomType; // TODO: make allowance unique per type per area?
 
-            return placedRoom;
+            result.instance = placedRoom;
+        }
+
+        private class GetRoomResult
+        {
+            public RoomData foundRoom = null;
+            public Vector2Int? center = null;
+        }
+        private IEnumerator TryGetRoom(WorldGenData genData, RoomTypeDataList pickedTypeList, AreaGenData pickedArea,
+            GetRoomResult result)
+        {
+            var tries = 0;
+            const int maxTries = 5;
+            while (true)
+            {
+                result.foundRoom = pickedTypeList.TryGetRoom(genData,
+                    RNG.RandomRange(pickedTypeList.smallestRoomSize, pickedArea.Size, genData.currentSeed), 
+                    genData.hadRooms.ToArray());
+
+                if (result.foundRoom == null) // TryGetRoom failed
+                {
+                    if (tries > maxTries)
+                    {
+                        Debug.Log($"Need room:\nsize between: {pickedTypeList.smallestRoomSize}, {pickedArea.Size}\nType:{pickedTypeList.roomType} Area:{pickedArea.AreaType}");
+                        break;
+                    }
+                    genData.currentSeed = RNG.MutateNext(genData.currentSeed);
+                    tries++;
+                    continue;
+                }
+                
+                result.center = genData.currentPosition + new Vector2Int(
+                    genData.currentWalkDirection.x * (result.foundRoom.Width / 2),
+                    genData.currentWalkDirection.y * (result.foundRoom.Height / 2)
+                );
+                if (genData.grid.CheckRoomPossible(result.foundRoom, result.center.Value))
+                    break;
+                yield return GetWaitTime();
+            }
         }
     }
 }

@@ -11,6 +11,8 @@ namespace Generation
         [SerializeField]
         private WorldGenerator worldGenerator;
 
+        private Coroutine routine;
+
         #if UNITY_EDITOR
         [Button]
         public void GenerateMainSeed()
@@ -23,7 +25,11 @@ namespace Generation
 
         public void GenerateWorld()
         {
-            worldGenerator.Generate(mainSeed);
+            if (routine != null)
+                return;
+            worldGenerator.SetOwner(this);
+            var result = new WorldGenerator.GenerationResult();
+            routine = StartCoroutine(worldGenerator.Generate(mainSeed, result, () => routine = null));
         }
     }
 }

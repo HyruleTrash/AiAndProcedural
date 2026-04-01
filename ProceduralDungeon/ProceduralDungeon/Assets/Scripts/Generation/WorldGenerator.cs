@@ -18,7 +18,8 @@ namespace Generation
         private int walkDirectionRepetitionAllowance = 2;
 
         private MonoBehaviour owner;
-        
+        private Action<GenerationResult> onUpdate;
+
         public static readonly Vector2Int[] CardinalDirections = new Vector2Int[]
         {
             Vector2Int.up,    // (0, 1)
@@ -52,17 +53,20 @@ namespace Generation
                     hadRooms.RemoveRange(hadRooms.Count - roomRepetitionAllowance, hadRooms.Count);
             }
         }
-
-        public static YieldInstruction GetWaitTime() => new WaitForSeconds(0.1f);  //null;//
         
+        public static float WaitTime;
+        public static YieldInstruction GetWaitTime() => WaitTime <= 0f ? null : new WaitForSeconds(WaitTime);
         public void SetOwner(MonoBehaviour owner) => this.owner = owner;
 
         public class GenerationResult
         {
             public Grid grid;
+            public Vector2Int currentPosition;
         }
-        public IEnumerator Generate(string seed, GenerationResult result, Action onFinish)
+        public IEnumerator Generate(string seed, GenerationResult result, Action onFinish,
+            Action<GenerationResult> onUpdate)
         {
+            this.onUpdate = onUpdate;
             currentSeed = seed;
             var genData = new WorldGenData(areaData, seed);
 
@@ -72,6 +76,7 @@ namespace Generation
             // TODO spawn bossroom
             
             result.grid = genData.grid;
+            result.currentPosition = Vector2Int.zero;
             
             onFinish.Invoke();
         }
@@ -161,6 +166,8 @@ namespace Generation
             
             Debug.Log($"Walking from {genData.currentPosition} to {newPos}");
             genData.currentPosition = newPos;
+            
+            onUpdate.Invoke(new GenerationResult{grid = genData.grid, currentPosition = genData.currentPosition});
         }
 
         private class AddRoomResult
@@ -191,6 +198,7 @@ namespace Generation
             genData.lastHadRoomType = pickedTypeList.roomType; // TODO: make allowance unique per type per area?
 
             result.instance = placedRoom;
+            onUpdate.Invoke(new GenerationResult{grid = genData.grid, currentPosition = genData.currentPosition});
         }
 
         private class GetRoomResult
@@ -205,6 +213,7 @@ namespace Generation
             var tries = 0;
             const int maxTries = 64;
             #endif
+            
             while (true)
             {
                 if (pickedTypeList.smallestRoomSize > pickedArea.Size)

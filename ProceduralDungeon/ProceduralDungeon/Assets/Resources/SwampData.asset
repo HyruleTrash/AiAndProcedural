@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: SwampData
   m_EditorClassIdentifier: Assembly-CSharp::Generation.AreaData
   areaType: 0
-  minMaxSize: {x: 80, y: 160}
+  minMaxSize: {x: 128, y: 1280}
   roomTypes:
-  - {fileID: 11400000, guid: d0006dde3a2b5d04ba64ddc05522460b, type: 2}
+  - {fileID: 11400000, guid: 5afb1a0030b2b5f4b91d5bf2e8a380e2, type: 2}
   - {fileID: 11400000, guid: 164a276ff52e9324fb5dd0ad76b19b6f, type: 2}
   - {fileID: 11400000, guid: 486adc6db37df034a9197d24688610a6, type: 2}

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Generation
 {
@@ -25,27 +28,44 @@ namespace Generation
         {
             RoomTypeDataList foundTypeList;
             var indexPool = new List<int>();
+            const int resolution = 100;
 
-            for (var i = 0; i < roomTypes.Count; i++) // TODO pool creation from weight can be turned into a interface abstract method
+            var guaranteedFound = false;
+
+            for (var i = 0; i < roomTypes.Count; i++)
             {
-                var list = roomTypes[i];
-                var counter = 0f;
-                while (true)
+                if (!Mathf.Approximately(roomTypes[i].Weight, 1f)) continue;
+                indexPool.Add(i);
+                guaranteedFound = true;
+            }
+
+            if (!guaranteedFound)
+            {
+                for (var i = 0; i < roomTypes.Count; i++)
                 {
-                    indexPool.Add(i);
-                    counter += list.Weight;
-                    if (counter >= 1f)
-                        break;
+                    var count = Mathf.RoundToInt(roomTypes[i].Weight * resolution);
+
+                    for (var j = 0; j < count; j++)
+                        indexPool.Add(i);
                 }
             }
 
+            if (indexPool.Count == 0)
+                throw new Exception("indexPool is empty");
+            
+            if (genData.lastHadRoomType != null)
+            {
+                var hasValid = indexPool.Any(i => roomTypes[i].roomType != genData.lastHadRoomType.Value);
+                if (!hasValid)
+                    throw new Exception("only non valid room types are left");
+            }
             while (true)
             {
                 var foundIndex = indexPool[RNG.RandomRange(0, indexPool.Count, genData.currentSeed)];
                 genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                 foundTypeList = roomTypes[foundIndex];
                 
-                if (foundTypeList && foundTypeList.roomType != genData.lastHadRoomType) break;
+                if (foundTypeList && (genData.lastHadRoomType == null || foundTypeList.roomType != genData.lastHadRoomType.Value)) break;
             }
             return foundTypeList;
         }

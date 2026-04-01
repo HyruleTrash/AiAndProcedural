@@ -85,5 +85,12 @@ namespace Generation
             var normalized = (double)seed / ulong.MaxValue;
             return (int)(normalized * (max - min)) + min;
         }
+        
+        public static float RandomRange(float min, float max, string randomSeed)
+        {
+            var seed = ParseSeed(randomSeed);
+            var normalized = (double)seed / ulong.MaxValue;
+            return (float)(normalized * (max - min)) + min;
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace Generation
         public class WorldGenData
         {
             public string currentSeed;
-            public RoomType lastHadRoomType;
+            public RoomType? lastHadRoomType;
             public List<RoomData> hadRooms = new();
             public Vector2Int currentWalkDirection = Vector2Int.zero;
             public Vector2Int currentPosition = Vector2Int.zero;
@@ -53,7 +53,7 @@ namespace Generation
             }
         }
 
-        public static YieldInstruction GetWaitTime() => new WaitForSeconds(0.1f);
+        public static YieldInstruction GetWaitTime() => new WaitForSeconds(0.1f);  //null;//
         
         public void SetOwner(MonoBehaviour owner) => this.owner = owner;
 
@@ -184,8 +184,9 @@ namespace Generation
             
             var placedRoom = genData.grid.PlaceRoom(getRoomResult.foundRoom, getRoomResult.center.Value);
 
+            Debug.Log($"Adding room of size: {getRoomResult.foundRoom.Size}");
             genData.AddToHadRooms(getRoomResult.foundRoom, roomRepetitionAllowance);
-            
+
             pickedArea.Size -= getRoomResult.foundRoom.Size;
             genData.lastHadRoomType = pickedTypeList.roomType; // TODO: make allowance unique per type per area?
 

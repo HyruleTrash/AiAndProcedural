@@ -39,13 +39,16 @@ namespace Generation
                 var size = result.grid.GetWorldSize(out Vector2Int offset);
                 
                 var worldGenTex = new Texture2D(size.x, size.y, TextureFormat.RGBA32, false);
+                worldGenTex.filterMode = FilterMode.Point;
+                worldGenTex.wrapMode = TextureWrapMode.Clamp;
+                worldGenTex.anisoLevel = 0;
                 
                 var pixels = result.grid.GetPixels(size, offset);
                 worldGenTex.SetPixels(pixels);
                 worldGenTex.Apply();
                 
                 var rect = new Rect(0, 0, worldGenTex.width, worldGenTex.height);
-                var newSprite = Sprite.Create(worldGenTex, rect, new Vector2(0.5f, 0.5f));
+                var newSprite = Sprite.Create(worldGenTex, rect, new Vector2(0.5f, 0.5f), 32f);
                 
                 tempWorldGenSprite.sprite = newSprite;
             }

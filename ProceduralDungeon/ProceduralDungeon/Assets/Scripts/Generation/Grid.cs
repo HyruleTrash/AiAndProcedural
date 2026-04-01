@@ -144,13 +144,18 @@ namespace Generation
             foreach (var roomInstance in rooms)
             {
                 var roomWidth = roomInstance.dataRef.Width;
-                // var roomHeight = roomInstance.dataRef.Height;
+                var halfW = roomInstance.dataRef.Width / 2;
+                var halfH = roomInstance.dataRef.Height / 2;
                 var roomPixels = roomInstance.dataRef.GetPixels();
                 for (var i = 0; i < roomPixels.Length; i++)
                 {
                     var roomPixel = roomPixels[i];
                     var pixelPositionInRoom = new Vector2Int(i % roomWidth, i / roomWidth); // using room width, and height, translate flat i to vector2
-                    var pixelPositionInWorld = pixelPositionInRoom + roomInstance.position;
+                    
+                    var pixelPositionInWorld = new Vector2Int(
+                        roomInstance.position.x - halfW + pixelPositionInRoom.x,
+                        roomInstance.position.y - halfH + pixelPositionInRoom.y
+                    );
                     var pixelPositionOnTexture = pixelPositionInWorld + offset;
 
                     if (pixelPositionOnTexture.x >= 0 && pixelPositionOnTexture.x < size.x &&

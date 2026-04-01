@@ -28,12 +28,12 @@ namespace Generation
         public float Weight
         {
             get => weight;
-            private set => weight = value;
+            protected set => weight = value;
         }
 
         public RoomTypeDataList Duplicate()
         {
-            var newInstance = CreateInstance<RoomTypeDataList>();
+            var newInstance = ScriptableObject.CreateInstance(GetType()) as RoomTypeDataList;;
             newInstance.roomType = roomType;
             newInstance.weight = weight;
             newInstance.roomData = roomData;
@@ -45,6 +45,8 @@ namespace Generation
         private bool onRoomsChangedRegistered = false;
         private void OnValidate()
         {
+            weight = Mathf.Clamp(weight, 0f, 1f);
+            weight = (float)Math.Round(weight, 2);
             RoomTileLookup.roomDataHasBeenUpdated += OnRoomsChanged;
             onRoomsChangedRegistered = true;
         }
@@ -94,10 +96,7 @@ namespace Generation
             return pool[index];
         }
 
-        public void OnPicked(AreaGenData pickedArea)
-        {
-            // TODO implement areagen mutation logic here
-        }
+        public virtual void OnPicked(AreaGenData pickedArea) {}
 
         private static string RoomDataListToString(List<RoomData> data)
         {

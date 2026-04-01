@@ -93,13 +93,15 @@ namespace Generation
                 
                 yield return GetWaitTime();
             }
+
+            Debug.Log("Done with walking through areas");
         }
 
         private IEnumerator WalkthroughArea(WorldGenData genData, AreaGenData pickedArea)
         {
             while (pickedArea.Size > 0)
             {
-                Debug.Log($"Walking through area, current size left: {pickedArea.Size}");
+                Debug.Log($"Walking through area, current size left: {pickedArea.Size}\nCurrent position is: {genData.currentPosition}");
                 var foundRoom = genData.grid.GetRoomAtPosition(genData.currentPosition);
 
                 if (foundRoom == null)
@@ -107,6 +109,15 @@ namespace Generation
                     Debug.Log("Current walk position empty, trying to add room");
                     var result = new AddRoomResult();
                     yield return owner.StartCoroutine(AddRoom(genData, pickedArea, result));
+
+                    // On addition room fail, check if area is still possible
+                    if (result.instance == null)
+                    {
+                        if (pickedArea.Size <= 0)
+                            break;
+                        continue;
+                    }
+                    
                     Debug.Log("Room added");
                     foundRoom = result.instance;
                     genData.currentSeed = RNG.MutateNext(genData.currentSeed);
@@ -141,12 +152,15 @@ namespace Generation
                 genData.currentWalkDirection = CardinalDirections[index];
                 break;
             }
-            
+
             // Move to edge of room
-            genData.currentPosition += new Vector2Int(
+            var newPos = genData.currentPosition + new Vector2Int(
                 genData.currentWalkDirection.x * (currentRoom.dataRef.Width / 2),
                 genData.currentWalkDirection.y * (currentRoom.dataRef.Height / 2)
             );
+            
+            Debug.Log($"Walking from {genData.currentPosition} to {newPos}");
+            genData.currentPosition = newPos;
         }
 
         private class AddRoomResult
@@ -186,16 +200,26 @@ namespace Generation
         private IEnumerator TryGetRoom(WorldGenData genData, RoomTypeDataList pickedTypeList, AreaGenData pickedArea,
             GetRoomResult result)
         {
+            #if UNITY_EDITOR
             var tries = 0;
-            const int maxTries = 5;
+            const int maxTries = 64;
+            #endif
             while (true)
             {
+                if (pickedTypeList.smallestRoomSize > pickedArea.Size)
+                {
+                    Debug.Log("No rooms exist that can fill area quota");
+                    pickedArea.Size = 0;
+                    break;
+                }
+                
                 result.foundRoom = pickedTypeList.TryGetRoom(genData,
                     RNG.RandomRange(pickedTypeList.smallestRoomSize, pickedArea.Size, genData.currentSeed), 
                     genData.hadRooms.ToArray());
 
                 if (result.foundRoom == null) // TryGetRoom failed
                 {
+                    #if UNITY_EDITOR
                     if (tries > maxTries)
                     {
                         Debug.Log($"Need room:\nsize between: {pickedTypeList.smallestRoomSize}, {pickedArea.Size}\nType:{pickedTypeList.roomType} Area:{pickedArea.AreaType}");
@@ -203,6 +227,7 @@ namespace Generation
                     }
                     genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                     tries++;
+                    #endif
                     continue;
                 }
                 

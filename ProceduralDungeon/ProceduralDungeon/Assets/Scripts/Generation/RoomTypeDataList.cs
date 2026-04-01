@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 #if UNITY_EDITOR
 using Unity.Mathematics;
@@ -36,6 +37,7 @@ namespace Generation
             newInstance.roomType = roomType;
             newInstance.weight = weight;
             newInstance.roomData = roomData;
+            newInstance.smallestRoomSize = smallestRoomSize;
             return newInstance;
         }
 
@@ -60,7 +62,10 @@ namespace Generation
             while (true)
             {
                 if (pool.Count == 0)
+                {
+                    // Debug.Log($"Size requested: {size}\n{RoomDataListToString(roomData)}");
                     return null;
+                }
                 
                 index = RNG.RandomRange(0, pool.Count, usedSeed);
 
@@ -79,6 +84,13 @@ namespace Generation
         public void OnPicked(AreaGenData pickedArea)
         {
             // TODO implement areagen mutation logic here
+        }
+
+        private static string RoomDataListToString(List<RoomData> data)
+        {
+            StringBuilder builder = new();
+            foreach (var room in data) builder.AppendLine(room.ToString());
+            return builder.ToString();
         }
     }
 }

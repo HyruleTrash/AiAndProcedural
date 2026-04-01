@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace Generation
@@ -101,6 +102,18 @@ namespace Generation
             }
             
             return contentPoints.ToArray();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new();
+            builder.AppendLine("room: {\n");
+            builder.AppendLine($"Size: {size}");
+            builder.AppendLine($"Width: {width}");
+            builder.AppendLine($"Height: {height}");
+            builder.AppendLine(layout);
+            builder.AppendLine("}");
+            return builder.ToString();
         }
     }
 }

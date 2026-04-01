@@ -120,5 +120,31 @@ namespace Generation
             builder.AppendLine("}");
             return builder.ToString();
         }
+
+        public Color[] GetPixels()
+        {
+            var pixels = new Color[width * height];
+            var lookupInstance = RoomTileLookup.LookupInstance;
+
+            var offset = 0;
+            for (var i = 0; i < layout.Length; i++)
+            {
+                var c = layout[i];
+
+                if (c == lookupInstance.GetTile("NextLine")?.text)
+                {
+                    offset++;
+                    continue;
+                }
+                
+                foreach (var listInstance in lookupInstance.tiles)
+                {
+                    if (listInstance.tile.text == c)
+                        pixels[i - offset] = listInstance.tile.color;
+                }
+            }
+
+            return pixels;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Generation
@@ -102,6 +103,67 @@ namespace Generation
             };
             rooms.Add(roomInstance);
             return roomInstance;
+        }
+
+        public Vector2Int GetWorldSize(out Vector2Int offset)
+        {
+            var minX = int.MaxValue;
+            var minY = int.MaxValue;
+            var maxX = int.MinValue;
+            var maxY = int.MinValue;
+
+            Debug.Log(rooms.Count);
+            foreach (var roomInstance in rooms)
+            {
+                var halfW = roomInstance.dataRef.Width / 2;
+                var halfH = roomInstance.dataRef.Height / 2;
+
+                var min = new Vector2Int(
+                    roomInstance.position.x - halfW,
+                    roomInstance.position.y - halfH
+                );
+
+                var max = new Vector2Int(
+                    roomInstance.position.x + halfW,
+                    roomInstance.position.y + halfH
+                );
+
+                if (min.x < minX) minX = min.x;
+                if (min.y < minY) minY = min.y;
+                if (max.x > maxX) maxX = max.x;
+                if (max.y > maxY) maxY = max.y;
+            }
+
+            offset = new Vector2Int(-minX, -minY);
+            return new Vector2Int(maxX - minX, maxY - minY);
+        }
+
+        public Color[] GetPixels(Vector2Int size, Vector2Int offset)
+        {
+            var pixels = new Color[size.x * size.y];
+            foreach (var roomInstance in rooms)
+            {
+                var roomWidth = roomInstance.dataRef.Width;
+                // var roomHeight = roomInstance.dataRef.Height;
+                var roomPixels = roomInstance.dataRef.GetPixels();
+                for (var i = 0; i < roomPixels.Length; i++)
+                {
+                    var roomPixel = roomPixels[i];
+                    var pixelPositionInRoom = new Vector2Int(i % roomWidth, i / roomWidth); // using room width, and height, translate flat i to vector2
+                    var pixelPositionInWorld = pixelPositionInRoom + roomInstance.position;
+                    var pixelPositionOnTexture = pixelPositionInWorld + offset;
+
+                    if (pixelPositionOnTexture.x >= 0 && pixelPositionOnTexture.x < size.x &&
+                        pixelPositionOnTexture.y >= 0 && pixelPositionOnTexture.y < size.y)
+                    {
+                        var targetIndex =
+                            pixelPositionOnTexture.y * size.x +
+                            pixelPositionOnTexture.x; // flatten pixelPositionOnTexture
+                        pixels[targetIndex] = roomPixel;
+                    }
+                }
+            }
+            return pixels;
         }
     }
 }

@@ -7,6 +7,8 @@ namespace Generation
     public class GenerationManager : MonoBehaviour
     {
         [SerializeField]
+        private SpriteRenderer tempWorldGenSprite;
+        [SerializeField]
         private string mainSeed;
         [SerializeField]
         private WorldGenerator worldGenerator;
@@ -33,7 +35,19 @@ namespace Generation
             void OnFinish()
             {
                 routine = null;
-                // TODO generate texture
+
+                var size = result.grid.GetWorldSize(out Vector2Int offset);
+                
+                var worldGenTex = new Texture2D(size.x, size.y, TextureFormat.RGBA32, false);
+                
+                var pixels = result.grid.GetPixels(size, offset);
+                worldGenTex.SetPixels(pixels);
+                worldGenTex.Apply();
+                
+                var rect = new Rect(0, 0, worldGenTex.width, worldGenTex.height);
+                var newSprite = Sprite.Create(worldGenTex, rect, new Vector2(0.5f, 0.5f));
+                
+                tempWorldGenSprite.sprite = newSprite;
             }
 
             routine = StartCoroutine(worldGenerator.Generate(mainSeed, result, OnFinish));

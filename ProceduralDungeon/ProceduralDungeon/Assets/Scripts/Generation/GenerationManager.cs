@@ -29,7 +29,14 @@ namespace Generation
                 return;
             worldGenerator.SetOwner(this);
             var result = new WorldGenerator.GenerationResult();
-            routine = StartCoroutine(worldGenerator.Generate(mainSeed, result, () => routine = null));
+
+            void OnFinish()
+            {
+                routine = null;
+                // TODO generate texture
+            }
+
+            routine = StartCoroutine(worldGenerator.Generate(mainSeed, result, OnFinish));
         }
     }
 }

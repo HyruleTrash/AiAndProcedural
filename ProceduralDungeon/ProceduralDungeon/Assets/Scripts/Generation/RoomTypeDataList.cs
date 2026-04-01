@@ -42,7 +42,20 @@ namespace Generation
         }
 
         #if UNITY_EDITOR
+        private bool onRoomsChangedRegistered = false;
         private void OnValidate()
+        {
+            RoomTileLookup.roomDataHasBeenUpdated += OnRoomsChanged;
+            onRoomsChangedRegistered = true;
+        }
+
+        private void OnDestroy()
+        {
+            if (onRoomsChangedRegistered)
+                RoomTileLookup.roomDataHasBeenUpdated -= OnRoomsChanged;
+        }
+
+        private void OnRoomsChanged()
         {
             if (roomData == null)
                 return;

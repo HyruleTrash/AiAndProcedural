@@ -5,11 +5,6 @@ using UnityEngine;
 
 namespace Generation
 {
-    // 1 = wall
-    // 0 = openSpace
-    // n = next line
-    // x = content
-    
     [Serializable]
     public class RoomData
     {
@@ -39,20 +34,22 @@ namespace Generation
             contentPoints = GetContentPoints(layout);
         }
 
-        private static readonly Color Wall = new(1, 1, 1, 1);
-        private static readonly Color Empty = new(0, 0, 0, 1);
-        private static readonly Color Content = new(1, 0, 0, 1);
-
+        /// <summary>
+        /// Translates a texture to a internally used layout text, based on a lookup table singleton
+        /// </summary>
         private string GetStringLayout(Texture2D texture)
         {
-            var result = new System.Text.StringBuilder();
-            var pixels = texture.GetPixels();
+            var result = new StringBuilder();
+            var pixels = texture.GetPixels32();
 
             const float tolerance = 0.1f;
             bool CheckColor(Color a, Color b) => 
                 Math.Abs(a.r - b.r) < tolerance && 
                 Math.Abs(a.g - b.g) < tolerance && 
-                Math.Abs(a.b - b.b) < tolerance;
+                Math.Abs(a.b - b.b) < tolerance && 
+                Math.Abs(a.a - b.a) < tolerance;
+            
+            var lookupInstance = RoomTileLookup.LookupInstance;
             
             for (var y = 0; y < texture.height; y++)
             {
@@ -60,17 +57,25 @@ namespace Generation
                 {
                     var pixel = pixels[y * texture.width + x];
 
-                    if (CheckColor(pixel, Wall)) result.Append("1");
-                    else if (CheckColor(pixel, Empty)) result.Append("0");
-                    else if (CheckColor(pixel, Content)) result.Append("x");
-                    else Debug.Log($"Unexpected color: {pixel}");
+                    var found = false;
+                    foreach (var lookupInstanceTile in lookupInstance.tiles)
+                    {
+                        if (!CheckColor(pixel, lookupInstanceTile.tile.color))
+                            continue;
+                        result.Append(lookupInstanceTile.tile.text);
+                        found = true;
+                        break;
+                    }
+                    if (!found) 
+                        Debug.Log($"Unexpected color: {pixel}");
                 }
-                if (y < texture.height - 1) result.Append("n");
+                if (y < texture.height - 1) result.Append(lookupInstance.GetTile("NextLine")?.text);
             }
     
             return result.ToString();
         }
 
+        // TODO delegate this logic to the lookup table to make it more abstract
         private static Vector2[] GetContentPoints(string layout)
         {
             var contentPoints = new List<Vector2>();

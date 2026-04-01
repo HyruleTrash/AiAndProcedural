@@ -28,19 +28,23 @@ MonoBehaviour:
       - points:
         - {x: 3, y: 7}
         - {x: 4, y: 7}
+        roomPoint: {x: 3, y: 9}
     - key: {x: 0, y: -1}
       value:
       - points:
         - {x: 3, y: 0}
         - {x: 4, y: 0}
+        roomPoint: {x: 3, y: 0}
     - key: {x: -1, y: 0}
       value:
       - points:
         - {x: 0, y: 3}
         - {x: 0, y: 4}
+        roomPoint: {x: 0, y: 3}
     - key: {x: 1, y: 0}
       value:
       - points:
         - {x: 7, y: 3}
         - {x: 7, y: 4}
+        roomPoint: {x: 9, y: 3}
   smallestRoomSize: 64

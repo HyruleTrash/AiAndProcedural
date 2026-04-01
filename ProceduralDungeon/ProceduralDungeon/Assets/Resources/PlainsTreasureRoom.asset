@@ -40,33 +40,41 @@ MonoBehaviour:
       - points:
         - {x: 3, y: 15}
         - {x: 4, y: 15}
+        roomPoint: {x: 3, y: 17}
       - points:
         - {x: 11, y: 15}
         - {x: 12, y: 15}
+        roomPoint: {x: 11, y: 17}
     - key: {x: 0, y: -1}
       value:
       - points:
         - {x: 3, y: 0}
         - {x: 4, y: 0}
+        roomPoint: {x: 3, y: 0}
       - points:
         - {x: 11, y: 0}
         - {x: 12, y: 0}
+        roomPoint: {x: 11, y: 0}
     - key: {x: -1, y: 0}
       value:
       - points:
         - {x: 0, y: 3}
         - {x: 0, y: 4}
+        roomPoint: {x: 0, y: 3}
       - points:
         - {x: 0, y: 11}
         - {x: 0, y: 12}
+        roomPoint: {x: 0, y: 11}
     - key: {x: 1, y: 0}
       value:
       - points:
         - {x: 15, y: 3}
         - {x: 15, y: 4}
+        roomPoint: {x: 17, y: 3}
       - points:
         - {x: 15, y: 11}
         - {x: 15, y: 12}
+        roomPoint: {x: 17, y: 11}
   - layout: 111DD1111000000110000001D000000DD000000D10x0000110000001111DD111
     size: 64
     width: 8
@@ -79,21 +87,25 @@ MonoBehaviour:
       - points:
         - {x: 3, y: 7}
         - {x: 4, y: 7}
+        roomPoint: {x: 3, y: 9}
     - key: {x: 0, y: -1}
       value:
       - points:
         - {x: 3, y: 0}
         - {x: 4, y: 0}
+        roomPoint: {x: 3, y: 0}
     - key: {x: -1, y: 0}
       value:
       - points:
         - {x: 0, y: 3}
         - {x: 0, y: 4}
+        roomPoint: {x: 0, y: 3}
     - key: {x: 1, y: 0}
       value:
       - points:
         - {x: 7, y: 3}
         - {x: 7, y: 4}
+        roomPoint: {x: 9, y: 3}
   - layout: 111DD1111000000110000001D000000DD000000D10000x0110000001111DD111
     size: 64
     width: 8
@@ -106,21 +118,25 @@ MonoBehaviour:
       - points:
         - {x: 3, y: 7}
         - {x: 4, y: 7}
+        roomPoint: {x: 3, y: 9}
     - key: {x: 0, y: -1}
       value:
       - points:
         - {x: 3, y: 0}
         - {x: 4, y: 0}
+        roomPoint: {x: 3, y: 0}
     - key: {x: -1, y: 0}
       value:
       - points:
         - {x: 0, y: 3}
         - {x: 0, y: 4}
+        roomPoint: {x: 0, y: 3}
     - key: {x: 1, y: 0}
       value:
       - points:
         - {x: 7, y: 3}
         - {x: 7, y: 4}
+        roomPoint: {x: 9, y: 3}
   - layout: 111DD1111000000110x00001D000000DD000000D1000000110000001111DD111
     size: 64
     width: 8
@@ -133,19 +149,23 @@ MonoBehaviour:
       - points:
         - {x: 3, y: 7}
         - {x: 4, y: 7}
+        roomPoint: {x: 3, y: 9}
     - key: {x: 0, y: -1}
       value:
       - points:
         - {x: 3, y: 0}
         - {x: 4, y: 0}
+        roomPoint: {x: 3, y: 0}
     - key: {x: -1, y: 0}
       value:
       - points:
         - {x: 0, y: 3}
         - {x: 0, y: 4}
+        roomPoint: {x: 0, y: 3}
     - key: {x: 1, y: 0}
       value:
       - points:
         - {x: 7, y: 3}
         - {x: 7, y: 4}
+        roomPoint: {x: 9, y: 3}
   smallestRoomSize: 64

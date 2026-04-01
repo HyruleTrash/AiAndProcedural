@@ -157,11 +157,11 @@ namespace Generation
                 break;
             }
 
-            // Move to edge of room
-            var newPos = genData.currentPosition + new Vector2Int(
-                genData.currentWalkDirection.x * (currentRoom.dataRef.Width / 2),
-                genData.currentWalkDirection.y * (currentRoom.dataRef.Height / 2)
-            );
+            // Move to doorway of room
+            var doorways = currentRoom.dataRef.DoorPoints.First(dir => dir.key == genData.currentWalkDirection).value;
+            var doorway = doorways[RNG.RandomRange(0, doorways.Count, genData.currentSeed)];
+            var newPos = genData.currentPosition + doorway.roomPoint;
+            // TODO remove doorway tiles and turn them into empty tiles
             
             Debug.Log($"Walking from {genData.currentPosition} to {newPos}");
             genData.currentPosition = newPos;
@@ -240,6 +240,7 @@ namespace Generation
                     continue;
                 }
                 
+                // TODO offset based on possible doorways in opposite of movementDirection
                 result.center = genData.currentPosition + new Vector2Int(
                     genData.currentWalkDirection.x * (result.foundRoom.Width / 2),
                     genData.currentWalkDirection.y * (result.foundRoom.Height / 2)

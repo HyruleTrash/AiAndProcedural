@@ -29,6 +29,7 @@ namespace Generation
 
         [SerializeField]
         private List<DoorPointListItem> doorPoints;
+        public List<DoorPointListItem> DoorPoints { get => doorPoints; private set => doorPoints = value; }
 
         [Serializable]
         public struct DoorPointListItem
@@ -41,6 +42,7 @@ namespace Generation
         public class DoorPointGroup
         {
             public List<Vector2Int> points = new();
+            public Vector2Int roomPoint;
         }
 
         public RoomData(Texture2D texture)
@@ -196,6 +198,14 @@ namespace Generation
                 smallestDot = dot;
                 foundDir = cardinalDirection;
             }
+            
+            // save point where next room could be generated
+            // abusing the fact that we use cardinal 4 way directions, we can fill in the middle point of the 0 value of the direction
+            // (so 1,0 is right, meaning y = 0, meaning we can replace y with doorway center)
+            // I add + 1 to width and height, to offset it away from the room and so avoiding the room bounding box
+            doorPointGroup.roomPoint = new Vector2Int(foundDir.x * (width + 1), foundDir.y * (height + 1));
+            if (doorPointGroup.roomPoint.x < 1) doorPointGroup.roomPoint.x = (int)Mathf.Floor(average.x);
+            if (doorPointGroup.roomPoint.y < 1) doorPointGroup.roomPoint.y = (int)Mathf.Floor(average.y);
 
             return foundDir;
         }

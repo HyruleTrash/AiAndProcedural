@@ -5,19 +5,6 @@ using UnityEngine;
 
 namespace Generation
 {
-    public class RoomInstance : IComparable
-    {
-        public Vector2Int position;
-        public RoomData dataRef;
-                
-        public int CompareTo(object obj)
-        {
-            if (obj is RoomInstance other)
-                return (position.y.CompareTo(other.position.y) + position.x.CompareTo(other.position.x)) / 2;
-            return 0;
-        }
-    }
-    
     /// <summary>
     /// Used contain room instances, upon world generation
     /// </summary>
@@ -144,7 +131,7 @@ namespace Generation
                 var roomWidth = roomInstance.dataRef.Width;
                 var halfW = roomInstance.dataRef.Width / 2;
                 var halfH = roomInstance.dataRef.Height / 2;
-                var roomPixels = roomInstance.dataRef.GetPixels();
+                var roomPixels = roomInstance.GetPixels();
                 for (var i = 0; i < roomPixels.Length; i++)
                 {
                     var roomPixel = roomPixels[i];
@@ -167,6 +154,14 @@ namespace Generation
                 }
             }
             return pixels;
+        }
+
+        public void RemoveUnusedDoorways()
+        {
+            foreach (var roomInstance in rooms)
+            {
+                roomInstance.MutateRemoveLeftDoorPixels();
+            }
         }
     }
 }

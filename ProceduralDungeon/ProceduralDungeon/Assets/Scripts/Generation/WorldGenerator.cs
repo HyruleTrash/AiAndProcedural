@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -73,6 +74,8 @@ namespace Generation
             Debug.Log("Starting generator");
             yield return owner.StartCoroutine(WalkthroughAreas(genData));
 
+            genData.grid.RemoveUnusedDoorways();
+            
             // TODO spawn bossroom
             
             result.grid = genData.grid;
@@ -127,8 +130,6 @@ namespace Generation
                     foundRoom = result.instance;
                     genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                 }
-                
-                // TODO add doorway to last been to existing room
 
                 if (pickedArea.Size <= 0)
                     break;
@@ -161,7 +162,7 @@ namespace Generation
             var doorways = currentRoom.dataRef.DoorPoints.First(dir => dir.key == genData.currentWalkDirection).value;
             var doorway = doorways[RNG.RandomRange(0, doorways.Count, genData.currentSeed)];
             var newPos = currentRoom.position + doorway.roomPoint + genData.currentWalkDirection;
-            // TODO remove doorway tiles and turn them into empty tiles
+            currentRoom.RemoveDoorFromLayout(doorway);
             genData.currentSeed = RNG.MutateNext(genData.currentSeed);
             
             Debug.Log($"Walking from {genData.currentPosition} to {newPos}");
@@ -190,6 +191,8 @@ namespace Generation
             }
             
             var placedRoom = genData.grid.PlaceRoom(getRoomResult.foundRoom, getRoomResult.center.Value);
+            if (getRoomResult.doorGroup != null)
+                placedRoom.RemoveDoorFromLayout(getRoomResult.doorGroup);
 
             Debug.Log($"Adding room of size: {getRoomResult.foundRoom.Size}");
             genData.AddToHadRooms(getRoomResult.foundRoom, roomRepetitionAllowance);
@@ -205,6 +208,7 @@ namespace Generation
         {
             public RoomData foundRoom = null;
             public Vector2Int? center = null;
+            public RoomData.DoorPointGroup doorGroup = null;
         }
         private IEnumerator TryGetRoom(WorldGenData genData, RoomTypeDataList pickedTypeList, AreaGenData pickedArea,
             GetRoomResult result)
@@ -253,8 +257,8 @@ namespace Generation
                 {
                     // move away based on doorway
                     var doorways = result.foundRoom.DoorPoints.First(dir => dir.key == -genData.currentWalkDirection).value;
-                    var doorway = doorways[RNG.RandomRange(0, doorways.Count, genData.currentSeed)];
-                    result.center = genData.currentPosition - doorway.roomPoint;
+                    result.doorGroup = doorways[RNG.RandomRange(0, doorways.Count, genData.currentSeed)];
+                    result.center = genData.currentPosition - result.doorGroup.roomPoint;
                     genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                 }
                 onUpdate.Invoke(new GenerationResult{grid = genData.grid, currentPosition = result.center.Value});

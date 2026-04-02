@@ -12,6 +12,7 @@ namespace Generation
     {
         [SerializeField]
         private string layout;
+        public string Layout { get => layout; private set => layout = value; }
         
         [SerializeField] 
         private int size;
@@ -224,7 +225,7 @@ namespace Generation
             return builder.ToString();
         }
 
-        public Color[] GetPixels()
+        public static Color[] GetPixels(string layout, int width, int height)
         {
             var pixels = new Color[width * height];
             var lookupInstance = RoomTileLookup.LookupInstance;

@@ -32,14 +32,13 @@ namespace Generation
                 var center = instance.position;
                 var room = instance.dataRef;
 
-                // limit bounding box to allow spawning of rooms at edge
                 var min = new Vector2(
-                    center.x - room.Width / 2f + 0.25f,
-                    center.y - room.Height / 2f + 0.25f
+                    center.x - room.Width / 2f,
+                    center.y - room.Height / 2f
                 );
                 var max = new Vector2(
-                    center.x + room.Width / 2f - 0.25f,
-                    center.y + room.Height / 2f - 0.25f
+                    center.x + room.Width / 2f,
+                    center.y + room.Height / 2f
                 );
 
                 var inside =
@@ -112,7 +111,6 @@ namespace Generation
             var maxX = int.MinValue;
             var maxY = int.MinValue;
 
-            Debug.Log(rooms.Count);
             foreach (var roomInstance in rooms)
             {
                 var halfW = roomInstance.dataRef.Width / 2;

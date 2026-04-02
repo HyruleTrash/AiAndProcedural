@@ -126,7 +126,6 @@ namespace Generation
                     foundRoom = result.instance;
                     genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                 }
-                genData.currentPosition = foundRoom.position;
                 
                 // TODO add doorway to last been to existing room
 
@@ -160,8 +159,9 @@ namespace Generation
             // Move to doorway of room
             var doorways = currentRoom.dataRef.DoorPoints.First(dir => dir.key == genData.currentWalkDirection).value;
             var doorway = doorways[RNG.RandomRange(0, doorways.Count, genData.currentSeed)];
-            var newPos = genData.currentPosition + doorway.roomPoint;
+            var newPos = currentRoom.position + doorway.roomPoint + genData.currentWalkDirection;
             // TODO remove doorway tiles and turn them into empty tiles
+            genData.currentSeed = RNG.MutateNext(genData.currentSeed);
             
             Debug.Log($"Walking from {genData.currentPosition} to {newPos}");
             genData.currentPosition = newPos;
@@ -239,12 +239,25 @@ namespace Generation
                     #endif
                     continue;
                 }
+
+                if (genData.currentWalkDirection == Vector2.zero)
+                {
+                    result.center = genData.currentPosition + new Vector2Int(
+                        genData.currentWalkDirection.x * (result.foundRoom.Width / 2),
+                        genData.currentWalkDirection.y * (result.foundRoom.Height / 2)
+                    );
+                }
+                else
+                {
+                    var doorways = result.foundRoom.DoorPoints.First(dir => dir.key == -genData.currentWalkDirection).value;
+                    var doorway = doorways[RNG.RandomRange(0, doorways.Count, genData.currentSeed)];
+                    result.center = genData.currentPosition - doorway.roomPoint;
+                    genData.currentSeed = RNG.MutateNext(genData.currentSeed);
+
+                    Debug.Log("a");
+                }
+                onUpdate.Invoke(new GenerationResult{grid = genData.grid, currentPosition = result.center.Value});
                 
-                // TODO offset based on possible doorways in opposite of movementDirection
-                result.center = genData.currentPosition + new Vector2Int(
-                    genData.currentWalkDirection.x * (result.foundRoom.Width / 2),
-                    genData.currentWalkDirection.y * (result.foundRoom.Height / 2)
-                );
                 if (genData.grid.CheckRoomPossible(result.foundRoom, result.center.Value))
                     break;
                 yield return GetWaitTime();

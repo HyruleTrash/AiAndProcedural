@@ -50,6 +50,7 @@ namespace Generation
             WorldGenerator.WaitTime = waitTime;
         }
 
+        [Button]
         public void GenerateWorld()
         {
             if (routine != null)

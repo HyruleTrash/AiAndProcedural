@@ -40,11 +40,13 @@ namespace Generation
             public List<AreaGenData> hadAreas = new();
             public Grid grid = new();
             public int walkDirRepeated = 0;
+            public readonly float minDistanceBossRoom;
 
-            public WorldGenData(List<AreaData> areaData, string seed)
+            public WorldGenData(List<AreaData> areaData, string seed, float minDistanceBossRoom)
             {
                 currentSeed = seed;
                 backlog = new List<AreaData>(areaData);
+                this.minDistanceBossRoom = minDistanceBossRoom;
             }
 
             public void AddToHadRooms(RoomData foundRoom, int roomRepetitionAllowance)
@@ -65,21 +67,33 @@ namespace Generation
             public Vector2Int currentPosition;
         }
         public IEnumerator Generate(string seed, GenerationResult result, Action onFinish,
-            Action<GenerationResult> onUpdate)
+            Action<GenerationResult> onUpdate, float minDistanceBossRoom)
         {
             this.onUpdate = onUpdate;
             currentSeed = seed;
-            var genData = new WorldGenData(areaData, seed);
+            var genData = new WorldGenData(areaData, seed, minDistanceBossRoom);
 
             Debug.Log("Starting generator");
-            yield return owner.StartCoroutine(WalkthroughAreas(genData));
 
             var addBossResult = new AddRoomResult();
             while (true)
             {
-                yield return owner.StartCoroutine(AddRoom(genData, genData.hadAreas.Last(), addBossResult, true));
-                if (addBossResult.instance != null)
+                yield return owner.StartCoroutine(WalkthroughAreas(genData));
+
+                while (true)
+                {
+                    yield return owner.StartCoroutine(AddRoom(genData, genData.hadAreas.Last(), addBossResult, true));
+                    if (addBossResult.instance != null)
+                        break;
+                }
+                
+                // Any end analyze should go here
+                if (Vector2.Distance(genData.currentPosition, Vector2.zero) >= minDistanceBossRoom)
                     break;
+
+                currentSeed = RNG.MutateNext(seed);
+                genData = new WorldGenData(areaData, currentSeed, minDistanceBossRoom);
+                addBossResult = new();
             }
             
             genData.grid.RemoveUnusedDoorways();
@@ -141,6 +155,8 @@ namespace Generation
                     break;
                 
                 Walk(genData, foundRoom);
+
+                Debug.Log("AAAAAAAAAAA");
                 
                 yield return GetWaitTime();
             }
@@ -213,18 +229,21 @@ namespace Generation
         }
 
         /// <summary>
-        /// Uses duplicated code to pull from the endRooms list
+        /// Uses duplicated code to pull from the endRooms list, and spawn a boss room somewhere adjacent
         /// </summary>
         private IEnumerator TryGetBossRoom(GetRoomResult result, AreaGenData pickedArea, WorldGenData genData)
         {
             var tries = 0;
             const int maxTries = 16;
+            const int lastTry = 64;
             var pool = pickedArea.EndRooms;
             if (pool.Count <= 0)
                 yield break;
-            
+
+            List<GetRoomResult> fallbacks = new();
             while (true)
             {
+                result = new();
                 result.foundRoom = pool[RNG.RandomRange(0, pool.Count, genData.currentSeed)];
                 genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                 
@@ -235,20 +254,28 @@ namespace Generation
                 genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                 
                 onUpdate.Invoke(new GenerationResult{grid = genData.grid, currentPosition = result.center.Value});
-                
-                if (genData.grid.CheckRoomPossible(result.foundRoom, result.center.Value, out var hit))
-                    break;
 
-                if (tries >= maxTries) Walk(genData, hit);
+                if (genData.grid.CheckRoomPossible(result.foundRoom, result.center.Value, out var hit))
+                {
+                    if (Vector2.Distance(result.center.Value, Vector2.zero) >= genData.minDistanceBossRoom)
+                        break;
+                    fallbacks.Add(result);
+                    break;
+                }
+
+                if (tries >= maxTries && hit != null) Walk(genData, hit);
+
+                if (tries > lastTry)
+                {
+                    result = fallbacks.Last();
+                    genData.currentPosition = result.center.Value;
+                    break;
+                }
                 
                 genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                 tries++;
-                // Debug.Log(tries);
                 yield return GetWaitTime();
             }
-            
-            if (result.foundRoom != null)
-                Debug.Log("YATTAAA");
         }
 
         private IEnumerator TryGetTypedRoom(GetRoomResult getRoomResult, AreaGenData pickedArea, WorldGenData genData, RoomTypeDataList pickedTypeList)

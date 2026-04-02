@@ -12,6 +12,8 @@ namespace Generation
         private SpriteRenderer tempWorldGenSprite;
         [SerializeField]
         private string mainSeed;
+        [SerializeField] 
+        private float minDistanceBossRoom;
         [SerializeField]
         private WorldGenerator worldGenerator;
         [SerializeField]
@@ -21,7 +23,7 @@ namespace Generation
 
         private Coroutine routine;
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         [Button]
         public void GenerateMainSeed()
         {
@@ -66,7 +68,7 @@ namespace Generation
                 GenerateDebugTexture(result);
             }
 
-            routine = StartCoroutine(worldGenerator.Generate(mainSeed, result, OnFinish, GenerateDebugTexture));
+            routine = StartCoroutine(worldGenerator.Generate(mainSeed, result, OnFinish, GenerateDebugTexture, minDistanceBossRoom));
         }
 
         public void GenerateDebugTexture(WorldGenerator.GenerationResult result)

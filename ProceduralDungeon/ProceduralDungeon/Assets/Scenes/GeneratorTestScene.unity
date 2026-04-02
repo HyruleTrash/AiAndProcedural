@@ -1026,6 +1026,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Generation.GenerationManager
   tempWorldGenSprite: {fileID: 2062090701}
   mainSeed: 065231C443B2BCF5
+  minDistanceBossRoom: 256
   worldGenerator:
     areaData:
     - {fileID: 11400000, guid: f7738525e4c97394db7963f5ef02cbbe, type: 2}

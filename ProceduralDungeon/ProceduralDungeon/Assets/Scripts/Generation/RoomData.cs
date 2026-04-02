@@ -225,7 +225,7 @@ namespace Generation
             return builder.ToString();
         }
 
-        public static Color[] GetPixels(string layout, int width, int height)
+        public static Color[] GetPixels(string layout, int width, int height, AreaType areaType, RoomType roomType)
         {
             var pixels = new Color[width * height];
             var lookupInstance = RoomTileLookup.LookupInstance;
@@ -244,7 +244,7 @@ namespace Generation
                 foreach (var listInstance in lookupInstance.tiles)
                 {
                     if (listInstance.tile.text == c)
-                        pixels[i - offset] = listInstance.tile.color;
+                        pixels[i - offset] = lookupInstance.GetColor(areaType, roomType, listInstance.key);
                 }
             }
 

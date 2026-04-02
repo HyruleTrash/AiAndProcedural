@@ -21,7 +21,7 @@ namespace Generation
         }
 
         private static RoomTileLookup lookupInstance;
-        public listInstance[] tiles;
+        public ListInstance[] tiles;
         
         [Serializable]
         public struct RoomTile
@@ -37,10 +37,48 @@ namespace Generation
         }
 
         [Serializable]
-        public class listInstance
+        public class ListInstance
         {
             public string key;
             public RoomTile tile;
+        }
+        
+        [SerializeField]
+        private ColorList tileColors;
+
+        [Serializable]
+        private class ColorList
+        {
+            public ColorListInstance[] list;
+            
+            [Serializable]
+            public class ColorListInstance
+            {
+                public string key;
+                public TypedColors[] colorList;
+            }
+
+            [Serializable]
+            public class TypedColors
+            {
+                public bool areaBased;
+                public bool roomTypeBased;
+                public AreaType areaType;
+                public RoomType roomType;
+                public Color color;
+            }
+
+            public Color GetColor(AreaType areaType, RoomType roomType, string listInstanceKey)
+            {
+                var foundList = list.FirstOrDefault(a => a.key == listInstanceKey);
+                if (foundList == null)
+                    return Color.black;
+
+                bool AreaOrRoomTypeMatch(TypedColors a) =>
+                    (a.areaBased && a.areaType == areaType) || (a.roomTypeBased && a.roomType == roomType);
+                var colorObj = foundList.colorList.FirstOrDefault(AreaOrRoomTypeMatch);
+                return colorObj != null ? colorObj.color : Color.black;
+            }
         }
 
         private void OnEnable()
@@ -56,5 +94,7 @@ namespace Generation
         [Button]
         private void UpdateRoomData() => roomDataHasBeenUpdated?.Invoke();
         #endif
+        
+        public Color GetColor(AreaType areaType, RoomType roomType, string listInstanceKey) => tileColors.GetColor(areaType, roomType, listInstanceKey);
     }
 }

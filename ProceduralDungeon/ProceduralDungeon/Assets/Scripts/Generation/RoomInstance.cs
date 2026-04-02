@@ -9,6 +9,8 @@ namespace Generation
     /// </summary>
     public class RoomInstance : IComparable
     {
+        public AreaType areaType;
+        public RoomType roomType;
         public Vector2Int position;
         public RoomData dataRef;
         private List<string> mutations = new();
@@ -81,6 +83,9 @@ namespace Generation
             mutations.Add(new string(mutation));
         }
 
-        public Color[] GetPixels() => RoomData.GetPixels(GetLayout(), dataRef.Width, dataRef.Height);
+        public Color[] GetPixels()
+        {
+            return RoomData.GetPixels(GetLayout(), dataRef.Width, dataRef.Height, areaType, roomType);
+        }
     }
 }

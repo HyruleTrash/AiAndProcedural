@@ -1030,6 +1030,7 @@ MonoBehaviour:
     areaData:
     - {fileID: 11400000, guid: f7738525e4c97394db7963f5ef02cbbe, type: 2}
     - {fileID: 11400000, guid: b4b810f794fb4ae47a5f096a3a8ce503, type: 2}
+    - {fileID: 11400000, guid: 3e4ee72ba7e6baf4f826678023db67ca, type: 2}
     roomRepetitionAllowance: 2
     walkDirectionRepetitionAllowance: 2
   inputFieldWaitTime: {fileID: 940135085}
@@ -1063,6 +1064,37 @@ MonoBehaviour:
     tile:
       text: 68
       color: {r: 1, g: 1, b: 0, a: 1}
+  tileColors:
+    list:
+    - key: Wall
+      colorList:
+      - areaBased: 1
+        roomTypeBased: 0
+        areaType: 0
+        roomType: 0
+        color: {r: 0.5477067, g: 1, b: 0, a: 1}
+      - areaBased: 1
+        roomTypeBased: 0
+        areaType: 2
+        roomType: 0
+        color: {r: 0.43352112, g: 0.49056602, b: 0.053221796, a: 1}
+      - areaBased: 1
+        roomTypeBased: 0
+        areaType: 1
+        roomType: 0
+        color: {r: 0.4185208, g: 0.44479057, b: 0.5188679, a: 1}
+    - key: Content
+      colorList:
+      - areaBased: 0
+        roomTypeBased: 1
+        areaType: 0
+        roomType: 3
+        color: {r: 0.9433962, g: 0.8698456, b: 0, a: 1}
+      - areaBased: 0
+        roomTypeBased: 1
+        areaType: 0
+        roomType: 2
+        color: {r: 0.49019608, g: 0.09195852, b: 0.054901954, a: 1}
 --- !u!1 &907870588
 GameObject:
   m_ObjectHideFlags: 0

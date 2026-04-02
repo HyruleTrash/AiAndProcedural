@@ -10,11 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a23cada53b24fd9b8298b9e748b8050, type: 3}
-  m_Name: SwampData
+  m_Name: CastleData
   m_EditorClassIdentifier: Assembly-CSharp::Generation.AreaData
-  areaType: 2
+  areaType: 1
   minMaxSize: {x: 768, y: 2560}
   roomTypes:
-  - {fileID: 11400000, guid: 5afb1a0030b2b5f4b91d5bf2e8a380e2, type: 2}
-  - {fileID: 11400000, guid: 164a276ff52e9324fb5dd0ad76b19b6f, type: 2}
-  - {fileID: 11400000, guid: 486adc6db37df034a9197d24688610a6, type: 2}
+  - {fileID: 11400000, guid: aa45fda39f7fe8349a3e0d8b3ec9f737, type: 2}
+  - {fileID: 11400000, guid: d32af08ae354519488002bfc34d6014a, type: 2}

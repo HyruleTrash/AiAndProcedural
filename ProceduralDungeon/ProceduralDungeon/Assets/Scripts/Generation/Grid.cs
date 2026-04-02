@@ -158,10 +158,7 @@ namespace Generation
 
         public void RemoveUnusedDoorways()
         {
-            foreach (var roomInstance in rooms)
-            {
-                roomInstance.MutateRemoveLeftDoorPixels();
-            }
+            foreach (var roomInstance in rooms) roomInstance.MutateRemoveLeftDoorPixels();
         }
     }
 }

@@ -109,7 +109,7 @@ namespace Generation
         {
             while (pickedArea.Size > 0)
             {
-                Debug.Log($"Walking through area, current size left: {pickedArea.Size}\nCurrent position is: {genData.currentPosition}");
+                Debug.Log($"Walking through area: {pickedArea.AreaType}, current size left: {pickedArea.Size}\nCurrent position is: {genData.currentPosition}");
                 var foundRoom = genData.grid.GetRoomAtPosition(genData.currentPosition);
 
                 if (foundRoom == null)
@@ -193,6 +193,8 @@ namespace Generation
             var placedRoom = genData.grid.PlaceRoom(getRoomResult.foundRoom, getRoomResult.center.Value);
             if (getRoomResult.doorGroup != null)
                 placedRoom.RemoveDoorFromLayout(getRoomResult.doorGroup);
+            placedRoom.areaType = pickedArea.AreaType;
+            placedRoom.roomType = pickedTypeList.roomType;
 
             Debug.Log($"Adding room of size: {getRoomResult.foundRoom.Size}");
             genData.AddToHadRooms(getRoomResult.foundRoom, roomRepetitionAllowance);

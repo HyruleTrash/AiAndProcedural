@@ -77,10 +77,7 @@ namespace Generation
             while (true)
             {
                 if (pool.Count == 0)
-                {
-                    // Debug.Log($"Size requested: {size}\n{RoomDataListToString(roomData)}");
                     return null;
-                }
                 
                 index = RNG.RandomRange(0, pool.Count, usedSeed);
 

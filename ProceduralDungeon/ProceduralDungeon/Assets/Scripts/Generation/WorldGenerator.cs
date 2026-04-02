@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Generation
@@ -212,6 +213,9 @@ namespace Generation
             var tries = 0;
             const int maxTries = 64;
             #endif
+
+            var overlapAttempts = 0;
+            const int maxOverlapAttempts = 8;
             
             while (true)
             {
@@ -221,10 +225,8 @@ namespace Generation
                     pickedArea.Size = 0;
                     break;
                 }
-                
-                result.foundRoom = pickedTypeList.TryGetRoom(genData,
-                    RNG.RandomRange(pickedTypeList.smallestRoomSize, pickedArea.Size, genData.currentSeed), 
-                    genData.hadRooms.ToArray());
+
+                result.foundRoom = pickedTypeList.TryGetRoom(genData, math.max(pickedTypeList.smallestRoomSize, pickedArea.Size), genData.hadRooms.ToArray());
 
                 if (result.foundRoom == null) // TryGetRoom failed
                 {
@@ -249,17 +251,26 @@ namespace Generation
                 }
                 else
                 {
+                    // move away based on doorway
                     var doorways = result.foundRoom.DoorPoints.First(dir => dir.key == -genData.currentWalkDirection).value;
                     var doorway = doorways[RNG.RandomRange(0, doorways.Count, genData.currentSeed)];
                     result.center = genData.currentPosition - doorway.roomPoint;
                     genData.currentSeed = RNG.MutateNext(genData.currentSeed);
-
-                    Debug.Log("a");
                 }
                 onUpdate.Invoke(new GenerationResult{grid = genData.grid, currentPosition = result.center.Value});
-                
+
                 if (genData.grid.CheckRoomPossible(result.foundRoom, result.center.Value))
                     break;
+                
+                //Debug.Log($"Cant place room of size {result.foundRoom.Size}, at {result.center.Value}");
+                overlapAttempts++;
+                if (overlapAttempts >= maxOverlapAttempts)
+                {
+                    var neighbour = genData.grid.GetRoomAtPosition(result.center.Value);
+                    if (neighbour != null)
+                        Walk(genData, neighbour);
+                }
+                
                 yield return GetWaitTime();
             }
         }

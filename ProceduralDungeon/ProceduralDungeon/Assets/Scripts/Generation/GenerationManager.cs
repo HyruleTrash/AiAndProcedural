@@ -72,8 +72,8 @@ namespace Generation
             var size = result.grid.GetWorldSize(out Vector2Int offset);
             
             // Adding a border
-            size += Vector2Int.one * 16;
-            offset += Vector2Int.one * 8;
+            size += Vector2Int.one * 200;
+            offset += Vector2Int.one * 100;
                 
             var worldGenTex = new Texture2D(size.x, size.y, TextureFormat.RGBA32, false);
             worldGenTex.filterMode = FilterMode.Point;

@@ -1033,7 +1033,7 @@ MonoBehaviour:
     roomRepetitionAllowance: 2
     walkDirectionRepetitionAllowance: 2
   inputFieldWaitTime: {fileID: 940135085}
-  waitTime: 0.5
+  waitTime: 0.1
 --- !u!114 &847187202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1346,7 +1346,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
-  m_Text: 0.5
+  m_Text: 0.1
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -2662,7 +2662,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "0.5\u200B"
+  m_text: "0.1\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3207,19 +3207,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.140625
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.11672474
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.71875
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.76655054
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6881396737788365567, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_AssetsPPU

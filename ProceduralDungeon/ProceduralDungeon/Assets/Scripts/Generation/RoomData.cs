@@ -202,11 +202,12 @@ namespace Generation
             // save point where next room could be generated
             // abusing the fact that we use cardinal 4 way directions, we can fill in the middle point of the 0 value of the direction
             // (so 1,0 is right, meaning y = 0, meaning we can replace y with doorway center)
-            // I add 1 to width and height to avoid overlapping with existing rooms
-            doorPointGroup.roomPoint = new Vector2Int(foundDir.x * (width + 1), foundDir.y * (height + 1));
+            // -1 to account for null indexing
+            doorPointGroup.roomPoint = new Vector2Int(foundDir.x * width - 1, foundDir.y * height - 1);
             if (doorPointGroup.roomPoint.x < 1) doorPointGroup.roomPoint.x = (int)Mathf.Floor(average.x);
             if (doorPointGroup.roomPoint.y < 1) doorPointGroup.roomPoint.y = (int)Mathf.Floor(average.y);
             doorPointGroup.roomPoint -= new Vector2Int(width / 2, height / 2);
+            doorPointGroup.roomPoint += Vector2Int.one; // +1 to account for null indexing
 
             return foundDir;
         }

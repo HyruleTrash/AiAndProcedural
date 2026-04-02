@@ -33,12 +33,12 @@ namespace Generation
                 var room = instance.dataRef;
 
                 var min = new Vector2(
-                    center.x - room.Width / 2f,
-                    center.y - room.Height / 2f
+                    center.x - room.Width / 2f + 1f,
+                    center.y - room.Height / 2f + 1f
                 );
                 var max = new Vector2(
-                    center.x + room.Width / 2f,
-                    center.y + room.Height / 2f
+                    center.x + room.Width / 2f - 1f,
+                    center.y + room.Height / 2f - 1f
                 );
 
                 var inside =

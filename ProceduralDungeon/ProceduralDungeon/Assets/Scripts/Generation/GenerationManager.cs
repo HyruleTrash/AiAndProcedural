@@ -53,6 +53,8 @@ namespace Generation
         [Button]
         public void GenerateWorld()
         {
+            if (!Application.isPlaying)
+                return;
             if (routine != null)
                 return;
             worldGenerator.SetOwner(this);

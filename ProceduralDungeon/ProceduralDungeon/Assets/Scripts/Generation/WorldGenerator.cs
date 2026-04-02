@@ -75,8 +75,14 @@ namespace Generation
             yield return owner.StartCoroutine(WalkthroughAreas(genData));
 
             genData.grid.RemoveUnusedDoorways();
-            
-            // TODO spawn bossroom
+
+            // var addBossResult = new AddRoomResult();
+            // while (true)
+            // {
+            //     yield return owner.StartCoroutine(AddRoom(genData, genData.hadAreas.Last(), addBossResult));
+            //     if (addBossResult.instance != null)
+            //         break;
+            // }
             
             result.grid = genData.grid;
             result.currentPosition = Vector2Int.zero;
@@ -153,7 +159,7 @@ namespace Generation
                     genData.walkDirRepeated = 0;
 
                 if (genData.walkDirRepeated > walkDirectionRepetitionAllowance) continue;
-                
+                    
                 genData.currentWalkDirection = CardinalDirections[index];
                 break;
             }
@@ -164,10 +170,10 @@ namespace Generation
             var newPos = currentRoom.position + doorway.roomPoint + genData.currentWalkDirection;
             currentRoom.RemoveDoorFromLayout(doorway);
             genData.currentSeed = RNG.MutateNext(genData.currentSeed);
-            
+                
             Debug.Log($"Walking from {genData.currentPosition} to {newPos}");
             genData.currentPosition = newPos;
-            
+                
             onUpdate.Invoke(new GenerationResult{grid = genData.grid, currentPosition = genData.currentPosition});
         }
 
@@ -182,12 +188,28 @@ namespace Generation
             genData.currentSeed = RNG.MutateNext(genData.currentSeed);
 
             GetRoomResult getRoomResult = new();
-            yield return owner.StartCoroutine(TryGetRoom(genData, pickedTypeList, pickedArea, getRoomResult));
 
-            if (getRoomResult.foundRoom == null)
+            var tries = 0;
+            var maxTries = pickedArea.RoomCount * 2;
+            while (getRoomResult.foundRoom == null)
             {
-                result.instance = null;
-                yield break;
+                yield return owner.StartCoroutine(TryGetRoom(genData, pickedTypeList, pickedArea, getRoomResult));
+
+                if (getRoomResult.foundRoom != null)
+                    break;
+
+                if (tries >= maxTries)
+                {
+                    result.instance = null;
+                    yield break;
+                }
+
+                pickedTypeList.UndoPicked(pickedArea);
+                pickedTypeList = pickedArea.PickTypeList(genData);
+                pickedTypeList.OnPicked(pickedArea);
+                genData.currentSeed = RNG.MutateNext(genData.currentSeed);
+
+                tries++;
             }
             
             var placedRoom = genData.grid.PlaceRoom(getRoomResult.foundRoom, getRoomResult.center.Value);
@@ -215,13 +237,15 @@ namespace Generation
         private IEnumerator TryGetRoom(WorldGenData genData, RoomTypeDataList pickedTypeList, AreaGenData pickedArea,
             GetRoomResult result)
         {
-            #if UNITY_EDITOR
             var tries = 0;
             const int maxTries = 64;
-            #endif
-
+            
             var overlapAttempts = 0;
             const int maxOverlapAttempts = 8;
+            const int maxOverlapAttemptsBruteForce = 16;
+
+            List<RoomData> hadRooms = new();
+            var maxPool = pickedTypeList.Rooms.RoomData.Where(room => room.Size <= pickedArea.Size).ToList();
             
             while (true)
             {
@@ -232,21 +256,29 @@ namespace Generation
                     break;
                 }
 
-                result.foundRoom = pickedTypeList.TryGetRoom(genData, math.max(pickedTypeList.smallestRoomSize, pickedArea.Size), genData.hadRooms.ToArray());
-
+                var sizedPool = maxPool.Where(room => room.Size <= math.max(pickedTypeList.smallestRoomSize, pickedArea.Size)).ToList();
+                result.foundRoom = pickedTypeList.TryGetRoom(genData, sizedPool, genData.hadRooms.ToArray());
                 if (result.foundRoom == null) // TryGetRoom failed
                 {
-                    #if UNITY_EDITOR
                     if (tries > maxTries)
                     {
+                        genData.hadRooms.Clear();
+                        genData.lastHadRoomType = null;
                         Debug.Log($"Need room:\nsize between: {pickedTypeList.smallestRoomSize}, {pickedArea.Size}\nType:{pickedTypeList.roomType} Area:{pickedArea.AreaType}");
+
+                        #if UNITY_EDITOR
                         break;
+                        #else
+                        continue;
+                        #endif
                     }
                     genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                     tries++;
-                    #endif
                     continue;
                 }
+
+                if (hadRooms.Contains(result.foundRoom))
+                    hadRooms.Add(result.foundRoom);
 
                 if (genData.currentWalkDirection == Vector2.zero)
                 {
@@ -270,11 +302,22 @@ namespace Generation
                 
                 //Debug.Log($"Cant place room of size {result.foundRoom.Size}, at {result.center.Value}");
                 overlapAttempts++;
-                if (overlapAttempts >= maxOverlapAttempts)
+                if (overlapAttempts > maxOverlapAttempts)
                 {
                     var neighbour = genData.grid.GetRoomAtPosition(result.center.Value);
                     if (neighbour != null)
                         Walk(genData, neighbour);
+                    if (overlapAttempts >= maxOverlapAttemptsBruteForce)
+                    {
+                        genData.hadRooms.Clear();
+                        genData.lastHadRoomType = null;
+                    }
+                }
+
+                if (hadRooms.Count >= maxPool.Count)
+                {
+                    result.foundRoom = null;
+                    yield break;
                 }
                 
                 yield return GetWaitTime();

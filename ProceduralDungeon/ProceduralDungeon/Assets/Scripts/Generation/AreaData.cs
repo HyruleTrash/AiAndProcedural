@@ -17,6 +17,8 @@ namespace Generation
         private Vector2Int minMaxSize; // x is min, y is max
         [SerializeField, Expandable]
         private List<RoomTypeDataList> roomTypes;
+        [SerializeField]
+        private RoomList endRooms;
 
         private void OnValidate()
         {
@@ -28,11 +30,16 @@ namespace Generation
             }
             if (minMaxSize.y < minMaxSize.x)
                 minMaxSize.y = minMaxSize.x;
+            
+            // make sure no endRooms are in weighted list
+            foreach (var roomTypeDataList in roomTypes)
+            {
+                if (roomTypeDataList.roomType == RoomType.EndRoom)
+                    roomTypeDataList.roomType = RoomType.HostileRoom;
+            }
         }
 
-        public AreaGenData GetAreaGenData(string seed)
-        {
-            return new AreaGenData(areaType, RNG.RandomRange(minMaxSize.x, minMaxSize.y, seed), roomTypes);
-        }
+        public AreaGenData GetAreaGenData(string seed) =>
+            new(areaType, RNG.RandomRange(minMaxSize.x, minMaxSize.y, seed), roomTypes, endRooms);
     }
 }

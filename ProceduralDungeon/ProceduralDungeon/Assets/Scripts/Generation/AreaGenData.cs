@@ -13,14 +13,17 @@ namespace Generation
         private AreaType areaType;
         private int size;
         private List<RoomTypeDataList> roomTypes;
+        private RoomList endRooms;
         public AreaType AreaType { get => areaType; private set => areaType = value; }
         public int Size { get => size; set => size = value; }
+        public int RoomCount { get => roomTypes.Count; }
         
-        public AreaGenData(AreaType areaType, int size, List<RoomTypeDataList> roomTypes)
+        public AreaGenData(AreaType areaType, int size, List<RoomTypeDataList> roomTypes, RoomList endRooms)
         {
             this.areaType = areaType;
             this.size = size;
             this.roomTypes = new List<RoomTypeDataList>();
+            this.endRooms = new (endRooms);
             foreach (var list in roomTypes) this.roomTypes.Add(list.Duplicate());
         }
 

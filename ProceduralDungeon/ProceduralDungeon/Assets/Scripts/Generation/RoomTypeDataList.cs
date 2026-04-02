@@ -16,12 +16,8 @@ namespace Generation
         public RoomType roomType;
         [SerializeField]
         private float weight;
-        #if UNITY_EDITOR
-        [SerializeField] 
-        private List<Texture2D> rooms;
-        #endif
-        [SerializeField, HideInInspector]
-        private List<RoomData> roomData;
+        [SerializeField]
+        private RoomList rooms;
         [SerializeField, HideInInspector]
         public int smallestRoomSize;
 
@@ -31,46 +27,42 @@ namespace Generation
             protected set => weight = value;
         }
 
+        public RoomList Rooms
+        {
+            get => rooms;
+            protected set => rooms = value;
+        }
+
         public RoomTypeDataList Duplicate()
         {
             var newInstance = ScriptableObject.CreateInstance(GetType()) as RoomTypeDataList;;
             newInstance.roomType = roomType;
             newInstance.weight = weight;
-            newInstance.roomData = roomData;
+            newInstance.rooms = new (rooms.RoomData);
             newInstance.smallestRoomSize = smallestRoomSize;
             return newInstance;
         }
 
         #if UNITY_EDITOR
-        private bool onRoomsChangedRegistered = false;
         private void OnValidate()
         {
             weight = Mathf.Clamp(weight, 0f, 1f);
             weight = (float)Math.Round(weight, 2);
-            RoomTileLookup.roomDataHasBeenUpdated += OnRoomsChanged;
-            onRoomsChangedRegistered = true;
+            rooms.OnValidate();
+            rooms.OnRoomsChanged = OnRoomsChanged;
         }
 
-        private void OnDestroy()
-        {
-            if (onRoomsChangedRegistered)
-                RoomTileLookup.roomDataHasBeenUpdated -= OnRoomsChanged;
-        }
+        private void OnDestroy() => rooms.OnDestroy();
 
         private void OnRoomsChanged()
         {
-            if (roomData == null)
-                return;
-            roomData = new List<RoomData>();
-            foreach (var room in rooms.Where(room => room != null)) roomData.Add(new RoomData(room));
-            smallestRoomSize = roomData.Select(room => room.Size).Prepend(int.MaxValue).Min();
+            smallestRoomSize = rooms.RoomData.Select(room => room.Size).Prepend(int.MaxValue).Min();
             EditorUtility.SetDirty(this);
         }
         #endif
 
-        public RoomData TryGetRoom(WorldGenerator.WorldGenData genData, int size, RoomData[] lastRooms = null)
+        public RoomData TryGetRoom(WorldGenerator.WorldGenData genData, List<RoomData> pool, RoomData[] lastRooms = null)
         {
-            var pool = roomData.Where(room => room.Size <= size).ToList();
             var usedSeed = genData.currentSeed;
             int index;
             
@@ -94,6 +86,7 @@ namespace Generation
         }
 
         public virtual void OnPicked(AreaGenData pickedArea) {}
+        public virtual void UndoPicked(AreaGenData pickedArea) {}
 
         private static string RoomDataListToString(List<RoomData> data)
         {
@@ -101,5 +94,6 @@ namespace Generation
             foreach (var room in data) builder.AppendLine(room.ToString());
             return builder.ToString();
         }
+
     }
 }

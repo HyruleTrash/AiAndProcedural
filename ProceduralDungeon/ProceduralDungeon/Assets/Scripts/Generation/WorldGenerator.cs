@@ -74,15 +74,15 @@ namespace Generation
             Debug.Log("Starting generator");
             yield return owner.StartCoroutine(WalkthroughAreas(genData));
 
+            var addBossResult = new AddRoomResult();
+            while (true)
+            {
+                yield return owner.StartCoroutine(AddRoom(genData, genData.hadAreas.Last(), addBossResult, true));
+                if (addBossResult.instance != null)
+                    break;
+            }
+            
             genData.grid.RemoveUnusedDoorways();
-
-            // var addBossResult = new AddRoomResult();
-            // while (true)
-            // {
-            //     yield return owner.StartCoroutine(AddRoom(genData, genData.hadAreas.Last(), addBossResult));
-            //     if (addBossResult.instance != null)
-            //         break;
-            // }
             
             result.grid = genData.grid;
             result.currentPosition = Vector2Int.zero;
@@ -179,38 +179,22 @@ namespace Generation
 
         private class AddRoomResult
         {
-            public RoomInstance instance = null;
+            public RoomInstance instance;
         }
-        private IEnumerator AddRoom(WorldGenData genData, AreaGenData pickedArea, AddRoomResult result)
+        private IEnumerator AddRoom(WorldGenData genData, AreaGenData pickedArea, AddRoomResult result, bool shouldUseBossPool = false)
         {
             var pickedTypeList = pickedArea.PickTypeList(genData);
             pickedTypeList.OnPicked(pickedArea);
             genData.currentSeed = RNG.MutateNext(genData.currentSeed);
 
             GetRoomResult getRoomResult = new();
-
-            var tries = 0;
-            var maxTries = pickedArea.RoomCount * 2;
-            while (getRoomResult.foundRoom == null)
-            {
-                yield return owner.StartCoroutine(TryGetRoom(genData, pickedTypeList, pickedArea, getRoomResult));
-
-                if (getRoomResult.foundRoom != null)
-                    break;
-
-                if (tries >= maxTries)
-                {
-                    result.instance = null;
-                    yield break;
-                }
-
-                pickedTypeList.UndoPicked(pickedArea);
-                pickedTypeList = pickedArea.PickTypeList(genData);
-                pickedTypeList.OnPicked(pickedArea);
-                genData.currentSeed = RNG.MutateNext(genData.currentSeed);
-
-                tries++;
-            }
+            if (!shouldUseBossPool)
+                yield return owner.StartCoroutine(TryGetTypedRoom(getRoomResult, pickedArea, genData, pickedTypeList));
+            else        
+                yield return owner.StartCoroutine(TryGetBossRoom(getRoomResult, pickedArea, genData));
+            
+            if (getRoomResult.foundRoom == null)
+                yield break;
             
             var placedRoom = genData.grid.PlaceRoom(getRoomResult.foundRoom, getRoomResult.center.Value);
             if (getRoomResult.doorGroup != null)
@@ -226,6 +210,68 @@ namespace Generation
 
             result.instance = placedRoom;
             onUpdate.Invoke(new GenerationResult{grid = genData.grid, currentPosition = genData.currentPosition});
+        }
+
+        /// <summary>
+        /// Uses duplicated code to pull from the endRooms list
+        /// </summary>
+        private IEnumerator TryGetBossRoom(GetRoomResult result, AreaGenData pickedArea, WorldGenData genData)
+        {
+            var tries = 0;
+            const int maxTries = 16;
+            var pool = pickedArea.EndRooms;
+            if (pool.Count <= 0)
+                yield break;
+            
+            while (true)
+            {
+                result.foundRoom = pool[RNG.RandomRange(0, pool.Count, genData.currentSeed)];
+                genData.currentSeed = RNG.MutateNext(genData.currentSeed);
+                
+                // move away based on doorway
+                var doorways = result.foundRoom.DoorPoints.First(dir => dir.key == -genData.currentWalkDirection).value;
+                result.doorGroup = doorways[RNG.RandomRange(0, doorways.Count, genData.currentSeed)];
+                result.center = genData.currentPosition - result.doorGroup.roomPoint;
+                genData.currentSeed = RNG.MutateNext(genData.currentSeed);
+                
+                onUpdate.Invoke(new GenerationResult{grid = genData.grid, currentPosition = result.center.Value});
+                
+                if (genData.grid.CheckRoomPossible(result.foundRoom, result.center.Value, out var hit))
+                    break;
+
+                if (tries >= maxTries) Walk(genData, hit);
+                
+                genData.currentSeed = RNG.MutateNext(genData.currentSeed);
+                tries++;
+                // Debug.Log(tries);
+                yield return GetWaitTime();
+            }
+            
+            if (result.foundRoom != null)
+                Debug.Log("YATTAAA");
+        }
+
+        private IEnumerator TryGetTypedRoom(GetRoomResult getRoomResult, AreaGenData pickedArea, WorldGenData genData, RoomTypeDataList pickedTypeList)
+        {
+            var tries = 0;
+            var maxTries = pickedArea.RoomCount * 2;
+            while (getRoomResult.foundRoom == null)
+            {
+                yield return owner.StartCoroutine(TryGetRoom(genData, pickedTypeList, pickedArea, getRoomResult));
+
+                if (getRoomResult.foundRoom != null)
+                    break;
+
+                if (tries >= maxTries)
+                    yield break;
+
+                pickedTypeList.UndoPicked(pickedArea);
+                pickedTypeList = pickedArea.PickTypeList(genData);
+                pickedTypeList.OnPicked(pickedArea);
+                genData.currentSeed = RNG.MutateNext(genData.currentSeed);
+
+                tries++;
+            }
         }
 
         private class GetRoomResult
@@ -296,11 +342,11 @@ namespace Generation
                     genData.currentSeed = RNG.MutateNext(genData.currentSeed);
                 }
                 onUpdate.Invoke(new GenerationResult{grid = genData.grid, currentPosition = result.center.Value});
-
-                if (genData.grid.CheckRoomPossible(result.foundRoom, result.center.Value))
+                
+                if (genData.grid.CheckRoomPossible(result.foundRoom, result.center.Value, out _))
                     break;
                 
-                //Debug.Log($"Cant place room of size {result.foundRoom.Size}, at {result.center.Value}");
+                // Debug.Log($"Cant place room of size {result.foundRoom.Size}, at {result.center.Value}");
                 overlapAttempts++;
                 if (overlapAttempts > maxOverlapAttempts)
                 {

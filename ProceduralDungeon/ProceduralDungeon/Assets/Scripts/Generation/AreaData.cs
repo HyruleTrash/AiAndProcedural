@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
+using UnityEditor;
 using UnityEngine;
 
 namespace Generation
@@ -20,6 +21,7 @@ namespace Generation
         [SerializeField]
         private RoomList endRooms;
 
+        #if UNITY_EDITOR
         private void OnValidate()
         {
             var smallestRoom = roomTypes.Select(roomTypeList => roomTypeList.smallestRoomSize).Prepend(int.MaxValue).Min();
@@ -37,7 +39,15 @@ namespace Generation
                 if (roomTypeDataList.roomType == RoomType.EndRoom)
                     roomTypeDataList.roomType = RoomType.HostileRoom;
             }
+            
+            endRooms.OnValidate();
+            endRooms.OnRoomsChanged = OnRoomsChanged;
         }
+
+        private void OnRoomsChanged() => EditorUtility.SetDirty(this);
+
+        private void OnDestroy() => endRooms.OnDestroy();
+        #endif
 
         public AreaGenData GetAreaGenData(string seed) =>
             new(areaType, RNG.RandomRange(minMaxSize.x, minMaxSize.y, seed), roomTypes, endRooms);

@@ -17,7 +17,9 @@ namespace Generation
         public AreaType AreaType { get => areaType; private set => areaType = value; }
         public int Size { get => size; set => size = value; }
         public int RoomCount { get => roomTypes.Count; }
-        
+        public int EndRoomCount { get => endRooms.RoomData.Count; }
+        public List<RoomData> EndRooms { get => endRooms.RoomData; }
+
         public AreaGenData(AreaType areaType, int size, List<RoomTypeDataList> roomTypes, RoomList endRooms)
         {
             this.areaType = areaType;

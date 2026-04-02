@@ -41,7 +41,7 @@ namespace Generation
             return null;
         }
 
-        public bool CheckRoomPossible(RoomData roomToCheck, Vector2Int center)
+        public bool CheckRoomPossible(RoomData roomToCheck, Vector2Int center, out RoomInstance firstHit)
         {
             var newMin = new Vector2Int(
                 center.x - roomToCheck.Width / 2,
@@ -74,9 +74,13 @@ namespace Generation
                     newMax.y > otherMin.y;
 
                 if (overlaps)
+                {
+                    firstHit = instance;
                     return false;
+                }
             }
 
+            firstHit = null;
             return true;
         }
 

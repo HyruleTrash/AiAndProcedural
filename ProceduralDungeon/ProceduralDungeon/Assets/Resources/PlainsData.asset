@@ -21,4 +21,38 @@ MonoBehaviour:
   endRooms:
     rooms:
     - {fileID: 2800000, guid: de0a3479477de4343aa5fe2d2ad43983, type: 3}
-    roomData: []
+    roomData:
+    - layout: 1111111DD1111111100000000000000110000000000000011000000000000001100000000000000110000000000000011000000000000001D000000xx000000DD000000xx000000D1000000000000001100000000000000110000000000000011000000000000001100000000000000110000000000000011111111DD1111111
+      size: 256
+      width: 16
+      height: 16
+      contentPoints:
+      - {x: 7, y: 7}
+      - {x: 8, y: 7}
+      - {x: 7, y: 8}
+      - {x: 8, y: 8}
+      doorPoints:
+      - key: {x: 0, y: 1}
+        value:
+        - points:
+          - {x: 7, y: 15}
+          - {x: 8, y: 15}
+          roomPoint: {x: 0, y: 8}
+      - key: {x: 0, y: -1}
+        value:
+        - points:
+          - {x: 7, y: 0}
+          - {x: 8, y: 0}
+          roomPoint: {x: 0, y: -7}
+      - key: {x: -1, y: 0}
+        value:
+        - points:
+          - {x: 0, y: 7}
+          - {x: 0, y: 8}
+          roomPoint: {x: -7, y: 0}
+      - key: {x: 1, y: 0}
+        value:
+        - points:
+          - {x: 15, y: 7}
+          - {x: 15, y: 8}
+          roomPoint: {x: 8, y: 0}

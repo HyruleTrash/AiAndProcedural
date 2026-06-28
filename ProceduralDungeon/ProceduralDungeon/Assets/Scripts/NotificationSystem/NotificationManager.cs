@@ -26,7 +26,7 @@ public class NotificationManager : MonoBehaviour
     /// Globally accessible function to trigger a notification.
     /// </summary>
     [HideInCallstack]
-    public static void Log(string message)
+    public static void Log(string message, float fadeOutSpeed)
     {
         if (!instance)
         {
@@ -48,7 +48,7 @@ public class NotificationManager : MonoBehaviour
         // Initialize the fade logic
         NotificationItem item = spawnedObj.GetComponent<NotificationItem>();
         if (item)
-            item.Initialize(message);
+            item.Initialize(message, fadeOutSpeed);
         else
             Debug.LogWarning("The Notification Prefab is missing the NotificationItem script!");
     }

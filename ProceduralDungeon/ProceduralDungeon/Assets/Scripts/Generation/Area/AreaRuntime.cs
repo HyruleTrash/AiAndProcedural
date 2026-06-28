@@ -84,12 +84,12 @@ namespace Generation
         {
             while (this.Size > 0)
             {
-                NotificationManager.Log($"Walking through area: {this.AreaType}, current size left: {this.Size}\nCurrent position is: {genRuntime.CurrentPosition}");
+                NotificationManager.Log($"Walking through area: {this.AreaType}, current size left: {this.Size}\nCurrent position is: {genRuntime.CurrentPosition}", genRuntime.owner.GetAnimWaitTime());
                 RoomRuntime? foundRoom = genRuntime.gridRuntime.GetRoomAtPosition(genRuntime.CurrentPosition);
 
                 if (foundRoom == null)
                 {
-                    NotificationManager.Log("Current walk position empty, trying to add room");
+                    NotificationManager.Log("Current walk position empty, trying to add room", genRuntime.owner.GetAnimWaitTime());
                     
                     PendingRoomPlacement pendingRoom = new();
                     yield return unityConnection.StartCoroutine(GetTypedPlaceAbleRoom(genRuntime, pendingRoom, unityConnection));
@@ -104,7 +104,7 @@ namespace Generation
                         continue;
                     }
                     
-                    NotificationManager.Log("Room added");
+                    NotificationManager.Log("Room added", genRuntime.owner.GetAnimWaitTime());
                     foundRoom = runtimeRef.instance;
                     genRuntime.currentSeed = Rng.MutateNext(genRuntime.currentSeed);
                 }
@@ -129,7 +129,9 @@ namespace Generation
                 if (!pickedTypeList) continue;
                 pickedTypeList.OnPicked(this);
                 
-                yield return unityConnection.StartCoroutine(genRuntime.TryToGetPlaceAbleRoom(pickedTypeList, this, pendingRoomPlacement));
+                List<Room> maxPool = pickedTypeList.Rooms.RoomData.Where(room => room.Size <= this.Size).ToList();
+                
+                yield return unityConnection.StartCoroutine(genRuntime.TryToGetPlaceAbleRoom(this, pendingRoomPlacement, maxPool, pickedTypeList.smallestRoomSize, pickedTypeList.roomType));
 
                 if (pendingRoomPlacement.possibleRoom != null)
                 {

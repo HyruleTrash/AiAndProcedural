@@ -14,7 +14,7 @@ namespace Generation
     public class WorldGenRuntime
     {
         private readonly MonoBehaviour unityConnection;
-        private readonly WorldGen owner;
+        public readonly WorldGen owner;
         public string currentSeed;
         
         public readonly GridRuntime gridRuntime = new();
@@ -92,11 +92,11 @@ namespace Generation
                 //     if (bossRoomRef.instance != null) break;
                 // }
                 
-                NotificationManager.Log($"ANALYSE PHASE STARTING");
+                NotificationManager.Log($"ANALYSE PHASE STARTING", this.owner.GetAnimWaitTime());
                 break;
                 // if (Vector2.Distance(this.currentPosition, Vector2.zero) >= this.minDistToBossRoom) break;
 
-                NotificationManager.Log($"GENERATION FAILED, RESTARTING");
+                NotificationManager.Log($"GENERATION FAILED, RESTARTING", this.owner.GetAnimWaitTime());
                 this.currentSeed = Rng.MutateNext(seed);
                 Reset(areaData, this.currentSeed);
                 // bossRoomRef.instance = null;
@@ -109,16 +109,16 @@ namespace Generation
         {
             while (this.backlog.Count > 0)
             {
-                NotificationManager.Log($"Walking through area backlog, current count: {this.backlog.Count}");
+                NotificationManager.Log($"Walking through area backlog, current count: {this.backlog.Count}", this.owner.GetAnimWaitTime());
                 AreaRuntime pickedArea = GetRandomArea();
                 
-                yield return this.unityConnection.StartCoroutine(pickedArea.WalkthroughArea(this, this.unityConnection, this.owner.GetAnimWaitTime()));
+                yield return this.unityConnection.StartCoroutine(pickedArea.WalkthroughArea(this, this.unityConnection, this.owner.GetAnimYieldInstruction()));
                 this.hadAreas.Add(pickedArea);
                 
-                yield return this.owner.GetAnimWaitTime();
+                yield return this.owner.GetAnimYieldInstruction();
             }
 
-            NotificationManager.Log("Done with walking through areas");
+            NotificationManager.Log("Done with walking through areas", this.owner.GetAnimWaitTime());
         }
         
         private AreaRuntime GetRandomArea()
@@ -141,7 +141,7 @@ namespace Generation
             // register that door was used, and space self outside of it
             Vector2Int newPos = currentRoom.position + doorway.roomPoint + this.currentWalkDirection; // position just about outside of room
             this.currentPosition = newPos;
-            NotificationManager.Log($"Walking from {this.currentPosition} to {newPos}");
+            NotificationManager.Log($"Walking from {this.currentPosition} to {newPos}", this.owner.GetAnimWaitTime());
             
             currentRoom.RemoveDoorFromLayout(doorway);
 
@@ -186,7 +186,7 @@ namespace Generation
                 placedRoom.areaType = pickedArea.AreaType;
                 placedRoom.roomType = pendingRoom.possibleRoomType;
 
-                NotificationManager.Log($"Adding room of size: {pendingRoom.possibleRoom.Size}");
+                NotificationManager.Log($"Adding room of size: {pendingRoom.possibleRoom.Size}", this.owner.GetAnimWaitTime());
                 RegisterHadRoom(pendingRoom.possibleRoom, this.owner.RoomRepetitionAllowance);
 
                 pickedArea.Size -= pendingRoom.possibleRoom.Size;
@@ -201,7 +201,7 @@ namespace Generation
         /// <summary>
         /// Tries to find a spot where it can place a room, updates result accordingly
         /// </summary>
-        public IEnumerator TryToGetPlaceAbleRoom(TypedRoomList pickedTypeList, AreaRuntime pickedArea, PendingRoomPlacement placement)
+        public IEnumerator TryToGetPlaceAbleRoom(AreaRuntime pickedArea, PendingRoomPlacement placement, List<Room> maxPool, float smallestRoomSize, RoomType roomType)
         {
             int tries = 0;
             const int maxTries = 64;
@@ -211,18 +211,17 @@ namespace Generation
             const int maxOverlapAttemptsBruteForce = 16;
 
             List<Room> hadRoomsTemp = new();
-            List<Room> maxPool = pickedTypeList.Rooms.RoomData.Where(room => room.Size <= pickedArea.Size).ToList();
             
             while (true)
             {
-                if (pickedTypeList.smallestRoomSize > pickedArea.Size)
+                if (smallestRoomSize > pickedArea.Size)
                 {
-                    NotificationManager.Log("No rooms exist that can fill area quota");
+                    Debug.Log("No rooms exist that can fill area quota");
                     pickedArea.Size = 0;
                     break;
                 }
 
-                List<Room> sizedPool = maxPool.Where(room => room.Size <= math.max(pickedTypeList.smallestRoomSize, pickedArea.Size)).ToList();
+                List<Room> sizedPool = maxPool.Where(room => room.Size <= math.max(smallestRoomSize, pickedArea.Size)).ToList();
                 placement.possibleRoom = RoomList.TryGetRoom(this, sizedPool, this.hadRooms.ToArray());
                 
                 // TryGetRoom failed
@@ -232,7 +231,7 @@ namespace Generation
                     {
                         this.hadRooms.Clear();
                         this.lastHadRoomType = null;
-                        NotificationManager.Log($"Need room:\nsize between: {pickedTypeList.smallestRoomSize}, {pickedArea.Size}\nType:{pickedTypeList.roomType} Area:{pickedArea.AreaType}");
+                        NotificationManager.Log($"Need room:\nsize between: {smallestRoomSize}, {pickedArea.Size}\nType:{roomType} Area:{pickedArea.AreaType}", this.owner.GetAnimWaitTime());
 
                         #if UNITY_EDITOR
                         break;
@@ -255,8 +254,7 @@ namespace Generation
                     int halfWidth = placement.possibleRoom.Width / 2;
                     int halfHeight = placement.possibleRoom.Height / 2;
                     Vector2Int offset = new(this.currentWalkDirection.x * halfWidth, this.currentWalkDirection.y * halfHeight);
-                    placement.center = this.currentPosition;
-                    placement.center += offset;
+                    placement.center = this.currentPosition + offset;
                 }
                 else if (!TryWalkThroughDoor(placement, -this.currentWalkDirection)) break;
 
@@ -265,9 +263,9 @@ namespace Generation
                 onUpdateSnapshot?.Invoke(new WorldGenSnapshot(this.gridRuntime, placement.center!.Value));
                 
                 if (this.gridRuntime.CheckRoomPossible(placement.possibleRoom, placement.center!.Value, out RoomRuntime? hit)) break;
-                NotificationManager.Log($"Cant place room of size {placement.possibleRoom.Size}, at {placement.center.Value}");
+                NotificationManager.Log($"Cant place room of size {placement.possibleRoom.Size}, at {placement.center.Value}", this.owner.GetAnimWaitTime());
 
-                #region Attempt tracking
+                #region Tracking attempts
 
                 overlapAttempts++;
                 if (overlapAttempts > maxOverlapAttempts)
@@ -287,7 +285,7 @@ namespace Generation
                     yield break;
                 }
                 
-                yield return this.owner.GetAnimWaitTime();
+                yield return this.owner.GetAnimYieldInstruction();
 
                 #endregion
                 

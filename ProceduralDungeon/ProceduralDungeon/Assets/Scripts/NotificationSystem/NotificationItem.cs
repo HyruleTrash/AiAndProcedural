@@ -12,11 +12,17 @@ public class NotificationItem : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float visibleDuration = 2.0f; // How long it stays fully visible
-    [SerializeField] private float fadeDuration = 1.0f;    // How long the fade-out takes
+    private float fadeDuration; // How long the fade-out takes
 
-    public void Initialize(string message)
+    public void Initialize(string message, float fadeOutSpeed)
     {
-        // Fail-safe if the reference wasn't dragged into the inspector
+        if (fadeOutSpeed == 0.0f)
+        {
+            this.gameObject.SetActive(false);
+            return;
+        }
+
+        this.fadeDuration = this.visibleDuration / fadeOutSpeed;
         if (!this.textComponent) this.textComponent = GetComponent<TextMeshProUGUI>();
 
         this.textComponent.text = message;

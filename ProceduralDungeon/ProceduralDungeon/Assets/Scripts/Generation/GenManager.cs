@@ -31,7 +31,7 @@ namespace Generation
         {
             this.mainSeed = Rng.ParseSeed((ulong)DateTime.Now.Ticks);
             this.mainSeed = Rng.MutateNext(this.mainSeed);
-            NotificationManager.Log($"Seed has been set: {this.mainSeed}");
+            NotificationManager.Log($"Seed has been set: {this.mainSeed}", this.worldGen.GetAnimWaitTime());
         }
 #endif
 

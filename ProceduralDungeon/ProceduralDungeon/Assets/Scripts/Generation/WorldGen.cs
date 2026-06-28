@@ -26,7 +26,8 @@ namespace Generation
 
         public void SetOwner(MonoBehaviour o) => this.owner = o;
         public void SetAnimWaitTime(float w) => this.animWaitTime = w;
-        public YieldInstruction GetAnimWaitTime() => (this.animWaitTime <= 0f ? null : new WaitForSeconds(this.animWaitTime))!;
+        public float GetAnimWaitTime() => this.animWaitTime;
+        public YieldInstruction GetAnimYieldInstruction() => (this.animWaitTime <= 0f ? null : new WaitForSeconds(this.animWaitTime))!;
         public Action<WorldGenSnapshot> GetOnUpdateSnapshot(WorldGenRuntime runtime) => runtime == null ? null! : this.onUpdateSnapshot;
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace Generation
             this.onUpdateSnapshot = setOnSnapShotUpdate;
             WorldGenRuntime genRuntime = new(this.owner, this, seed, this.areaData, minDistToBossRoom);
 
-            NotificationManager.Log("Starting generator");
+            NotificationManager.Log("Starting generator", GetAnimWaitTime());
             yield return genRuntime.StartGen(seed, this.areaData);
             
             snapshot.Update(genRuntime.gridRuntime, Vector2Int.zero);

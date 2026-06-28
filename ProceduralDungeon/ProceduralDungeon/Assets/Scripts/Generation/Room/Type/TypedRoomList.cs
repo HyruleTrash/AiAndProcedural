@@ -10,6 +10,9 @@ using UnityEditor;
 
 namespace Generation
 {
+    /// <summary>
+    /// Holds a list of rooms, of a certain type, used in an area's roomTypes list.
+    /// </summary>
     [CreateAssetMenu(fileName = "TypedRoomList", menuName = "Generation/TypedRoomList")]
     public class TypedRoomList : ScriptableObject
     {

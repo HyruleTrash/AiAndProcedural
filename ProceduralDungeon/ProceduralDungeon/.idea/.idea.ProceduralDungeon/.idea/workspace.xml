@@ -5,50 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="db56a5da-aa3f-4c02-a301-5f03de82d696" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/MapCameraController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/MapCameraController.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NotificationSystem/NotificationManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NotificationSystem/NotificationManager.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProceduralDungeon/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProceduralDungeon/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Editor/VisionConeEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Editor/VisionConeEditor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/NaughtyAttributes/Scripts/Core/INaughtyAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/NaughtyAttributes/Scripts/Core/INaughtyAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/NaughtyAttributes/Scripts/Core/MetaAttributes/IGroupAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/NaughtyAttributes/Scripts/Core/MetaAttributes/IGroupAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/NaughtyAttributes/Scripts/Core/Utility/EConditionOperator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/NaughtyAttributes/Scripts/Core/Utility/EConditionOperator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/NaughtyAttributes/Scripts/Editor/Utility/NaughtyEditorGUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/NaughtyAttributes/Scripts/Editor/Utility/NaughtyEditorGUI.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/NaughtyAttributes/Scripts/Test/_NaughtyComponent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/NaughtyAttributes/Scripts/Test/_NaughtyComponent.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/NaughtyAttributes/Scripts/Test/_TestScriptableObjectB.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/NaughtyAttributes/Scripts/Test/_TestScriptableObjectB.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assembly-CSharp.csproj.DotSettings" beforeDir="false" afterPath="$PROJECT_DIR$/Assembly-CSharp.csproj.DotSettings" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/GeneratorTestScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GeneratorTestScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Damagers/WeaponSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Damagers/WeaponSpawner.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Editor/RoomTexturePreProcessor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Editor/RoomTexturePreProcessor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/BehaviourTree/BehaviourTree.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/BehaviourTree/BehaviourTree.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/Guard/GuardManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/Guard/GuardManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/Guard/Movement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/Guard/Movement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/Guard/WaypointManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/Guard/WaypointManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/Guard/WeaponHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/Guard/WeaponHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/NavigateToPosition.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/NavigateToPosition.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/VisionCone.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/Agent/VisionCone.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/LookDirectionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/LookDirectionManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/Player/LookAt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/Player/LookAt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/Player/Movement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/Player/Movement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/Player/PlayerManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/Player/PlayerManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/ScaleBasedOnLookDirection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/ScaleBasedOnLookDirection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/SetHealthText.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/SetHealthText.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/WalkAnimManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/WalkAnimManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Entities/WeaponHandlerPickup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Entities/WeaponHandlerPickup.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/Area/Area.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/Area/Area.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/GenManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/GenManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/GridRuntime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/GridRuntime.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/Room.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/Room.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/RoomList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/RoomList.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/RoomRuntime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/RoomRuntime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/Tiles/ColorList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/Tiles/ColorList.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/Tiles/RoomTileLookup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/Tiles/RoomTileLookup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/Type/TypedRoomList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/Type/TypedRoomList.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/WorldGen.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/WorldGen.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/WorldGenRuntime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/WorldGenRuntime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/WorldGenSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/WorldGenSnapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HealthAndDamage/HealthComponent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HealthAndDamage/HealthComponent.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/MoveTowardsTransform2D.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/MoveTowardsTransform2D.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NavMeshRebaker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NavMeshRebaker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Timer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Timer.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +37,10 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Generation/Room/Tiles/ColorList.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Generation/Room/Tiles/RoomTile.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/MapCameraController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/NotificationSystem/NotificationManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@a6e30d1f59f5/Runtime/2D/PixelPerfectCamera.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@11343a6274f3/Runtime/TMP/TMP_InputField.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@11343a6274f3/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
@@ -154,7 +124,7 @@
       <workItem from="1775041101492" duration="45000" />
       <workItem from="1775041167037" duration="34071000" />
       <workItem from="1775107280491" duration="16054000" />
-      <workItem from="1782642370290" duration="11090000" />
+      <workItem from="1782642370290" duration="13662000" />
     </task>
     <servers />
   </component>

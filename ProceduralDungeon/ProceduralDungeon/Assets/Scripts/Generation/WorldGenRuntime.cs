@@ -89,7 +89,7 @@ namespace Generation
         {
             while (genRuntime.backlog.Count > 0)
             {
-                Debug.Log($"Walking through area backlog, current count: {genRuntime.backlog.Count}");
+                NotificationManager.Log($"Walking through area backlog, current count: {genRuntime.backlog.Count}");
                 int foundIndex = Rng.RandomRange(0, genRuntime.backlog.Count, genRuntime.currentSeed);
                 genRuntime.currentSeed = Rng.MutateNext(genRuntime.currentSeed);
                 
@@ -103,19 +103,19 @@ namespace Generation
                 yield return this.owner.GetAnimWaitTime();
             }
 
-            Debug.Log("Done with walking through areas");
+            NotificationManager.Log("Done with walking through areas");
         }
 
         private IEnumerator WalkthroughArea(WorldGenRuntime genRuntime, AreaRuntime pickedArea)
         {
             while (pickedArea.Size > 0)
             {
-                Debug.Log($"Walking through area: {pickedArea.AreaType}, current size left: {pickedArea.Size}\nCurrent position is: {genRuntime.currentPosition}");
+                NotificationManager.Log($"Walking through area: {pickedArea.AreaType}, current size left: {pickedArea.Size}\nCurrent position is: {genRuntime.currentPosition}");
                 RoomRuntime? foundRoom = genRuntime.gridRuntime.GetRoomAtPosition(genRuntime.currentPosition);
 
                 if (foundRoom == null)
                 {
-                    Debug.Log("Current walk position empty, trying to add room");
+                    NotificationManager.Log("Current walk position empty, trying to add room");
                     RoomRuntimeRef runtimeRef = new();
                     yield return this.unityConnection.StartCoroutine(AddRoom(genRuntime, pickedArea, runtimeRef));
 
@@ -126,7 +126,7 @@ namespace Generation
                         continue;
                     }
                     
-                    Debug.Log("Room added");
+                    NotificationManager.Log("Room added");
                     foundRoom = runtimeRef.runtime;
                     genRuntime.currentSeed = Rng.MutateNext(genRuntime.currentSeed);
                 }
@@ -163,7 +163,7 @@ namespace Generation
             currentRoom.RemoveDoorFromLayout(doorway);
             genRuntime.currentSeed = Rng.MutateNext(genRuntime.currentSeed);
                 
-            Debug.Log($"Walking from {genRuntime.currentPosition} to {newPos}");
+            NotificationManager.Log($"Walking from {genRuntime.currentPosition} to {newPos}");
             genRuntime.currentPosition = newPos;
 
             Action<WorldGenSnapshot> onUpdateSnapshot = this.owner.GetOnUpdateSnapshot(this);
@@ -193,7 +193,7 @@ namespace Generation
                 placedRoom.areaType = pickedArea.AreaType;
                 placedRoom.roomType = pickedTypeList.roomType;
 
-                Debug.Log($"Adding room of size: {getRoomResult.foundRoom.Size}");
+                NotificationManager.Log($"Adding room of size: {getRoomResult.foundRoom.Size}");
                 genRuntime.AddToHadRooms(getRoomResult.foundRoom, this.owner.RoomRepetitionAllowance);
 
                 pickedArea.Size -= getRoomResult.foundRoom.Size;
@@ -305,7 +305,7 @@ namespace Generation
             {
                 if (pickedTypeList.smallestRoomSize > pickedArea.Size)
                 {
-                    Debug.Log("No rooms exist that can fill area quota");
+                    NotificationManager.Log("No rooms exist that can fill area quota");
                     pickedArea.Size = 0;
                     break;
                 }
@@ -318,7 +318,7 @@ namespace Generation
                     {
                         genRuntime.hadRooms.Clear();
                         genRuntime.lastHadRoomType = null;
-                        Debug.Log($"Need room:\nsize between: {pickedTypeList.smallestRoomSize}, {pickedArea.Size}\nType:{pickedTypeList.roomType} Area:{pickedArea.AreaType}");
+                        NotificationManager.Log($"Need room:\nsize between: {pickedTypeList.smallestRoomSize}, {pickedArea.Size}\nType:{pickedTypeList.roomType} Area:{pickedArea.AreaType}");
 
 #if UNITY_EDITOR
                         break;
@@ -356,7 +356,7 @@ namespace Generation
                 if (genRuntime.gridRuntime.CheckRoomPossible(result.foundRoom, result.center.Value, out _))
                     break;
                 
-                // Debug.Log($"Cant place room of size {result.foundRoom.Size}, at {result.center.Value}");
+                // NotificationManager.Log($"Cant place room of size {result.foundRoom.Size}, at {result.center.Value}");
                 overlapAttempts++;
                 if (overlapAttempts > maxOverlapAttempts)
                 {

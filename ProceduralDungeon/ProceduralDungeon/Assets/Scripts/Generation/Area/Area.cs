@@ -24,7 +24,7 @@ namespace Generation
             int smallestRoom = this.roomTypes.Select(roomTypeList => roomTypeList.smallestRoomSize).Prepend(int.MaxValue).Min();
             if (this.minMaxSize.x < smallestRoom * 2)
             {
-                Debug.Log($"Area {this.name}, min size value was less then two rooms, min value has been adjusted");
+                NotificationManager.Log($"Area {this.name}, min size value was less then two rooms, min value has been adjusted");
                 this.minMaxSize.x = smallestRoom * 2;
             }
             if (this.minMaxSize.y < this.minMaxSize.x) this.minMaxSize.y = this.minMaxSize.x;

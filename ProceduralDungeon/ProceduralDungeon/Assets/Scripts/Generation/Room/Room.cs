@@ -89,7 +89,7 @@ namespace Generation
                         break;
                     }
                     if (!found) 
-                        Debug.Log($"Unexpected color: {pixel}");
+                        NotificationManager.Log($"Unexpected color: {pixel}");
                 }
             }
     

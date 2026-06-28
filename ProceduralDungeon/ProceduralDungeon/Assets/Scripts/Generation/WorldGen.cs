@@ -47,7 +47,7 @@ namespace Generation
             this.mainSeed = seed;
             WorldGenRuntime genRuntime = new(this.owner, this, seed, this.areaData, minDistToBossRoom);
 
-            Debug.Log("Starting generator");
+            NotificationManager.Log("Starting generator");
             yield return genRuntime.StartGen(seed, this.areaData);
             
             snapshot.Update(genRuntime.gridRuntime, Vector2Int.zero);

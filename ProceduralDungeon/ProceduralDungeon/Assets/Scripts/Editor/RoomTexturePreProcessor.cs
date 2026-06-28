@@ -31,7 +31,7 @@ public class RoomTexturePreProcessor : AssetPostprocessor
         {
             if (!path.StartsWith(TargetFolder) || !IsTextureFile(path)) continue;
             RoomTileLookup.RoomDataHasBeenUpdated?.Invoke();
-            Debug.Log("New rooms have been added, or have updated, make sure to save dirty room lists!");
+            NotificationManager.Log("New rooms have been added, or have updated, make sure to save dirty room lists!");
             break;
         }
     }

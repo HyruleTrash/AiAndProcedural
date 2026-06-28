@@ -61,27 +61,6 @@ namespace Generation
         }
         #endif
 
-        public static Room? TryGetRoom(WorldGenRuntime genRuntime, List<Room> pool, Room[] lastRooms = null!)
-        {
-            string usedSeed = genRuntime.currentSeed;
-            int index;
-            
-            while (true)
-            {
-                if (pool.Count == 0) return null;
-                
-                index = Rng.RandomRange(0, pool.Count, usedSeed);
-
-                if (lastRooms == null) break;
-                if (!lastRooms.Contains(pool[index])) break;
-
-                usedSeed = Rng.MutateNext(usedSeed);
-                pool.RemoveAt(index);
-            }
-            genRuntime.currentSeed = usedSeed;
-            return pool[index];
-        }
-
         public virtual void OnPicked(AreaRuntime pickedArea) {}
         public virtual void UndoPicked(AreaRuntime pickedArea) {}
 

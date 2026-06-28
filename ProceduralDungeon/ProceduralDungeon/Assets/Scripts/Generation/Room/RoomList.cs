@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Util;
 
 namespace Generation
 {
@@ -54,6 +55,27 @@ namespace Generation
             foreach (Texture2D room in this.rooms.Where(room => room != null)) this.roomData.Add(new Room(room));
             this.onRoomsChanged.Invoke();
         }
-        #endif
+#endif
+        
+        public static Room? TryGetRoom(WorldGenRuntime genRuntime, List<Room> pool, Room[] lastRooms = null!)
+        {
+            string usedSeed = genRuntime.currentSeed;
+            int index;
+            
+            while (true)
+            {
+                if (pool.Count == 0) return null;
+                
+                index = Rng.RandomRange(0, pool.Count, usedSeed);
+
+                if (lastRooms == null) break;
+                if (!lastRooms.Contains(pool[index])) break;
+
+                usedSeed = Rng.MutateNext(usedSeed);
+                pool.RemoveAt(index);
+            }
+            genRuntime.currentSeed = usedSeed;
+            return pool[index];
+        }
     }
 }

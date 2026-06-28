@@ -1036,7 +1036,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 3e4ee72ba7e6baf4f826678023db67ca, type: 2}
     - {fileID: 11400000, guid: b4b810f794fb4ae47a5f096a3a8ce503, type: 2}
     roomRepetitionAllowance: 2
-    walkDirectionRepetitionAllowance: 2
+    walkDirectionRepetitionAllowance: 1
   mainSeed: 065231C443B2BCF5
   minDistToBossRoom: 0
   tempWorldGenSprite: {fileID: 2062090701}
@@ -1491,6 +1491,7 @@ MonoBehaviour:
   spacing: 10
   initialPadding: 0
   childAlignment: 6
+  inverseStack: 0
   controlChildWidth: 1
   controlChildHeight: 1
   autoSnapAnchors: 1

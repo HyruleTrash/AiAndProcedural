@@ -25,6 +25,7 @@ public class NotificationManager : MonoBehaviour
     /// <summary>
     /// Globally accessible function to trigger a notification.
     /// </summary>
+    [HideInCallstack]
     public static void Log(string message)
     {
         if (!instance)

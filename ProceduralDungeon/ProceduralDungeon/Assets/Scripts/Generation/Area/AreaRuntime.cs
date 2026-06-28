@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -73,6 +74,40 @@ namespace Generation
                 if (foundTypeList && (genRuntime.lastHadRoomType == null || foundTypeList.roomType != genRuntime.lastHadRoomType.Value)) break;
             }
             return foundTypeList;
+        }
+
+        public IEnumerator WalkthroughArea(WorldGenRuntime genRuntime, MonoBehaviour unityConnection, YieldInstruction waitTime)
+        {
+            while (this.Size > 0)
+            {
+                NotificationManager.Log($"Walking through area: {this.AreaType}, current size left: {this.Size}\nCurrent position is: {genRuntime.CurrentPosition}");
+                
+                RoomRuntime? foundRoom = genRuntime.gridRuntime.GetRoomAtPosition(genRuntime.CurrentPosition);
+
+                if (foundRoom == null)
+                {
+                    NotificationManager.Log("Current walk position empty, trying to add room");
+                    
+                    RoomRuntimeRef runtimeRef = new();
+                    yield return unityConnection.StartCoroutine(genRuntime.AddRoom(this, runtimeRef));
+
+                    // When the addition of a room fails, check if area is still possible
+                    if (runtimeRef.instance == null)
+                    {
+                        if (this.Size <= 0) break;
+                        continue;
+                    }
+                    
+                    NotificationManager.Log("Room added");
+                    foundRoom = runtimeRef.instance;
+                    genRuntime.currentSeed = Rng.MutateNext(genRuntime.currentSeed);
+                }
+
+                if (this.Size <= 0) break;
+                genRuntime.Walk(foundRoom);
+                
+                yield return waitTime;
+            }
         }
     }
 }

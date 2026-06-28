@@ -13,8 +13,7 @@ namespace Generation
     {
         // data
         private MonoBehaviour owner = null!;
-        private string mainSeed = null!;
-        
+
         [SerializeField] private List<Area> areaData = new();
         [SerializeField] private int roomRepetitionAllowance = 2;
         [SerializeField] private int walkDirectionRepetitionAllowance = 2;
@@ -44,7 +43,6 @@ namespace Generation
         public IEnumerator InitiateGen(string seed, float minDistToBossRoom, Action onFinish, WorldGenSnapshot snapshot, Action<WorldGenSnapshot> setOnSnapShotUpdate)
         {
             this.onUpdateSnapshot = setOnSnapShotUpdate;
-            this.mainSeed = seed;
             WorldGenRuntime genRuntime = new(this.owner, this, seed, this.areaData, minDistToBossRoom);
 
             NotificationManager.Log("Starting generator");

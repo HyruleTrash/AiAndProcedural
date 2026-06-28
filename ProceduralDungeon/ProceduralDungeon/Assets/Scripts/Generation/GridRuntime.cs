@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Generation
@@ -10,6 +11,11 @@ namespace Generation
     {
         private readonly List<RoomRuntime> rooms = new();
 
+        /// <summary>
+        /// Gets the room that the position is currently in
+        /// </summary>
+        /// <param name="position">position inside bounds</param>
+        /// <returns>null or the room its inside</returns>
         public RoomRuntime? GetRoomAtPosition(Vector2Int position)
         {
             foreach (RoomRuntime instance in this.rooms)
@@ -32,8 +38,7 @@ namespace Generation
                     position.y >= min.y &&
                     position.y <= max.y;
 
-                if (inside)
-                    return instance;
+                if (inside) return instance;
             }
 
             return null;
@@ -160,5 +165,7 @@ namespace Generation
         {
             foreach (RoomRuntime roomInstance in this.rooms) roomInstance.MutateRemoveLeftDoorPixels();
         }
+
+        public void Clear() => this.rooms.Clear();
     }
 }

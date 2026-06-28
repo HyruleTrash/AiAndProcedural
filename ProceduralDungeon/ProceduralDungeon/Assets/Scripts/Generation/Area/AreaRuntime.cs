@@ -21,6 +21,7 @@ namespace Generation
         private int RoomCount => this.roomTypes.Count;
         public int EndRoomCount => this.endRooms.RoomData.Count;
         public List<Room> EndRooms => this.endRooms.RoomData;
+        private RoomType? lastHadRoomType;
 
         public AreaRuntime(AreaType areaType, int size, List<TypedRoomList> roomTypes, RoomList endRooms, int smallestEndRoomSize)
         {
@@ -61,12 +62,11 @@ namespace Generation
             if (indexPool.Count == 0)
                 throw new Exception("indexPool is empty");
             
-            if (genRuntime.lastHadRoomType != null)
+            if (this.lastHadRoomType != null)
             {
-                bool hasValid = indexPool.Any(i => this.roomTypes[i].roomType != genRuntime.lastHadRoomType.Value);
+                bool hasValid = indexPool.Any(i => this.roomTypes[i].roomType != this.lastHadRoomType.Value);
                 if (!hasValid)
                 {
-                    // genRuntime.lastHadRoomType = null;
                     Debug.LogWarning("only non valid room types are left");
                     return null;
                 }
@@ -77,24 +77,28 @@ namespace Generation
                 genRuntime.MutateRng();
                 foundTypeList = this.roomTypes[foundIndex];
                 
-                if (foundTypeList && (genRuntime.lastHadRoomType == null || foundTypeList.roomType != genRuntime.lastHadRoomType.Value)) break;
+                if (foundTypeList && (this.lastHadRoomType == null || foundTypeList.roomType != this.lastHadRoomType.Value)) break;
             }
             return foundTypeList;
         }
 
-        public IEnumerator WalkthroughArea(WorldGenRuntime genRuntime, MonoBehaviour unityConnection, YieldInstruction waitTime)
+        public IEnumerator WalkthroughArea(WorldGenRuntime.AnimDataWrapper animData)
         {
+            WorldGenRuntime genRuntime = animData.genRuntime;
+            MonoBehaviour unityConnection = animData.unityConnection;
+            float waitTime = animData.waitTime;
+            
             while (this.Size > 0)
             {
-                NotificationManager.Log($"Walking through area: {this.AreaType}, current size left: {this.Size}\nCurrent position is: {genRuntime.CurrentPosition}", genRuntime.owner.GetAnimWaitTime());
-                RoomRuntime? foundRoom = genRuntime.gridRuntime.GetRoomAtPosition(genRuntime.CurrentPosition);
+                NotificationManager.Log($"Walking through area: {this.AreaType}, current size left: {this.Size}\nCurrent position is: {genRuntime.CurrentPosition}", waitTime);
+                RoomRuntime? foundRoom = genRuntime.GetRoomAtPosition(genRuntime.CurrentPosition);
 
                 if (foundRoom == null)
                 {
-                    NotificationManager.Log("Current walk position empty, trying to add room", genRuntime.owner.GetAnimWaitTime());
+                    NotificationManager.Log("Current walk position empty, trying to add room", waitTime);
                     
                     PendingRoomPlacement pendingRoom = new();
-                    yield return unityConnection.StartCoroutine(GetTypedPossibleRoom(genRuntime, pendingRoom, unityConnection));
+                    yield return unityConnection.StartCoroutine(GetTypedPossibleRoom(animData, pendingRoom));
                     
                     RoomRuntimeRef runtimeRef = new();
                     yield return unityConnection.StartCoroutine(genRuntime.AddRoom(this, pendingRoom, runtimeRef));
@@ -106,8 +110,9 @@ namespace Generation
                         continue;
                     }
                     
-                    NotificationManager.Log("Room added", genRuntime.owner.GetAnimWaitTime());
+                    NotificationManager.Log("Room added", waitTime);
                     foundRoom = runtimeRef.instance;
+                    this.lastHadRoomType = foundRoom.roomType; // TODO: make allowance unique per type per area?
                     genRuntime.MutateRng();
                 }
 
@@ -118,8 +123,11 @@ namespace Generation
             }
         }
         
-        private IEnumerator GetTypedPossibleRoom(WorldGenRuntime genRuntime, PendingRoomPlacement pendingRoomPlacement, MonoBehaviour unityConnection)
+        private IEnumerator GetTypedPossibleRoom(WorldGenRuntime.AnimDataWrapper animData, PendingRoomPlacement pendingRoomPlacement)
         {
+            WorldGenRuntime genRuntime = animData.genRuntime;
+            MonoBehaviour unityConnection = animData.unityConnection;
+            
             TypedRoomList? pickedTypeList = null;
             int tries = 0;
             int maxTries = this.RoomCount * 2;
@@ -146,8 +154,15 @@ namespace Generation
             }
         }
 
-        public IEnumerator GetPossibleBossRoom(WorldGenRuntime genRuntime, PendingRoomPlacement pendingRoom, MonoBehaviour unityConnection)
+        /// <summary>
+        /// Checks if there's a possible placement for a boss room, and mutates pendingRoom accordingly
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator GetPossibleBossRoom(WorldGenRuntime.AnimDataWrapper animData, PendingRoomPlacement pendingRoom)
         {
+            WorldGenRuntime genRuntime = animData.genRuntime;
+            MonoBehaviour unityConnection = animData.unityConnection;
+            
             int largestSize = this.endRooms.RoomData.Max(room => room.Size);
             bool isSpaceNeeded = this.Size < largestSize;
             List<Room> maxPool = this.endRooms.RoomData.Where(room => room.Size <= this.Size).ToList();

@@ -47,7 +47,6 @@ namespace Generation
             NotificationManager.Log("Starting generator", GetAnimWaitTime());
             yield return genRuntime.StartGen(seed, this.areaData);
             
-            snapshot.Update(genRuntime.gridRuntime, Vector2Int.zero);
             onFinish.Invoke();
         }
 

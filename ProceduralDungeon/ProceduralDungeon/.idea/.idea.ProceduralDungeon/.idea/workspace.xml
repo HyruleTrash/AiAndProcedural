@@ -6,9 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="db56a5da-aa3f-4c02-a301-5f03de82d696" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProceduralDungeon/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProceduralDungeon/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/SimpleWrappers/GetRoomResult.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/SimpleWrappers/PendingRoomPlacement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/SimpleWrappers/GetRoomResult.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/SimpleWrappers/PendingRoomPlacement.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/Area/AreaRuntime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/Area/AreaRuntime.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/SimpleWrappers/PendingRoomPlacement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/SimpleWrappers/PendingRoomPlacement.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/WorldGenRuntime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/WorldGenRuntime.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/default-6000.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/default-6000.dwlt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +121,7 @@
       <workItem from="1775041101492" duration="45000" />
       <workItem from="1775041167037" duration="34071000" />
       <workItem from="1775107280491" duration="16054000" />
-      <workItem from="1782642370290" duration="22486000" />
+      <workItem from="1782642370290" duration="24608000" />
     </task>
     <servers />
   </component>

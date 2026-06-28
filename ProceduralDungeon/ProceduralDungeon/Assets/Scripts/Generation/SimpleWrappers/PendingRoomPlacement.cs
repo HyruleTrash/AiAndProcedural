@@ -9,6 +9,7 @@ namespace Generation
     public class PendingRoomPlacement
     {
         public Room? possibleRoom;
+        public RoomType possibleRoomType;
         public Vector2Int? center;
         public Room.DoorPointGroup? doorGroup;
     }

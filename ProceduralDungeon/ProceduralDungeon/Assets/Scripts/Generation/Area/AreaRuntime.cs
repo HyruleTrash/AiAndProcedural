@@ -14,10 +14,10 @@ namespace Generation
     {
         private readonly List<TypedRoomList> roomTypes;
         private readonly RoomList endRooms;
-        public AreaType AreaType { get; private set; }
+        public AreaType AreaType { get; }
         public int Size { get; set; }
 
-        public int RoomCount => this.roomTypes.Count;
+        private int RoomCount => this.roomTypes.Count;
         public int EndRoomCount => this.endRooms.RoomData.Count;
         public List<Room> EndRooms => this.endRooms.RoomData;
 
@@ -30,7 +30,7 @@ namespace Generation
             foreach (TypedRoomList list in roomTypes) this.roomTypes.Add(list.Duplicate());
         }
 
-        public TypedRoomList PickTypeList(WorldGenRuntime genRuntime)
+        private TypedRoomList? PickTypeList(WorldGenRuntime genRuntime)
         {
             TypedRoomList foundTypeList;
             List<int> indexPool = new();
@@ -63,7 +63,11 @@ namespace Generation
             {
                 bool hasValid = indexPool.Any(i => this.roomTypes[i].roomType != genRuntime.lastHadRoomType.Value);
                 if (!hasValid)
-                    throw new Exception("only non valid room types are left");
+                {
+                    // genRuntime.lastHadRoomType = null;
+                    Debug.LogWarning("only non valid room types are left");
+                    return null;
+                }
             }
             while (true)
             {
@@ -81,15 +85,17 @@ namespace Generation
             while (this.Size > 0)
             {
                 NotificationManager.Log($"Walking through area: {this.AreaType}, current size left: {this.Size}\nCurrent position is: {genRuntime.CurrentPosition}");
-                
                 RoomRuntime? foundRoom = genRuntime.gridRuntime.GetRoomAtPosition(genRuntime.CurrentPosition);
 
                 if (foundRoom == null)
                 {
                     NotificationManager.Log("Current walk position empty, trying to add room");
                     
+                    PendingRoomPlacement pendingRoom = new();
+                    yield return unityConnection.StartCoroutine(GetTypedPlaceAbleRoom(genRuntime, pendingRoom, unityConnection));
+                    
                     RoomRuntimeRef runtimeRef = new();
-                    yield return unityConnection.StartCoroutine(genRuntime.AddRoom(this, runtimeRef));
+                    yield return unityConnection.StartCoroutine(genRuntime.AddRoom(this, pendingRoom, runtimeRef));
 
                     // When the addition of a room fails, check if area is still possible
                     if (runtimeRef.instance == null)
@@ -107,6 +113,32 @@ namespace Generation
                 genRuntime.Walk(foundRoom);
                 
                 yield return waitTime;
+            }
+        }
+        
+        private IEnumerator GetTypedPlaceAbleRoom(WorldGenRuntime genRuntime, PendingRoomPlacement pendingRoomPlacement, MonoBehaviour unityConnection)
+        {
+            TypedRoomList? pickedTypeList = null;
+            int tries = 0;
+            int maxTries = this.RoomCount * 2;
+            while (true)
+            {
+                genRuntime.MutateSeed();
+                pickedTypeList?.UndoPicked(this);
+                pickedTypeList = PickTypeList(genRuntime);
+                if (!pickedTypeList) continue;
+                pickedTypeList.OnPicked(this);
+                
+                yield return unityConnection.StartCoroutine(genRuntime.TryToGetPlaceAbleRoom(pickedTypeList, this, pendingRoomPlacement));
+
+                if (pendingRoomPlacement.possibleRoom != null)
+                {
+                    pendingRoomPlacement.possibleRoomType = pickedTypeList.roomType;
+                    break;
+                }
+                if (tries >= maxTries) yield break;
+
+                tries++;
             }
         }
     }

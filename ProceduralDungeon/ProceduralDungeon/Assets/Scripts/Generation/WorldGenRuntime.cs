@@ -41,8 +41,7 @@ namespace Generation
             this.backlog = new List<Area>(areaData);
             this.minDistToBossRoom = minDistToBossRoom;
         }
-
-
+        
         /// <summary>
         /// used when trying out a whole different seed
         /// </summary>
@@ -70,7 +69,9 @@ namespace Generation
             this.hadRooms.Add(foundRoom);
             if (this.hadRooms.Count >= roomRepetitionAllowance) this.hadRooms.RemoveRange(this.hadRooms.Count - roomRepetitionAllowance, this.hadRooms.Count);
         }
-        
+
+        public void MutateSeed() => this.currentSeed = Rng.MutateNext(this.currentSeed);
+
         /// <summary>
         /// Triggers the start of a world generation
         /// </summary>
@@ -123,7 +124,7 @@ namespace Generation
         private AreaRuntime GetRandomArea()
         {
             int foundIndex = Rng.RandomRange(0, this.backlog.Count, this.currentSeed);
-            this.currentSeed = Rng.MutateNext(this.currentSeed);
+            MutateSeed();
                 
             AreaRuntime pickedArea = this.backlog[foundIndex].GetAreaGenData(this.currentSeed);
             this.backlog.RemoveAt(foundIndex);
@@ -145,8 +146,7 @@ namespace Generation
             currentRoom.RemoveDoorFromLayout(doorway);
 
             UpdateSnapShot();
-            
-            this.currentSeed = Rng.MutateNext(this.currentSeed);
+            MutateSeed();
         }
 
         private void UpdateSnapShot()
@@ -160,7 +160,7 @@ namespace Generation
             while (true)
             {
                 int index = Rng.RandomRange(0, Extensions.CardinalDirections.Length, this.currentSeed);
-                this.currentSeed = Rng.MutateNext(this.currentSeed);
+                MutateSeed();
 
                 if (Extensions.CardinalDirections[index] == this.currentWalkDirection)
                     this.walkDirRepeated++;
@@ -174,15 +174,8 @@ namespace Generation
             }
         }
 
-        public IEnumerator AddRoom(AreaRuntime pickedArea, RoomRuntimeRef runtimeRef)
+        public IEnumerator AddRoom(AreaRuntime pickedArea, PendingRoomPlacement pendingRoom, RoomRuntimeRef runtimeRef)
         {
-            TypedRoomList pickedTypeList = pickedArea.PickTypeList(this);
-            pickedTypeList.OnPicked(pickedArea);
-            this.currentSeed = Rng.MutateNext(this.currentSeed);
-
-            PendingRoomPlacement pendingRoom = new();
-            yield return this.unityConnection.StartCoroutine(TryGetTypedRoom(pendingRoom, pickedArea, pickedTypeList));
-            
             if (pendingRoom.possibleRoom == null) yield break;
 
             if (pendingRoom.center != null)
@@ -191,13 +184,13 @@ namespace Generation
                 if (pendingRoom.doorGroup != null)
                     placedRoom.RemoveDoorFromLayout(pendingRoom.doorGroup);
                 placedRoom.areaType = pickedArea.AreaType;
-                placedRoom.roomType = pickedTypeList.roomType;
+                placedRoom.roomType = pendingRoom.possibleRoomType;
 
                 NotificationManager.Log($"Adding room of size: {pendingRoom.possibleRoom.Size}");
                 RegisterHadRoom(pendingRoom.possibleRoom, this.owner.RoomRepetitionAllowance);
 
                 pickedArea.Size -= pendingRoom.possibleRoom.Size;
-                this.lastHadRoomType = pickedTypeList.roomType; // TODO: make allowance unique per type per area?
+                this.lastHadRoomType = placedRoom.roomType; // TODO: make allowance unique per type per area?
 
                 runtimeRef.instance = placedRoom;
             }
@@ -205,31 +198,10 @@ namespace Generation
             UpdateSnapShot();
         }
         
-        private IEnumerator TryGetTypedRoom(PendingRoomPlacement pendingRoomPlacement, AreaRuntime pickedArea, TypedRoomList pickedTypeList)
-        {
-            int tries = 0;
-            int maxTries = pickedArea.RoomCount * 2;
-            while (pendingRoomPlacement.possibleRoom == null)
-            {
-                yield return this.unityConnection.StartCoroutine(TryToGetPlaceAbleRoom(pickedTypeList, pickedArea, pendingRoomPlacement));
-
-                if (pendingRoomPlacement.possibleRoom != null) break;
-
-                if (tries >= maxTries) yield break;
-
-                pickedTypeList.UndoPicked(pickedArea);
-                pickedTypeList = pickedArea.PickTypeList(this);
-                pickedTypeList.OnPicked(pickedArea);
-                this.currentSeed = Rng.MutateNext(this.currentSeed);
-
-                tries++;
-            }
-        }
-        
         /// <summary>
         /// Tries to find a spot where it can place a room, updates result accordingly
         /// </summary>
-        private IEnumerator TryToGetPlaceAbleRoom(TypedRoomList pickedTypeList, AreaRuntime pickedArea, PendingRoomPlacement placement)
+        public IEnumerator TryToGetPlaceAbleRoom(TypedRoomList pickedTypeList, AreaRuntime pickedArea, PendingRoomPlacement placement)
         {
             int tries = 0;
             const int maxTries = 64;
@@ -269,7 +241,7 @@ namespace Generation
                         #endif
                     }
 
-                    this.currentSeed = Rng.MutateNext(this.currentSeed);
+                    MutateSeed();
                     tries++;
                     continue;
                 }
@@ -333,7 +305,7 @@ namespace Generation
 
             if (placement.doorGroup == null) return false;
             placement.center = this.currentPosition - placement.doorGroup.roomPoint;
-            this.currentSeed = Rng.MutateNext(this.currentSeed);
+            MutateSeed();
             
             return true;
         }

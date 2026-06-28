@@ -1528,7 +1528,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 847187201}
         m_TargetAssemblyTypeName: Generation.GenerationManager, Assembly-CSharp
-        m_MethodName: GenerateWorld
+        m_MethodName: TriggerGenWorld
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

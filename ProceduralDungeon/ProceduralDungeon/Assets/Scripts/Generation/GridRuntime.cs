@@ -6,9 +6,9 @@ using UnityEngine;
 namespace Generation
 {
     /// <summary>
-    /// Used contain room instances, upon world generation
+    /// A container for runtime rooms
     /// </summary>
-    public class Grid
+    public class GridRuntime
     {
         private readonly List<RoomRuntime> rooms = new();
 

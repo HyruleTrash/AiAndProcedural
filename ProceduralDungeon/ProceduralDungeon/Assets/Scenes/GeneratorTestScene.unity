@@ -1024,16 +1024,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9d181d104f4409995730d67bade49e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Generation.GenerationManager
-  tempWorldGenSprite: {fileID: 2062090701}
-  mainSeed: 065231C443B2BCF5
-  minDistanceBossRoom: 256
-  worldGenerator:
+  worldGen:
     areaData:
+    - {fileID: 11400000, guid: 3e4ee72ba7e6baf4f826678023db67ca, type: 2}
     - {fileID: 11400000, guid: f7738525e4c97394db7963f5ef02cbbe, type: 2}
     - {fileID: 11400000, guid: b4b810f794fb4ae47a5f096a3a8ce503, type: 2}
-    - {fileID: 11400000, guid: 3e4ee72ba7e6baf4f826678023db67ca, type: 2}
     roomRepetitionAllowance: 2
     walkDirectionRepetitionAllowance: 2
+    animWaitTime: 0
+  mainSeed: 065231C443B2BCF5
+  minDistanceBossRoom: 256
+  tempWorldGenSprite: {fileID: 2062090701}
   inputFieldWaitTime: {fileID: 940135085}
   waitTime: 0
 --- !u!114 &847187202
@@ -2467,7 +2468,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 847187201}
         m_TargetAssemblyTypeName: Generation.GenerationManager, Assembly-CSharp
-        m_MethodName: GenerateWorld
+        m_MethodName: TriggerGenWorld
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3240,19 +3241,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.04107981
+      value: 0.14441417
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.07528958
+      value: 0.10714286
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.91784036
+      value: 0.71026343
       objectReference: {fileID: 0}
     - target: {fileID: 3550052683167635357, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.84942085
+      value: 0.78571427
       objectReference: {fileID: 0}
     - target: {fileID: 6881396737788365567, guid: 15c5aa5835e940b47b31e5d6b6b1797a, type: 3}
       propertyPath: m_AssetsPPU

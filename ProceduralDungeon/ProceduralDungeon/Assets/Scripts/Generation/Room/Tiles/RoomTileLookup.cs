@@ -35,9 +35,13 @@ namespace Generation
 
         private void OnEnable()
         {
-            if (LookupInstance)
-                Debug.LogWarning("Only one lookup instance should be active");
+            if (LookupInstance && LookupInstance != this) Debug.LogWarning("Only one lookup instance should be active");
             LookupInstance = this;
+        }
+
+        private void OnDisable()
+        {
+            if (LookupInstance == this) LookupInstance = null;
         }
 
         public RoomTile? GetTile(string key) => this.tiles.FirstOrDefault(x => x.key == key)?.tile;

@@ -7,24 +7,25 @@ using Util;
 
 namespace Generation
 {
+    /// <summary>
+    /// Connects the world gen to unity, made to hold the references and timing
+    /// </summary>
     public class GenManager : MonoBehaviour
     {
-        [SerializeField]
-        private SpriteRenderer tempWorldGenSprite;
-        [SerializeField]
-        private string mainSeed;
-        [SerializeField] 
-        private float minDistanceBossRoom;
-        [SerializeField]
-        private WorldGen worldGen;
-        [SerializeField]
-        private TMP_InputField inputFieldWaitTime;
-        [SerializeField]
-        private float waitTime;
+        [SerializeField] private WorldGen worldGen = new();
+        [SerializeField] private string mainSeed;
+        [SerializeField] private float minDistToBossRoom;
+        
+        [SerializeField] private SpriteRenderer tempWorldGenSprite;
+        [SerializeField] private TMP_InputField inputFieldWaitTime;
+        [SerializeField] private float waitTime;
 
-        private Coroutine routine;
+        private Coroutine genRoutine; // used to make use of unity's wait functions during generation. to create visual
 
 #if UNITY_EDITOR
+        /// <summary>
+        /// Generates the seed used throughout the generated world
+        /// </summary>
         [Button]
         public void GenerateMainSeed()
         {
@@ -32,72 +33,50 @@ namespace Generation
             this.mainSeed = Rng.MutateNext(this.mainSeed);
             Debug.Log($"Seed has been set: {this.mainSeed}");
         }
-        #endif
+#endif
 
         private void OnValidate()
         {
-            WorldGen.WaitTime = this.waitTime;
-            this.inputFieldWaitTime.text = this.waitTime.ToString(CultureInfo.InvariantCulture);
+            UpdateWaitTime();
             this.enabled = this.inputFieldWaitTime;
         }
 
-        private void Start()
+        private void Start() => UpdateWaitTime();
+
+        private void UpdateWaitTime()
         {
-            WorldGen.WaitTime = this.waitTime;
+            this.worldGen.SetAnimWaitTime(this.waitTime);
             this.inputFieldWaitTime.text = this.waitTime.ToString(CultureInfo.InvariantCulture);
         }
 
         public void OnWaitTimeChanged(string time)
         {
             this.waitTime = float.TryParse(this.inputFieldWaitTime.text, NumberStyles.Float, CultureInfo.InvariantCulture, out float result) ? result : 0f;
-            WorldGen.WaitTime = this.waitTime;
+            this.worldGen.SetAnimWaitTime(this.waitTime);
         }
 
-        [Button]
-        public void GenerateWorld()
+        /// <summary>
+        /// Triggers the world gen algorithm connected by button, and connects a coroutine animation
+        /// </summary>
+        public void TriggerGenWorld()
         {
-            if (!Application.isPlaying)
-                return;
-            if (this.routine != null)
-                return;
+            if (!Application.isPlaying || this.genRoutine != null) return;
             this.worldGen.SetOwner(this);
-            WorldGen.GenerationResult result = new();
+            WorldGenSnapshot snapshotRef = new();
+
+            this.genRoutine = StartCoroutine(this.worldGen.InitiateGen(
+                this.mainSeed,
+                this.minDistToBossRoom,
+                OnFinish,
+                snapshotRef,
+                ss => WorldGenSnapshot.GenDebugTex(ss, this.tempWorldGenSprite)));
+            return;
 
             void OnFinish()
             {
-                this.routine = null;
-                GenerateDebugTexture(result);
+                this.genRoutine = null;
+                WorldGenSnapshot.GenDebugTex(snapshotRef, this.tempWorldGenSprite);
             }
-
-            this.routine = StartCoroutine(this.worldGen.Generate(this.mainSeed, result, OnFinish, GenerateDebugTexture, this.minDistanceBossRoom));
-        }
-
-        private void GenerateDebugTexture(WorldGen.GenerationResult result)
-        {
-            Vector2Int size = result.grid.GetWorldSize(out Vector2Int offset);
-            
-            // Adding a border
-            size += Vector2Int.one * 200;
-            offset += Vector2Int.one * 100;
-                
-            Texture2D worldGenTex = new(size.x, size.y, TextureFormat.RGBA32, false)
-            {
-                filterMode = FilterMode.Point,
-                wrapMode = TextureWrapMode.Clamp,
-                anisoLevel = 0
-            };
-
-            Color[] pixels = result.grid.GetPixels(size, offset);
-            int posIndex = (result.currentPosition.y + offset.y) * size.x + result.currentPosition.x + offset.x;
-            pixels[posIndex] = Color.blueViolet;
-            
-            worldGenTex.SetPixels(pixels);
-            worldGenTex.Apply();
-                
-            Rect rect = new(0, 0, worldGenTex.width, worldGenTex.height);
-            Sprite newSprite = Sprite.Create(worldGenTex, rect, new Vector2(0.5f, 0.5f), 32f);
-
-            this.tempWorldGenSprite.sprite = newSprite;
         }
     }
 }

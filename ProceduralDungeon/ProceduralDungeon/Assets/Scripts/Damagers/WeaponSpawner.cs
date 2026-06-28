@@ -11,16 +11,16 @@ public class WeaponSpawner : MonoBehaviour
     [Serializable]
     public class WeaponInstance
     {
-        public GameObject instance;
-        public Weapon weapon;
+        public GameObject instance = null!;
+        public Weapon weapon = null!;
     }
     
     [SerializeField]
-    public Tilemap tilemap;
+    public Tilemap tilemap = null!;
     [SerializeField]
-    public List<Weapon> spawnableWeapons;
+    public List<Weapon> spawnableWeapons = new();
     [SerializeField]
-    public List<WeaponInstance> liveWeapons;
+    public List<WeaponInstance> liveWeapons = new();
     [SerializeField]
     private Bounds bounds;
     [SerializeField]

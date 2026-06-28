@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using BehaviourTree;
 using TMPro;
@@ -18,27 +17,18 @@ namespace Guard
         private static readonly int Attack = Animator.StringToHash("Attack");
 
         [Header("Required Components")]
-        [SerializeField]
-        private Animator animator;
-        [SerializeField]
-        private BehaviourTree.BehaviourTree behaviourTree;
-        [SerializeField]
-        private HealthComponent healthComponent;
-        [SerializeField]
-        private WeaponHandler weaponHandler;
-        [SerializeField]
-        private Movement movementComponent;
-        [SerializeField]
-        private VisionCone visionCone;
-        [SerializeField]
-        private RotateTowardsPoint visionConeRotation;
+        [SerializeField] private Animator animator = null!;
+        [SerializeField] private BehaviourTree.BehaviourTree behaviourTree = null!;
+        [SerializeField] private HealthComponent healthComponent = null!;
+        [SerializeField] private WeaponHandler weaponHandler = null!;
+        [SerializeField] private Movement movementComponent = null!;
+        [SerializeField] private VisionCone visionCone = null!;
+        [SerializeField] private RotateTowardsPoint visionConeRotation = null!;
+        
         [Space, Header("Config")]
-        [SerializeField]
-        private TextMeshPro stateText;
-        [SerializeField] 
-        private float lookAtSpeed = 1;
-        [HideInInspector, SerializeReference] 
-        private WeaponSpawner weaponSpawnerRef;
+        [SerializeField] private TextMeshPro stateText = null!;
+        [SerializeField] private float lookAtSpeed = 1;
+        [HideInInspector, SerializeReference] private WeaponSpawner weaponSpawnerRef = null!;
         private GameObject[] currentlyRegisteredPlayers = {};
         private Vector2 lastLookAtPosition;
 
@@ -169,7 +159,7 @@ namespace Guard
             if (this.currentlyRegisteredPlayers.Length <= 0)
                 return false;
             GameObject player = this.currentlyRegisteredPlayers.First();
-            if (Vector2.Distance(player.transform.position, this.transform.position) > this.weaponHandler.Weapon.attackRange)
+            if (Vector2.Distance(player.transform.position, this.transform.position) > this.weaponHandler.Weapon?.attackRange)
                 return false;
             
             IDamageable damageable = player.GetComponent<IDamageable>();
@@ -184,7 +174,7 @@ namespace Guard
         {
             Vector2? playerPos = GetPlayerPosition();
             if (playerPos.HasValue)
-                return Vector2.Distance(playerPos.Value, this.transform.position) <= this.weaponHandler.Weapon.attackRange;
+                return Vector2.Distance(playerPos.Value, this.transform.position) <= this.weaponHandler.Weapon?.attackRange;
             return false;
         }
 

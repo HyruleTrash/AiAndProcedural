@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,18 +6,12 @@ namespace Player
     [RequireComponent(typeof(Movement), typeof(HealthComponent), typeof(LookAt))]
     public class PlayerManager : MonoBehaviour
     {
-        [SerializeField]
-        private HealthComponent healthComponent;
-        [SerializeField]
-        private Movement movementComponent;
-        [SerializeField]
-        private WalkAnimManager walkAnimManager;
-        [SerializeField]
-        private LookAt lookAtComponent;
-        [SerializeField]
-        private InputActionAsset inputActionAsset;
-        [SerializeField]
-        private Camera playerCamera;
+        [SerializeField] private HealthComponent healthComponent = null!;
+        [SerializeField] private Movement movementComponent = null!;
+        [SerializeField] private WalkAnimManager walkAnimManager = null!;
+        [SerializeField] private LookAt lookAtComponent = null!;
+        [SerializeField] private InputActionAsset inputActionAsset = null!;
+        [SerializeField] private Camera playerCamera = null!;
 
         private void OnValidate()
         {

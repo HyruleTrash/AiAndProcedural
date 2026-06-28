@@ -2,28 +2,24 @@
 
 public class Timer
 {
-    private double _currentTime = 0;
-    private float _maxTime = 0;
-    public Action onEnd;
-    public Action<double> onPlaying;
-    public bool running;
+    private double currentTime;
+    private float maxTime;
+    
+    private bool running;
+    
+    private readonly Action onEnd;
+    // public Action<double> onPlaying;
 
-    public Timer(float maxTime, Action onEnd)
+    public Timer(float maxTime, Action onEnd = null!)
     {
-        this._maxTime = maxTime;
+        this.maxTime = maxTime;
         this.onEnd = onEnd;
         this.running = true;
     }
-        
-    public Timer(float maxTime)
-    {
-        this._maxTime = maxTime;
-        this.running = true;
-    }
-        
+
     public void Reset()
     {
-        this._currentTime = 0;
+        this.currentTime = 0;
         this.running = true;
     }
 
@@ -31,19 +27,17 @@ public class Timer
     {
         if (!this.running)
             return;
-        this._currentTime += dt;
-        this.onPlaying?.Invoke(this._currentTime);
+        this.currentTime += dt;
+        // this.onPlaying?.Invoke(this.currentTime);
         CheckIfEndIsReached();
     }
 
-    public void CheckIfEndIsReached()
+    private void CheckIfEndIsReached()
     {
-        if (this._currentTime >= this._maxTime)
-        {
-            this.onEnd?.Invoke();
-            this.running = false;
-        }
+        if (!(this.currentTime >= this.maxTime)) return;
+        this.onEnd?.Invoke();
+        this.running = false;
     }
 
-    public void Add(float time) => this._maxTime += time;
+    public void Add(float time) => this.maxTime += time;
 }

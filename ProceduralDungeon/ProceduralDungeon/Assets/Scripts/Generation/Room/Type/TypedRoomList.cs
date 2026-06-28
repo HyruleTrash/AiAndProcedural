@@ -5,7 +5,6 @@ using System.Text;
 using UnityEngine;
 using Util;
 #if UNITY_EDITOR
-using Unity.Mathematics;
 using UnityEditor;
 #endif
 
@@ -18,7 +17,7 @@ namespace Generation
         [SerializeField]
         private float weight;
         [SerializeField]
-        private RoomList rooms;
+        private RoomList rooms = null!;
         [SerializeField, HideInInspector]
         public int smallestRoomSize;
 
@@ -36,7 +35,7 @@ namespace Generation
 
         public TypedRoomList Duplicate()
         {
-            TypedRoomList newInstance = CreateInstance(GetType()) as TypedRoomList;
+            TypedRoomList? newInstance = CreateInstance(GetType()) as TypedRoomList;
             newInstance!.roomType = this.roomType;
             newInstance.weight = this.weight;
             newInstance.rooms = new RoomList(this.rooms.RoomData);
@@ -62,22 +61,19 @@ namespace Generation
         }
         #endif
 
-        public static Room TryGetRoom(WorldGenRuntime genRuntime, List<Room> pool, Room[] lastRooms = null)
+        public static Room? TryGetRoom(WorldGenRuntime genRuntime, List<Room> pool, Room[] lastRooms = null!)
         {
             string usedSeed = genRuntime.currentSeed;
             int index;
             
             while (true)
             {
-                if (pool.Count == 0)
-                    return null;
+                if (pool.Count == 0) return null;
                 
                 index = Rng.RandomRange(0, pool.Count, usedSeed);
 
-                if (lastRooms == null)
-                    break;
-                if (!lastRooms.Contains(pool[index]))
-                    break;
+                if (lastRooms == null) break;
+                if (!lastRooms.Contains(pool[index])) break;
 
                 usedSeed = Rng.MutateNext(usedSeed);
                 pool.RemoveAt(index);

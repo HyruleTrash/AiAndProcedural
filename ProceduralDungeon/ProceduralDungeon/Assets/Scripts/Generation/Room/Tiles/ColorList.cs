@@ -7,13 +7,13 @@ namespace Generation
     [Serializable]
     public class ColorList
     {
-        public ColorListInstance[] list;
+        public ColorListInstance[] list = null!;
             
         [Serializable]
         public class ColorListInstance
         {
-            public string key;
-            public TypedColors[] colorList;
+            public string key = null!;
+            public TypedColors[] colorList = null!;
         }
 
         [Serializable]
@@ -28,10 +28,10 @@ namespace Generation
 
         public Color GetColor(AreaType areaType, RoomType roomType, string listInstanceKey)
         {
-            ColorListInstance foundList = this.list.FirstOrDefault(a => a.key == listInstanceKey);
+            ColorListInstance? foundList = this.list.FirstOrDefault(a => a.key == listInstanceKey);
             if (foundList == null) return Color.black;
 
-            TypedColors colorObj = foundList.colorList.FirstOrDefault(AreaOrRoomTypeMatch);
+            TypedColors? colorObj = foundList.colorList.FirstOrDefault(AreaOrRoomTypeMatch);
             return colorObj?.color ?? Color.black;
 
             bool AreaOrRoomTypeMatch(TypedColors a) =>

@@ -8,7 +8,7 @@ namespace Guard
     [Serializable]
     public class WaypointManager
     {
-        public List<Vector2> waypoints;
+        public List<Vector2> waypoints = new();
         public float minimumDistanceToWaypoint;
         public WaypointLoopType loopType;
         public bool direction = true;

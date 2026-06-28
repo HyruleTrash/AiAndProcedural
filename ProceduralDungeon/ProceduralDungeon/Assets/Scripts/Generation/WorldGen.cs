@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
-using Unity.Mathematics;
 using UnityEngine;
-using Util;
 
 namespace Generation
 {

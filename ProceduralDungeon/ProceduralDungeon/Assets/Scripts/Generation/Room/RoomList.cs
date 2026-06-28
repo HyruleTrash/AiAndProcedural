@@ -16,11 +16,22 @@ namespace Generation
         private List<Room> roomData;
         public List<Room> RoomData { get => this.roomData; private set => this.roomData = value; }
 
-        public RoomList(List<Room> givenData) => this.roomData = givenData;
-        public RoomList(RoomList givenData) => this.roomData = givenData.RoomData;
+        public RoomList(List<Room> givenData)
+        {
+            this.rooms = new List<Texture2D>();
+            this.onRoomsChanged = null!;
+            this.roomData = givenData;
+        }
 
-        #if UNITY_EDITOR
-        private bool onRoomsChangedRegistered = false;
+        public RoomList(RoomList givenData)
+        {
+            this.rooms = new List<Texture2D>();
+            this.onRoomsChanged = null!;
+            this.roomData = givenData.RoomData;
+        }
+
+#if UNITY_EDITOR
+        private bool onRoomsChangedRegistered;
         public Action onRoomsChanged;
         
         public void OnValidate()

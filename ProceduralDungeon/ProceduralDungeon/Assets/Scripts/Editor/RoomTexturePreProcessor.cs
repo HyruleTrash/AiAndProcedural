@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Generation;
 using UnityEditor;
 using UnityEngine;
@@ -31,7 +30,7 @@ public class RoomTexturePreProcessor : AssetPostprocessor
         foreach (string path in importedAssets)
         {
             if (!path.StartsWith(TargetFolder) || !IsTextureFile(path)) continue;
-            RoomTileLookup.RoomDataHasBeenUpdated.Invoke();
+            RoomTileLookup.RoomDataHasBeenUpdated?.Invoke();
             Debug.Log("New rooms have been added, or have updated, make sure to save dirty room lists!");
             break;
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
 using UnityEditor;
@@ -15,12 +14,9 @@ namespace Generation
     public class Area : ScriptableObject
     {
         public AreaType areaType;
-        [SerializeField]
-        private Vector2Int minMaxSize; // x is min, y is max
-        [SerializeField, Expandable]
-        private List<TypedRoomList> roomTypes;
-        [SerializeField]
-        private RoomList endRooms;
+        [SerializeField] private Vector2Int minMaxSize; // x is min, y is max
+        [SerializeField, Expandable] private List<TypedRoomList> roomTypes = new();
+        [SerializeField] private RoomList endRooms = null!;
 
         #if UNITY_EDITOR
         private void OnValidate()

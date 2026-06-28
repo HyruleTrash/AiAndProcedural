@@ -27,7 +27,7 @@ namespace Generation
         
         private Vector2Int currentWalkDirection = Vector2Int.zero;
         private Vector2Int currentPosition = Vector2Int.zero;
-        private int walkDirRepeated = 0;
+        private int walkDirRepeated;
         
         private readonly float minDistToBossRoom;
 
@@ -45,6 +45,10 @@ namespace Generation
         {
             this.currentSeed = seed;
             this.backlog = new List<Area>(areaData);
+
+            this.currentWalkDirection = Vector2Int.zero;
+            this.currentPosition = Vector2Int.zero;
+            this.walkDirRepeated = 0;
         }
 
         private void AddToHadRooms(Room foundRoom, int roomRepetitionAllowance)
@@ -66,7 +70,7 @@ namespace Generation
 
                 while (true)
                 {
-                    yield return this.unityConnection.StartCoroutine(AddRoom(this, this.hadAreas.Last(), bossRoomRef, true));
+                    yield return this.unityConnection.StartCoroutine(AddRoom(this, this.hadAreas.Last(), bossRoomRef!, true));
                     if (bossRoomRef != null) break;
                 }
                 
@@ -107,7 +111,7 @@ namespace Generation
             while (pickedArea.Size > 0)
             {
                 Debug.Log($"Walking through area: {pickedArea.AreaType}, current size left: {pickedArea.Size}\nCurrent position is: {genRuntime.currentPosition}");
-                RoomRuntime foundRoom = genRuntime.gridRuntime.GetRoomAtPosition(genRuntime.currentPosition);
+                RoomRuntime? foundRoom = genRuntime.gridRuntime.GetRoomAtPosition(genRuntime.currentPosition);
 
                 if (foundRoom == null)
                 {
@@ -153,7 +157,7 @@ namespace Generation
             }
 
             // Move to doorway of room
-            List<Room.DoorPointGroup> doorways = currentRoom.@ref.DoorPoints.First(dir => dir.key == genRuntime.currentWalkDirection).value;
+            List<Room.DoorPointGroup> doorways = currentRoom.roomRef.DoorPoints.First(dir => dir.key == genRuntime.currentWalkDirection).value;
             Room.DoorPointGroup doorway = doorways[Rng.RandomRange(0, doorways.Count, genRuntime.currentSeed)];
             Vector2Int newPos = currentRoom.position + doorway.roomPoint + genRuntime.currentWalkDirection;
             currentRoom.RemoveDoorFromLayout(doorway);
@@ -180,20 +184,24 @@ namespace Generation
             
             if (getRoomResult.foundRoom == null)
                 yield break;
-            
-            RoomRuntime placedRoom = genRuntime.gridRuntime.PlaceRoom(getRoomResult.foundRoom, getRoomResult.center.Value);
-            if (getRoomResult.doorGroup != null)
-                placedRoom.RemoveDoorFromLayout(getRoomResult.doorGroup);
-            placedRoom.areaType = pickedArea.AreaType;
-            placedRoom.roomType = pickedTypeList.roomType;
 
-            Debug.Log($"Adding room of size: {getRoomResult.foundRoom.Size}");
-            genRuntime.AddToHadRooms(getRoomResult.foundRoom, this.owner.RoomRepetitionAllowance);
+            if (getRoomResult.center != null)
+            {
+                RoomRuntime placedRoom = genRuntime.gridRuntime.PlaceRoom(getRoomResult.foundRoom, getRoomResult.center.Value);
+                if (getRoomResult.doorGroup != null)
+                    placedRoom.RemoveDoorFromLayout(getRoomResult.doorGroup);
+                placedRoom.areaType = pickedArea.AreaType;
+                placedRoom.roomType = pickedTypeList.roomType;
 
-            pickedArea.Size -= getRoomResult.foundRoom.Size;
-            genRuntime.lastHadRoomType = pickedTypeList.roomType; // TODO: make allowance unique per type per area?
+                Debug.Log($"Adding room of size: {getRoomResult.foundRoom.Size}");
+                genRuntime.AddToHadRooms(getRoomResult.foundRoom, this.owner.RoomRepetitionAllowance);
 
-            runtimeRef.runtime = placedRoom;
+                pickedArea.Size -= getRoomResult.foundRoom.Size;
+                genRuntime.lastHadRoomType = pickedTypeList.roomType; // TODO: make allowance unique per type per area?
+
+                runtimeRef.runtime = placedRoom;
+            }
+
             Action<WorldGenSnapshot> onUpdateSnapshot = this.owner.GetOnUpdateSnapshot(this);
             onUpdateSnapshot?.Invoke(new WorldGenSnapshot(genRuntime.gridRuntime, genRuntime.currentPosition));
         }
@@ -228,7 +236,7 @@ namespace Generation
                 Action<WorldGenSnapshot> onUpdateSnapshot = this.owner.GetOnUpdateSnapshot(this);
                 onUpdateSnapshot?.Invoke(new WorldGenSnapshot(genRuntime.gridRuntime, result.center.Value));
 
-                if (genRuntime.gridRuntime.CheckRoomPossible(result.foundRoom, result.center.Value, out RoomRuntime hit))
+                if (genRuntime.gridRuntime.CheckRoomPossible(result.foundRoom, result.center.Value, out RoomRuntime? hit))
                 {
                     if (Vector2.Distance(result.center.Value, Vector2.zero) >= genRuntime.minDistToBossRoom)
                         break;
@@ -241,7 +249,7 @@ namespace Generation
                 if (tries > lastTry)
                 {
                     result = fallbacks.Last();
-                    genRuntime.currentPosition = result.center.Value;
+                    if (result.center != null) genRuntime.currentPosition = result.center.Value;
                     break;
                 }
                 
@@ -352,7 +360,7 @@ namespace Generation
                 overlapAttempts++;
                 if (overlapAttempts > maxOverlapAttempts)
                 {
-                    RoomRuntime neighbour = genRuntime.gridRuntime.GetRoomAtPosition(result.center.Value);
+                    RoomRuntime? neighbour = genRuntime.gridRuntime.GetRoomAtPosition(result.center.Value);
                     if (neighbour != null) Walk(genRuntime, neighbour);
                     
                     if (overlapAttempts >= maxOverlapAttemptsBruteForce)

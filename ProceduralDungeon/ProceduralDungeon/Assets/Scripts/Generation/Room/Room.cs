@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Generation
@@ -71,7 +70,8 @@ namespace Generation
                 Math.Abs(a.b - b.b) < tolerance && 
                 Math.Abs(a.a - b.a) < tolerance;
             
-            RoomTileLookup lookupInstance = RoomTileLookup.LookupInstance;
+            RoomTileLookup? lookupInstance = RoomTileLookup.LookupInstance;
+            if (lookupInstance == null || lookupInstance.tiles == null) return result.ToString();
             
             for (int y = 0; y < texture.height; y++)
             {
@@ -100,8 +100,8 @@ namespace Generation
         {
             List<Vector2> contentPoints = new();
             
-            RoomTileLookup lookupInstance = RoomTileLookup.LookupInstance;
-            char? contentChar = lookupInstance.GetTile("Content")?.text;
+            RoomTileLookup? lookupInstance = RoomTileLookup.LookupInstance;
+            char? contentChar = lookupInstance?.GetTile("Content")?.text;
             
             for (int i = 0; i < layout.Length; i++)
             {
@@ -115,31 +115,31 @@ namespace Generation
         
         private static List<DoorPointListItem> FillDoorPoints(string layout, int width, int height)
         {
-            RoomTileLookup lookupInstance = RoomTileLookup.LookupInstance;
+            RoomTileLookup? lookupInstance = RoomTileLookup.LookupInstance;
             
             List<DoorPointListItem> result = new()
             {
-                new(){key = Vector2Int.up, value = new List<DoorPointGroup>()},
-                new(){key = Vector2Int.down, value = new List<DoorPointGroup>()},
-                new(){key = Vector2Int.left, value = new List<DoorPointGroup>()},
-                new(){key = Vector2Int.right, value = new List<DoorPointGroup>()}
+                new DoorPointListItem {key = Vector2Int.up, value = new List<DoorPointGroup>()},
+                new DoorPointListItem {key = Vector2Int.down, value = new List<DoorPointGroup>()},
+                new DoorPointListItem {key = Vector2Int.left, value = new List<DoorPointGroup>()},
+                new DoorPointListItem {key = Vector2Int.right, value = new List<DoorPointGroup>()}
             };
 
-            List<int> hadIndeces = new();
-            char? doorwayChar = lookupInstance.GetTile("Doorway")?.text;
+            List<int> hadIndices = new();
+            char? doorwayChar = lookupInstance?.GetTile("Doorway")?.text;
             if (doorwayChar == null)
                 throw new Exception("Doorway character not found");
 
             for (int i = 0; i < layout.Length; i++)
             {
                 char c = layout[i];
-                if (c != doorwayChar.Value || hadIndeces.Contains(i))
+                if (c != doorwayChar.Value || hadIndices.Contains(i))
                     continue;
 
                 DoorPointGroup doorPointGroup = new();
                 doorPointGroup.points.Add(new Vector2Int(i % width, i / width));
-                hadIndeces.Add(i);
-                GetDoorPointNeighbours(doorPointGroup, i, layout, ref hadIndeces, doorwayChar.Value, width);
+                hadIndices.Add(i);
+                GetDoorPointNeighbours(doorPointGroup, i, layout, ref hadIndices, doorwayChar.Value, width);
                 Vector2Int key = GetDirectionGetDoorPointGroup(doorPointGroup, width, height);
                 result.First(a => a.key == key).value.Add(doorPointGroup);
             }
@@ -228,8 +228,9 @@ namespace Generation
         public static Color[] GetPixels(string layout, int width, int height, AreaType areaType, RoomType roomType)
         {
             Color[] pixels = new Color[width * height];
-            RoomTileLookup lookupInstance = RoomTileLookup.LookupInstance;
-
+            RoomTileLookup? lookupInstance = RoomTileLookup.LookupInstance;
+            if (!lookupInstance ||  lookupInstance.tiles == null) return pixels;
+            
             int offset = 0;
             for (int i = 0; i < layout.Length; i++)
             {

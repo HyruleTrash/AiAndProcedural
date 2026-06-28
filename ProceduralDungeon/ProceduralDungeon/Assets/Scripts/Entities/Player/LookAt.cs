@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using Util;
 
@@ -9,16 +8,13 @@ namespace Player
     public class LookAt : MonoBehaviour
     {
         [Header("Required Components")]
-        [SerializeField] 
-        private string actionNameLook = "Look";
-        [SerializeField]
-        private LookDirectionManager lookDirectionManager;
-        [SerializeField]
-        private RotateTowardsPoint gunRotation;
-        private Camera playerCamera;
+        [SerializeField] private string actionNameLook = "Look";
+        [SerializeField] private LookDirectionManager lookDirectionManager = null!;
+        [SerializeField] private RotateTowardsPoint gunRotation = null!;
+        private Camera playerCamera = null!;
         
-        private InputActionAsset inputActionAsset;
-        private InputAction lookAction;
+        private InputActionAsset inputActionAsset = null!;
+        private InputAction lookAction = null!;
         private Vector2 inputDirection;
 
         private void OnValidate()

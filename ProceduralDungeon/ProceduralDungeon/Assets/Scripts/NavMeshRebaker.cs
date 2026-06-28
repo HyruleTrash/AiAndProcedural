@@ -1,12 +1,9 @@
-using System;
 using Unity.AI.Navigation;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class NavMeshRebaker : MonoBehaviour
 {
-    [SerializeField] 
-    private NavMeshSurface navMesh;
+    [SerializeField] private NavMeshSurface navMesh = null!;
 
     private void OnValidate()
     {
@@ -14,8 +11,5 @@ public class NavMeshRebaker : MonoBehaviour
         this.enabled = this.navMesh;
     }
 
-    private void FixedUpdate()
-    {
-        this.navMesh.BuildNavMesh();
-    }
+    private void FixedUpdate() => this.navMesh.BuildNavMesh();
 }

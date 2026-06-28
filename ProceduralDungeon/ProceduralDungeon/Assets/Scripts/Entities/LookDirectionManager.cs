@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using Util;
 
@@ -7,7 +6,7 @@ public class LookDirectionManager : MonoBehaviour
 {
     public Vector2 LookDirection { get; private set; }
     private Vector2 toLookAt;
-    public UnityEvent<Vector2> onDirectionChanged;
+    public UnityEvent<Vector2> onDirectionChanged = null!;
 
     public void SetLookAt(Vector2 lookAt)
     {

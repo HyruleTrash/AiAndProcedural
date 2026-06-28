@@ -1,13 +1,10 @@
-using System;
 using TMPro;
 using UnityEngine;
 
 public class SetHealthText : MonoBehaviour
 {
-    [SerializeField]
-    private TextMeshPro healthText;
-    [SerializeField]
-    private HealthComponent healthComponent;
+    [SerializeField] private TextMeshPro healthText = null!;
+    [SerializeField] private HealthComponent healthComponent = null!;
 
     private void OnValidate()
     {

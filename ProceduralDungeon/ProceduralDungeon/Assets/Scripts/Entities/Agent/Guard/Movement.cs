@@ -1,5 +1,4 @@
-﻿using System;
-using DefaultNamespace;
+﻿using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.Events;
 using Util;
@@ -10,20 +9,15 @@ namespace Guard
     public class Movement : MonoBehaviour, IEntityMovement
     {
         [Header("Required Components")]
-        [SerializeField] 
-        private NavigateToPosition navigateToPosition;
-        [SerializeField]
-        private WalkAnimManager walkAnimManager;
-        [SerializeField]
-        private WaypointManager waypointManager;
-        [SerializeField]
-        private LookDirectionManager lookDirectionManager;
-        [SerializeField]
-        private Rigidbody2D rb;
+        [SerializeField] private NavigateToPosition navigateToPosition = null!;
+        [SerializeField] private WalkAnimManager walkAnimManager = null!;
+        [SerializeField] private WaypointManager waypointManager = null!;
+        [SerializeField] private LookDirectionManager lookDirectionManager = null!;
+        [SerializeField] private Rigidbody2D rb = null!;
         [Header("Events"), Space]
-        public UnityEvent<bool> isMovingChanged;
+        public UnityEvent<bool> isMovingChanged = null!;
         public UnityEvent<bool> IsMovingChanged => this.isMovingChanged;
-        private bool isMoving = false;
+        private bool isMoving;
 
         private void OnValidate()
         {

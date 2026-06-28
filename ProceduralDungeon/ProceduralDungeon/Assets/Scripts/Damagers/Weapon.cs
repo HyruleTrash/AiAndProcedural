@@ -3,8 +3,7 @@
 [CreateAssetMenu(fileName = "WeaponAsset", menuName = "Weapons/BaseWeapon")]
 public class Weapon : ScriptableObject
 {
-    [SerializeField]
-    private GameObject prefab;
+    [SerializeField] private GameObject prefab = null!;
     public GameObject Prefab { 
         get => this.prefab;
         private set => this.prefab = value;

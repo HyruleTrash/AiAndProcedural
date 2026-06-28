@@ -7,7 +7,7 @@ public class MoveTowardsTransform2D : MonoBehaviour
     [SerializeField]
     private bool pixelSnapping;
     [Header("Target")]
-    public Transform toLerpTowards;
+    public Transform toLerpTowards = null!;
     [SerializeField]
     private float distFromTargetMin = 0.1f;
     [SerializeField]
@@ -18,7 +18,7 @@ public class MoveTowardsTransform2D : MonoBehaviour
     [SerializeField]
     private float speed = 1f;
     [SerializeField]
-    private AnimationCurve curve;
+    private AnimationCurve curve = new();
     [SerializeField]
     private float curveStrength = 2f;
     [SerializeField] 

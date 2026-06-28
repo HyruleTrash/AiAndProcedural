@@ -10,15 +10,15 @@ public class ScaleBasedOnLookDirection : MonoBehaviour
     [Serializable]
     public class ToFlip
     {
-        public Transform transform;
+        public Transform transform = null!;
         public bool flipX;
         public bool flipY;
     }
     
     [SerializeField]
-    private List<ToFlip> childrenToFlip;
+    private List<ToFlip> childrenToFlip = new();
     public bool flipped = false;
-    public Action directionChanged;
+    public Action directionChanged = null!;
 
     private void OnValidate() => this.enabled = this.childrenToFlip is { Count: > 0 };
 

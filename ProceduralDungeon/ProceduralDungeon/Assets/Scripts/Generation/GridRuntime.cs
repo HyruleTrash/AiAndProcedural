@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Unity.Mathematics;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Generation
@@ -12,12 +10,12 @@ namespace Generation
     {
         private readonly List<RoomRuntime> rooms = new();
 
-        public RoomRuntime GetRoomAtPosition(Vector2Int position)
+        public RoomRuntime? GetRoomAtPosition(Vector2Int position)
         {
             foreach (RoomRuntime instance in this.rooms)
             {
                 Vector2Int center = instance.position;
-                Room room = instance.@ref;
+                Room room = instance.roomRef;
 
                 Vector2 min = new(
                     center.x - room.Width / 2f + 1f,
@@ -41,7 +39,7 @@ namespace Generation
             return null;
         }
 
-        public bool CheckRoomPossible(Room roomToCheck, Vector2Int center, out RoomRuntime firstHit)
+        public bool CheckRoomPossible(Room roomToCheck, Vector2Int center, out RoomRuntime? firstHit)
         {
             Vector2Int newMin = new(
                 center.x - roomToCheck.Width / 2,
@@ -55,7 +53,7 @@ namespace Generation
             foreach (RoomRuntime instance in this.rooms)
             {
                 Vector2Int otherCenter = instance.position;
-                Room other = instance.@ref;
+                Room other = instance.roomRef;
 
                 Vector2Int otherMin = new(
                     otherCenter.x - other.Width / 2,
@@ -87,7 +85,7 @@ namespace Generation
             RoomRuntime roomRuntime = new()
             {
                 position = center,
-                @ref = room
+                roomRef = room
             };
             this.rooms.Add(roomRuntime);
             return roomRuntime;
@@ -102,8 +100,8 @@ namespace Generation
 
             foreach (RoomRuntime roomInstance in this.rooms)
             {
-                int halfW = roomInstance.@ref.Width / 2;
-                int halfH = roomInstance.@ref.Height / 2;
+                int halfW = roomInstance.roomRef.Width / 2;
+                int halfH = roomInstance.roomRef.Height / 2;
 
                 Vector2Int min = new(
                     roomInstance.position.x - halfW,
@@ -130,9 +128,9 @@ namespace Generation
             Color[] pixels = new Color[size.x * size.y];
             foreach (RoomRuntime roomInstance in this.rooms)
             {
-                int roomWidth = roomInstance.@ref.Width;
-                int halfW = roomInstance.@ref.Width / 2;
-                int halfH = roomInstance.@ref.Height / 2;
+                int roomWidth = roomInstance.roomRef.Width;
+                int halfW = roomInstance.roomRef.Width / 2;
+                int halfH = roomInstance.roomRef.Height / 2;
                 Color[] roomPixels = roomInstance.GetPixels();
                 for (int i = 0; i < roomPixels.Length; i++)
                 {

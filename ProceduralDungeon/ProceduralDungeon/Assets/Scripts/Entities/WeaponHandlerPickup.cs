@@ -1,11 +1,9 @@
-using System;
 using Guard;
 using UnityEngine;
 
 public class WeaponHandlerPickup : MonoBehaviour
 {
-    [SerializeField]
-    private Weapon weaponRef;
+    [SerializeField] private Weapon weaponRef = null!;
 
     private void OnValidate() => this.enabled = this.weaponRef;
     private void OnTriggerEnter2D(Collider2D other)

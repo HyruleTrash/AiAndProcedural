@@ -1,21 +1,20 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 public class HealthComponent : MonoBehaviour, IDamageable
 {
-    [SerializeField] 
-    private float maxHealth = 100f;
     public float MaxHealth => this.maxHealth;
-    [SerializeField] 
-    private float currentHealth = 100f;
+    [SerializeField] private float maxHealth = 100f;
+    
+    [SerializeField] private float currentHealth = 100f;
+    
     [Space]
-    public UnityEvent<float> onHealthChange;
-    public UnityEvent onHealthDepleted;
-    [SerializeField]
-    private float maxInvincibilityTime = 1f;
-    private Timer invincibilityTimer;
-    private bool invincible = false;
+    public UnityEvent<float> onHealthChange = new();
+    public UnityEvent onHealthDepleted = new();
+    
+    [SerializeField] private float maxInvincibilityTime = 1f;
+    private Timer invincibilityTimer = null!;
+    private bool invincible;
 
     private void OnEnable() => this.invincibilityTimer = new Timer(this.maxInvincibilityTime, () => this.invincible = false);
     private void Update() => this.invincibilityTimer.Update(Time.deltaTime);

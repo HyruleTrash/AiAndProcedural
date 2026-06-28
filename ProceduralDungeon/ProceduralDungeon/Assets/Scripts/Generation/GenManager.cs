@@ -13,14 +13,14 @@ namespace Generation
     public class GenManager : MonoBehaviour
     {
         [SerializeField] private WorldGen worldGen = new();
-        [SerializeField] private string mainSeed;
+        [SerializeField] private string mainSeed = null!;
         [SerializeField] private float minDistToBossRoom;
         
-        [SerializeField] private SpriteRenderer tempWorldGenSprite;
-        [SerializeField] private TMP_InputField inputFieldWaitTime;
+        [SerializeField] private SpriteRenderer tempWorldGenSprite = null!;
+        [SerializeField] private TMP_InputField inputFieldWaitTime = null!;
         [SerializeField] private float waitTime;
 
-        private Coroutine genRoutine; // used to make use of unity's wait functions during generation. to create visual
+        private Coroutine? genRoutine; // used to make use of unity's wait functions during generation. to create visual
 
 #if UNITY_EDITOR
         /// <summary>

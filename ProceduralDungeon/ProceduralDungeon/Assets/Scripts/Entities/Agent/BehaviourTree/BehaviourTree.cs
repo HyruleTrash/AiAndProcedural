@@ -1,16 +1,15 @@
-using System;
 using UnityEngine;
 
 namespace BehaviourTree
 {
     public class BehaviourTree : MonoBehaviour
     {
-        private INode node;
-        private bool initialized = false;
+        private INode node = null!;
+        private bool initialized;
 
-        public void Initialize(INode node)
+        public void Initialize(INode newNode)
         {
-            this.node = node;
+            this.node = newNode;
             this.initialized = true;
         }
 

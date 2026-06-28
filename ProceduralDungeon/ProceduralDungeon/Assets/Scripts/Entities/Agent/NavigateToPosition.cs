@@ -5,8 +5,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class NavigateToPosition : MonoBehaviour
 {
-    [SerializeField]
-    private NavMeshAgent navMeshAgent;
+    [SerializeField] private NavMeshAgent navMeshAgent = null!;
     private Vector2? targetPosition;
 
     private void OnValidate()

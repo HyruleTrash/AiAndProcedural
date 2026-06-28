@@ -1,13 +1,12 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Guard
 {
     public class WeaponHandler : MonoBehaviour, IDamager
     {
         [SerializeReference]
-        private Weapon weaponRef;
-        public Weapon Weapon => this.weaponRef;
+        private Weapon? weaponRef;
+        public Weapon? Weapon => this.weaponRef;
 
         public void SetWeapon(Weapon toSet) => this.weaponRef = toSet;
 

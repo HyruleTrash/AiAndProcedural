@@ -12,10 +12,10 @@ namespace Player
         [SerializeField] 
         private string actionNameMovement = "Move";
         [SerializeField]
-        private Rigidbody2D rb;
+        private Rigidbody2D rb = null!;
         
         [Header("Events"), Space]
-        public UnityEvent<bool> isMovingChanged;
+        public UnityEvent<bool> isMovingChanged = null!;
         public UnityEvent<bool> IsMovingChanged => this.isMovingChanged;
 
         [Header("Config")]
@@ -30,10 +30,10 @@ namespace Player
         [SerializeField]
         private float drag = 5f;
         [SerializeField]
-        private float applyDragMin = 0f;
+        private float applyDragMin;
         
-        private InputActionAsset inputActionAsset;
-        private InputAction moveAction;
+        private InputActionAsset inputActionAsset = null!;
+        private InputAction moveAction = null!;
         private Vector2 inputDirection;
 
         private bool isWalking;

@@ -4,13 +4,11 @@ using UnityEngine;
 [RequireComponent(typeof(Animator)), RequireComponent(typeof(ScaleBasedOnLookDirection))]
 public class WalkAnimManager : MonoBehaviour
 {
-    [SerializeField]
-    private Animator animator;
-    [SerializeField]
-    private ScaleBasedOnLookDirection scaleBasedOnLookDirection;
+    [SerializeField] private Animator animator = null!;
+    [SerializeField] private ScaleBasedOnLookDirection scaleBasedOnLookDirection = null!;
     private static readonly int IsWalkingIndex = Animator.StringToHash("Walking");
     private static readonly int WalkSpeedIndex = Animator.StringToHash("WalkingSpeed");
-    private IEntityMovement movementComponent;
+    private IEntityMovement movementComponent = null!;
 
     private void OnValidate()
     {

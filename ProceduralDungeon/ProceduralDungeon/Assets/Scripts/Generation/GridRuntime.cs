@@ -203,5 +203,25 @@ namespace Generation
         }
 
         public void Clear() => this.rooms.Clear();
+
+        public List<(RoomRuntime room, Vector2Int position, Vector2Int direction)> GetAllPossibleDoorPositions()
+        {
+            List<(RoomRuntime room, Vector2Int position, Vector2Int direction)> allDoorways = new();
+
+            foreach (RoomRuntime roomInstance in this.rooms)
+            {
+                foreach (Room.DoorPointListItem dirGroup in roomInstance.roomRef.DoorPoints)
+                {
+                    Vector2Int direction = dirGroup.key;
+                    foreach (Room.DoorPointGroup doorGroup in dirGroup.value)
+                    {
+                        Vector2Int worldPosition = roomInstance.position + doorGroup.roomPoint;
+                        allDoorways.Add((roomInstance, worldPosition, direction));
+                    }
+                }
+            }
+
+            return allDoorways;
+        }
     }
 }

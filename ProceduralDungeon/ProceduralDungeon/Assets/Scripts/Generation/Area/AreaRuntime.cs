@@ -146,51 +146,22 @@ namespace Generation
             }
         }
 
-        public IEnumerator TryAddBossRoom(WorldGenRuntime genRuntime, MonoBehaviour unityConnection, YieldInstruction waitTime, RoomRuntimeRef bossRoomRef, float minDistToBossRoom)
+        public IEnumerator GetPossibleBossRoom(WorldGenRuntime genRuntime, PendingRoomPlacement pendingRoom, MonoBehaviour unityConnection)
         {
-            this.Size = int.MaxValue; // This is a bit of a cheat, but it works (:
-            while (true)
-            {
-                RoomRuntime? foundRoom = genRuntime.gridRuntime.GetNearestRoom(genRuntime.CurrentPosition);
-
-                if (foundRoom == null)
-                {
-                    PendingRoomPlacement pendingRoom = new();
-                    yield return unityConnection.StartCoroutine(GetPossibleBossRoom(genRuntime, pendingRoom, unityConnection));
-
-                    float dist = pendingRoom.possibleRoom != null
-                        ? Vector2.Distance(pendingRoom.center!.Value, Vector2.zero)
-                        : 0;
-                    if (dist < minDistToBossRoom)
-                    {
-                        genRuntime.UpdateSnapShot();
-                        Debug.Log("Boss room not possible or too close");
-                        genRuntime.MutateRng();
-                        continue;
-                    }
-                    
-                    RoomRuntimeRef runtimeRef = new();
-                    yield return unityConnection.StartCoroutine(genRuntime.AddRoom(this, pendingRoom, runtimeRef));
-                    
-                    if (runtimeRef.instance == null) continue;
-                    NotificationManager.Log($"Boss room added, {dist} from start", genRuntime.owner.GetAnimWaitTime());
-                    bossRoomRef.instance = runtimeRef.instance;
-                    yield break;
-                }
-                
-                genRuntime.Walk(foundRoom);
-                
-                yield return waitTime;
-            }
-        }
-
-        private IEnumerator GetPossibleBossRoom(WorldGenRuntime genRuntime, PendingRoomPlacement pendingRoom, MonoBehaviour unityConnection)
-        {
+            int largestSize = this.endRooms.RoomData.Max(room => room.Size);
+            bool isSpaceNeeded = this.Size < largestSize;
             List<Room> maxPool = this.endRooms.RoomData.Where(room => room.Size <= this.Size).ToList();
+            
+            if (isSpaceNeeded) this.Size += largestSize; // make area accommodate boss room
+            
             yield return unityConnection.StartCoroutine(genRuntime.TryToGetPossibleRoom(this, pendingRoom, maxPool, this.smallestEndRoomSize, RoomType.EndRoom));
 
             if (pendingRoom.possibleRoom == null) yield break;
             pendingRoom.possibleRoomType = RoomType.EndRoom;
+
+            if (!isSpaceNeeded) yield break; // remove accommodation of boss room, to keep sizing accurate
+            this.Size -= largestSize;
+            this.Size += pendingRoom.possibleRoom.Size;
         }
     }
 }

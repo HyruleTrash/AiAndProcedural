@@ -25,12 +25,12 @@ namespace Generation
         public RoomType? lastHadRoomType;
         private readonly List<Room> hadRooms = new();
         
-        public Vector2Int CurrentPosition => this.currentPosition;
-        private Vector2Int currentPosition = Vector2Int.zero;
+        public Vector2Int CurrentPosition { get; private set; } = Vector2Int.zero;
         private Vector2Int currentWalkDirection = Vector2Int.zero;
         private int walkDirRepeated;
         
         private readonly float minDistToBossRoom;
+        private RepeatSetting walkDirRepeatSetting;
 
         public WorldGenRuntime(MonoBehaviour unityConnection, WorldGen worldGen, string seed, List<Area> areaData,
             float minDistToBossRoom)
@@ -40,6 +40,7 @@ namespace Generation
             this.currentSeed = seed;
             this.backlog = new List<Area>(areaData);
             this.minDistToBossRoom = minDistToBossRoom;
+            this.walkDirRepeatSetting = RepeatSetting.Area;
         }
         
         /// <summary>
@@ -53,7 +54,7 @@ namespace Generation
             this.backlog = new List<Area>(areaData);
 
             this.currentWalkDirection = Vector2Int.zero;
-            this.currentPosition = Vector2Int.zero;
+            this.CurrentPosition = Vector2Int.zero;
             this.walkDirRepeated = 0;
 
             this.lastHadRoomType = null;
@@ -62,6 +63,7 @@ namespace Generation
             this.hadRooms.Clear();
             
             this.gridRuntime.Clear();
+            this.walkDirRepeatSetting = RepeatSetting.Area;
         }
 
         private void RegisterHadRoom(Room foundRoom, int roomRepetitionAllowance)
@@ -71,6 +73,19 @@ namespace Generation
         }
 
         public void MutateRng() => this.currentSeed = Rng.MutateNext(this.currentSeed);
+        
+        private AreaRuntime GetRandomArea()
+        {
+            int foundIndex = Rng.RandomRange(0, this.backlog.Count, this.currentSeed);
+            MutateRng();
+                
+            AreaRuntime pickedArea = this.backlog[foundIndex].GetAreaGenData(this.currentSeed);
+            this.backlog.RemoveAt(foundIndex);
+            
+            return pickedArea;
+        }
+        
+        private AreaRuntime GetHadAreaByType(AreaType areaType) => this.hadAreas.First(a => a.AreaType == areaType);
 
         /// <summary>
         /// Triggers the start of a world generation
@@ -84,25 +99,11 @@ namespace Generation
                 yield return this.unityConnection.StartCoroutine(WalkAllAreas());
                 
                 NotificationManager.Log($"Spawn BossRoom", this.owner.GetAnimWaitTime());
-                
-                AreaRuntime? lastArea = this.hadAreas.Last();
                 RoomRuntimeRef bossRoomRef = new();
-                if (lastArea != null)
-                {
-                    while (true)
-                    {
-                        yield return this.unityConnection.StartCoroutine(lastArea.TryAddBossRoom(
-                            this, 
-                            this.unityConnection, 
-                            this.owner.GetAnimYieldInstruction(), 
-                            bossRoomRef,
-                            this.minDistToBossRoom));
-                        if (bossRoomRef.instance != null) break;
-                    }
-                }
+                yield return this.unityConnection.StartCoroutine(TryAddBossRoom(bossRoomRef));
                 
                 NotificationManager.Log($"ANALYSE PHASE STARTING", this.owner.GetAnimWaitTime());
-                if (Vector2.Distance(this.currentPosition, Vector2.zero) >= this.minDistToBossRoom) break;
+                if (Vector2.Distance(this.CurrentPosition, Vector2.zero) >= this.minDistToBossRoom) break;
 
                 NotificationManager.Log($"GENERATION FAILED, RESTARTING", this.owner.GetAnimWaitTime());
                 this.currentSeed = Rng.MutateNext(seed);
@@ -128,28 +129,17 @@ namespace Generation
 
             NotificationManager.Log("Done with walking through areas", this.owner.GetAnimWaitTime());
         }
-        
-        private AreaRuntime GetRandomArea()
-        {
-            int foundIndex = Rng.RandomRange(0, this.backlog.Count, this.currentSeed);
-            MutateRng();
-                
-            AreaRuntime pickedArea = this.backlog[foundIndex].GetAreaGenData(this.currentSeed);
-            this.backlog.RemoveAt(foundIndex);
-            
-            return pickedArea;
-        }
 
         public void Walk(RoomRuntime currentRoom)
         {
             // go to door
             UpdateWalkDirection(currentRoom.areaType);
-            Room.DoorPointGroup doorway = WalkToDoor(currentRoom.roomRef, this.currentWalkDirection);
+            Room.DoorPointGroup doorway = GetRandomDoor(currentRoom.roomRef, this.currentWalkDirection);
             
             // register that door was used, and space self outside of it
             Vector2Int newPos = currentRoom.position + doorway.roomPoint + this.currentWalkDirection; // position just about outside of room
-            this.currentPosition = newPos;
-            NotificationManager.Log($"Walking from {this.currentPosition} to {newPos}", this.owner.GetAnimWaitTime());
+            this.CurrentPosition = newPos;
+            NotificationManager.Log($"Walking from {this.CurrentPosition} to {newPos}", this.owner.GetAnimWaitTime());
             
             currentRoom.RemoveDoorFromLayout(doorway);
 
@@ -157,16 +147,30 @@ namespace Generation
             MutateRng();
         }
 
-        public void UpdateSnapShot()
+        private void UpdateSnapShot()
         {
             Action<WorldGenSnapshot> onUpdateSnapshot = this.owner.GetOnUpdateSnapshot(this);
-            onUpdateSnapshot?.Invoke(new WorldGenSnapshot(this.gridRuntime, this.currentPosition));
+            onUpdateSnapshot?.Invoke(new WorldGenSnapshot(this.gridRuntime, this.CurrentPosition));
         }
 
         private void UpdateWalkDirection(AreaType areaType)
         {
             while (true)
             {
+                float maxAllowance = 0;
+                switch (this.walkDirRepeatSetting)
+                {
+                    case RepeatSetting.Area:
+                        maxAllowance = this.owner.GetWalkDirectionRepetitionAllowance(areaType);
+                        break;
+                    case RepeatSetting.World:
+                        maxAllowance = int.MaxValue;
+                        break;
+                    case RepeatSetting.Room:
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                
                 int index = Rng.RandomRange(0, Extensions.CardinalDirections.Length, this.currentSeed);
                 MutateRng();
 
@@ -175,7 +179,7 @@ namespace Generation
                 else
                     this.walkDirRepeated = 0;
 
-                if (this.walkDirRepeated > this.owner.GetWalkDirectionRepetitionAllowance(areaType)) continue;
+                if (this.walkDirRepeated > maxAllowance) continue;
 
                 this.currentWalkDirection = Extensions.CardinalDirections[index];
                 break;
@@ -262,7 +266,7 @@ namespace Generation
                     int halfWidth = placement.possibleRoom.Width / 2;
                     int halfHeight = placement.possibleRoom.Height / 2;
                     Vector2Int offset = new(this.currentWalkDirection.x * halfWidth, this.currentWalkDirection.y * halfHeight);
-                    placement.center = this.currentPosition + offset;
+                    placement.center = this.CurrentPosition + offset;
                 }
                 else if (!TryWalkThroughDoor(placement, -this.currentWalkDirection)) break;
 
@@ -307,20 +311,67 @@ namespace Generation
         private bool TryWalkThroughDoor(PendingRoomPlacement placement, Vector2Int walkDirection)
         {
             if (placement.possibleRoom == null) return false;
-            placement.doorGroup = WalkToDoor(placement.possibleRoom, walkDirection);
+            placement.doorGroup = GetRandomDoor(placement.possibleRoom, walkDirection);
 
             if (placement.doorGroup == null) return false;
-            placement.center = this.currentPosition - placement.doorGroup.roomPoint;
+            placement.center = this.CurrentPosition - placement.doorGroup.roomPoint;
             MutateRng();
             
             return true;
         }
 
-        private Room.DoorPointGroup WalkToDoor(Room room, Vector2Int walkDirection)
+        private Room.DoorPointGroup GetRandomDoor(Room room, Vector2Int walkDirection)
         {
             List<Room.DoorPointGroup> doorways = room.DoorPoints
                 .First(dir => dir.key == walkDirection).value;
             return doorways[Rng.RandomRange(0, doorways.Count, this.currentSeed)];
+        }
+
+        /// <summary>
+        /// Gets all possible doorways, then checks overlap, and places a boss room fitting the adjecent area
+        /// </summary>
+        private IEnumerator TryAddBossRoom(RoomRuntimeRef bossRoomRef)
+        {
+            this.walkDirRepeatSetting = RepeatSetting.World;
+            
+            List<(RoomRuntime room, Vector2Int position, Vector2Int direction)> doorPositions = this.gridRuntime.GetAllPossibleDoorPositions()
+                .Where(d => Vector2.Distance(d.position, Vector2.zero) >= this.minDistToBossRoom)
+                .OrderByDescending(d => Vector2.Distance(d.position, Vector2.zero))
+                .ToList();
+
+            for (int i = 0; i < doorPositions.Count; i++)
+            {
+                (RoomRuntime room, Vector2Int position, Vector2Int direction) door = doorPositions[i];
+                this.CurrentPosition = door.room.position;
+                this.currentWalkDirection = door.direction;
+                
+                if (Vector2.Distance(door.position + door.room.position, Vector2.zero) < this.minDistToBossRoom) continue;
+
+                AreaRuntime area = GetHadAreaByType(door.room.areaType);
+
+                PendingRoomPlacement pendingRoom = new();
+                yield return this.unityConnection.StartCoroutine(area.GetPossibleBossRoom(this, pendingRoom,
+                    this.unityConnection));
+
+                float dist = pendingRoom.possibleRoom != null
+                    ? Vector2.Distance(pendingRoom.center!.Value, Vector2.zero)
+                    : 0;
+                if (dist < this.minDistToBossRoom)
+                {
+                    Debug.Log($"Boss room not possible or too close, at door {i}");
+                    continue;
+                }
+
+                RoomRuntimeRef runtimeRef = new();
+                yield return this.unityConnection.StartCoroutine(AddRoom(area, pendingRoom, runtimeRef));
+
+                if (runtimeRef.instance == null) continue;
+
+                NotificationManager.Log($"Boss room added, {dist} from start", this.owner.GetAnimWaitTime());
+                bossRoomRef.instance = runtimeRef.instance;
+                this.CurrentPosition = bossRoomRef.instance.position;
+                yield break;
+            }
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Generation
     {
         private readonly List<TypedRoomList> roomTypes;
         private readonly RoomList endRooms;
+        private readonly int smallestEndRoomSize;
         public AreaType AreaType { get; }
         public int Size { get; set; }
 
@@ -21,12 +22,13 @@ namespace Generation
         public int EndRoomCount => this.endRooms.RoomData.Count;
         public List<Room> EndRooms => this.endRooms.RoomData;
 
-        public AreaRuntime(AreaType areaType, int size, List<TypedRoomList> roomTypes, RoomList endRooms)
+        public AreaRuntime(AreaType areaType, int size, List<TypedRoomList> roomTypes, RoomList endRooms, int smallestEndRoomSize)
         {
             this.AreaType = areaType;
             this.Size = size;
             this.roomTypes = new List<TypedRoomList>();
             this.endRooms = new RoomList(endRooms);
+            this.smallestEndRoomSize = smallestEndRoomSize;
             foreach (TypedRoomList list in roomTypes) this.roomTypes.Add(list.Duplicate());
         }
 
@@ -72,7 +74,7 @@ namespace Generation
             while (true)
             {
                 int foundIndex = indexPool[Rng.RandomRange(0, indexPool.Count, genRuntime.currentSeed)];
-                genRuntime.currentSeed = Rng.MutateNext(genRuntime.currentSeed);
+                genRuntime.MutateRng();
                 foundTypeList = this.roomTypes[foundIndex];
                 
                 if (foundTypeList && (genRuntime.lastHadRoomType == null || foundTypeList.roomType != genRuntime.lastHadRoomType.Value)) break;
@@ -92,7 +94,7 @@ namespace Generation
                     NotificationManager.Log("Current walk position empty, trying to add room", genRuntime.owner.GetAnimWaitTime());
                     
                     PendingRoomPlacement pendingRoom = new();
-                    yield return unityConnection.StartCoroutine(GetTypedPlaceAbleRoom(genRuntime, pendingRoom, unityConnection));
+                    yield return unityConnection.StartCoroutine(GetTypedPossibleRoom(genRuntime, pendingRoom, unityConnection));
                     
                     RoomRuntimeRef runtimeRef = new();
                     yield return unityConnection.StartCoroutine(genRuntime.AddRoom(this, pendingRoom, runtimeRef));
@@ -106,7 +108,7 @@ namespace Generation
                     
                     NotificationManager.Log("Room added", genRuntime.owner.GetAnimWaitTime());
                     foundRoom = runtimeRef.instance;
-                    genRuntime.currentSeed = Rng.MutateNext(genRuntime.currentSeed);
+                    genRuntime.MutateRng();
                 }
 
                 if (this.Size <= 0) break;
@@ -116,14 +118,14 @@ namespace Generation
             }
         }
         
-        private IEnumerator GetTypedPlaceAbleRoom(WorldGenRuntime genRuntime, PendingRoomPlacement pendingRoomPlacement, MonoBehaviour unityConnection)
+        private IEnumerator GetTypedPossibleRoom(WorldGenRuntime genRuntime, PendingRoomPlacement pendingRoomPlacement, MonoBehaviour unityConnection)
         {
             TypedRoomList? pickedTypeList = null;
             int tries = 0;
             int maxTries = this.RoomCount * 2;
             while (true)
             {
-                genRuntime.MutateSeed();
+                genRuntime.MutateRng();
                 pickedTypeList?.UndoPicked(this);
                 pickedTypeList = PickTypeList(genRuntime);
                 if (!pickedTypeList) continue;
@@ -131,7 +133,7 @@ namespace Generation
                 
                 List<Room> maxPool = pickedTypeList.Rooms.RoomData.Where(room => room.Size <= this.Size).ToList();
                 
-                yield return unityConnection.StartCoroutine(genRuntime.TryToGetPlaceAbleRoom(this, pendingRoomPlacement, maxPool, pickedTypeList.smallestRoomSize, pickedTypeList.roomType));
+                yield return unityConnection.StartCoroutine(genRuntime.TryToGetPossibleRoom(this, pendingRoomPlacement, maxPool, pickedTypeList.smallestRoomSize, pickedTypeList.roomType));
 
                 if (pendingRoomPlacement.possibleRoom != null)
                 {
@@ -142,6 +144,53 @@ namespace Generation
 
                 tries++;
             }
+        }
+
+        public IEnumerator TryAddBossRoom(WorldGenRuntime genRuntime, MonoBehaviour unityConnection, YieldInstruction waitTime, RoomRuntimeRef bossRoomRef, float minDistToBossRoom)
+        {
+            this.Size = int.MaxValue; // This is a bit of a cheat, but it works (:
+            while (true)
+            {
+                RoomRuntime? foundRoom = genRuntime.gridRuntime.GetNearestRoom(genRuntime.CurrentPosition);
+
+                if (foundRoom == null)
+                {
+                    PendingRoomPlacement pendingRoom = new();
+                    yield return unityConnection.StartCoroutine(GetPossibleBossRoom(genRuntime, pendingRoom, unityConnection));
+
+                    float dist = pendingRoom.possibleRoom != null
+                        ? Vector2.Distance(pendingRoom.center!.Value, Vector2.zero)
+                        : 0;
+                    if (dist < minDistToBossRoom)
+                    {
+                        genRuntime.UpdateSnapShot();
+                        Debug.Log("Boss room not possible or too close");
+                        genRuntime.MutateRng();
+                        continue;
+                    }
+                    
+                    RoomRuntimeRef runtimeRef = new();
+                    yield return unityConnection.StartCoroutine(genRuntime.AddRoom(this, pendingRoom, runtimeRef));
+                    
+                    if (runtimeRef.instance == null) continue;
+                    NotificationManager.Log($"Boss room added, {dist} from start", genRuntime.owner.GetAnimWaitTime());
+                    bossRoomRef.instance = runtimeRef.instance;
+                    yield break;
+                }
+                
+                genRuntime.Walk(foundRoom);
+                
+                yield return waitTime;
+            }
+        }
+
+        private IEnumerator GetPossibleBossRoom(WorldGenRuntime genRuntime, PendingRoomPlacement pendingRoom, MonoBehaviour unityConnection)
+        {
+            List<Room> maxPool = this.endRooms.RoomData.Where(room => room.Size <= this.Size).ToList();
+            yield return unityConnection.StartCoroutine(genRuntime.TryToGetPossibleRoom(this, pendingRoom, maxPool, this.smallestEndRoomSize, RoomType.EndRoom));
+
+            if (pendingRoom.possibleRoom == null) yield break;
+            pendingRoom.possibleRoomType = RoomType.EndRoom;
         }
     }
 }

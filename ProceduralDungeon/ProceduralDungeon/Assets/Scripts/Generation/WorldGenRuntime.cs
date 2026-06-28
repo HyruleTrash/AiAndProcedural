@@ -70,7 +70,7 @@ namespace Generation
             if (this.hadRooms.Count >= roomRepetitionAllowance) this.hadRooms.RemoveRange(this.hadRooms.Count - roomRepetitionAllowance, this.hadRooms.Count);
         }
 
-        public void MutateSeed() => this.currentSeed = Rng.MutateNext(this.currentSeed);
+        public void MutateRng() => this.currentSeed = Rng.MutateNext(this.currentSeed);
 
         /// <summary>
         /// Triggers the start of a world generation
@@ -83,23 +83,31 @@ namespace Generation
             {
                 yield return this.unityConnection.StartCoroutine(WalkAllAreas());
                 
-                // AreaRuntime? lastArea = this.hadAreas.Last(); TODO
-                // RoomRuntimeRef bossRoomRef = new();
-                //
-                // while (true)
-                // {
-                //     yield return this.unityConnection.StartCoroutine(AddRoom(lastArea, bossRoomRef));
-                //     if (bossRoomRef.instance != null) break;
-                // }
+                NotificationManager.Log($"Spawn BossRoom", this.owner.GetAnimWaitTime());
+                
+                AreaRuntime? lastArea = this.hadAreas.Last();
+                RoomRuntimeRef bossRoomRef = new();
+                if (lastArea != null)
+                {
+                    while (true)
+                    {
+                        yield return this.unityConnection.StartCoroutine(lastArea.TryAddBossRoom(
+                            this, 
+                            this.unityConnection, 
+                            this.owner.GetAnimYieldInstruction(), 
+                            bossRoomRef,
+                            this.minDistToBossRoom));
+                        if (bossRoomRef.instance != null) break;
+                    }
+                }
                 
                 NotificationManager.Log($"ANALYSE PHASE STARTING", this.owner.GetAnimWaitTime());
-                break;
-                // if (Vector2.Distance(this.currentPosition, Vector2.zero) >= this.minDistToBossRoom) break;
+                if (Vector2.Distance(this.currentPosition, Vector2.zero) >= this.minDistToBossRoom) break;
 
                 NotificationManager.Log($"GENERATION FAILED, RESTARTING", this.owner.GetAnimWaitTime());
                 this.currentSeed = Rng.MutateNext(seed);
                 Reset(areaData, this.currentSeed);
-                // bossRoomRef.instance = null;
+                bossRoomRef.instance = null;
             }
 
             this.gridRuntime.RemoveUnusedDoorways();
@@ -124,7 +132,7 @@ namespace Generation
         private AreaRuntime GetRandomArea()
         {
             int foundIndex = Rng.RandomRange(0, this.backlog.Count, this.currentSeed);
-            MutateSeed();
+            MutateRng();
                 
             AreaRuntime pickedArea = this.backlog[foundIndex].GetAreaGenData(this.currentSeed);
             this.backlog.RemoveAt(foundIndex);
@@ -146,10 +154,10 @@ namespace Generation
             currentRoom.RemoveDoorFromLayout(doorway);
 
             UpdateSnapShot();
-            MutateSeed();
+            MutateRng();
         }
 
-        private void UpdateSnapShot()
+        public void UpdateSnapShot()
         {
             Action<WorldGenSnapshot> onUpdateSnapshot = this.owner.GetOnUpdateSnapshot(this);
             onUpdateSnapshot?.Invoke(new WorldGenSnapshot(this.gridRuntime, this.currentPosition));
@@ -160,7 +168,7 @@ namespace Generation
             while (true)
             {
                 int index = Rng.RandomRange(0, Extensions.CardinalDirections.Length, this.currentSeed);
-                MutateSeed();
+                MutateRng();
 
                 if (Extensions.CardinalDirections[index] == this.currentWalkDirection)
                     this.walkDirRepeated++;
@@ -201,7 +209,7 @@ namespace Generation
         /// <summary>
         /// Tries to find a spot where it can place a room, updates result accordingly
         /// </summary>
-        public IEnumerator TryToGetPlaceAbleRoom(AreaRuntime pickedArea, PendingRoomPlacement placement, List<Room> maxPool, float smallestRoomSize, RoomType roomType)
+        public IEnumerator TryToGetPossibleRoom(AreaRuntime pickedArea, PendingRoomPlacement placement, List<Room> maxPool, float smallestRoomSize, RoomType roomType)
         {
             int tries = 0;
             const int maxTries = 64;
@@ -240,7 +248,7 @@ namespace Generation
                         #endif
                     }
 
-                    MutateSeed();
+                    MutateRng();
                     tries++;
                     continue;
                 }
@@ -303,7 +311,7 @@ namespace Generation
 
             if (placement.doorGroup == null) return false;
             placement.center = this.currentPosition - placement.doorGroup.roomPoint;
-            MutateSeed();
+            MutateRng();
             
             return true;
         }

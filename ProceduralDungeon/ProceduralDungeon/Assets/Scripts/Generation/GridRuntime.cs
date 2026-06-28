@@ -43,6 +43,42 @@ namespace Generation
 
             return null;
         }
+        
+        public RoomRuntime? GetNearestRoom(Vector2Int position)
+        {
+            RoomRuntime? found = null;
+            float dist = float.MaxValue;
+            
+            foreach (RoomRuntime instance in this.rooms)
+            {
+                Vector2Int center = instance.position;
+                Room room = instance.roomRef;
+
+                Vector2 min = new(
+                    center.x - room.Width / 2f + 1f,
+                    center.y - room.Height / 2f + 1f
+                );
+                Vector2 max = new(
+                    center.x + room.Width / 2f - 1f,
+                    center.y + room.Height / 2f - 1f
+                );
+
+                bool inside =
+                    position.x >= min.x &&
+                    position.x <= max.x &&
+                    position.y >= min.y &&
+                    position.y <= max.y;
+
+                if (inside) return instance;
+
+                float newDist = Vector2Int.Distance(position, center);
+                if (!(dist > newDist)) continue;
+                dist = newDist;
+                found = instance;
+            }
+
+            return found;
+        }
 
         public bool CheckRoomPossible(Room roomToCheck, Vector2Int center, out RoomRuntime? firstHit)
         {

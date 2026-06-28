@@ -20,6 +20,7 @@ namespace Generation
         
         [SerializeField, Expandable] private List<TypedRoomList> roomTypes = new();
         [SerializeField] private RoomList endRooms = null!;
+        [SerializeField, HideInInspector] public int smallestEndRoomSize;
 
 #if UNITY_EDITOR
         private void OnValidate()
@@ -41,14 +42,21 @@ namespace Generation
 
             this.endRooms.OnValidate();
             this.endRooms.onRoomsChanged = OnRoomsChanged;
+            OnRoomsChanged();
         }
 
-        private void OnRoomsChanged() => EditorUtility.SetDirty(this);
+        private void OnRoomsChanged()
+        {
+            int newSmallest = this.endRooms.RoomData.Select(room => room.Size).Prepend(int.MaxValue).Min();
+            if (this.smallestEndRoomSize == newSmallest) return;
+            this.smallestEndRoomSize = newSmallest;
+            EditorUtility.SetDirty(this);
+        }
 
         private void OnDestroy() => this.endRooms.OnDestroy();
-        #endif
+#endif
 
         public AreaRuntime GetAreaGenData(string seed) =>
-            new(this.areaType, Rng.RandomRange(this.minMaxSize.x, this.minMaxSize.y, seed), this.roomTypes, this.endRooms);
+            new(this.areaType, Rng.RandomRange(this.minMaxSize.x, this.minMaxSize.y, seed), this.roomTypes, this.endRooms, this.smallestEndRoomSize);
     }
 }

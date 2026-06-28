@@ -1037,7 +1037,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: b4b810f794fb4ae47a5f096a3a8ce503, type: 2}
     roomRepetitionAllowance: 2
   mainSeed: 065231C443B2BCF5
-  minDistToBossRoom: 0
+  minDistToBossRoom: 5
   tempWorldGenSprite: {fileID: 2062090701}
   inputFieldWaitTime: {fileID: 940135085}
   waitTime: 0

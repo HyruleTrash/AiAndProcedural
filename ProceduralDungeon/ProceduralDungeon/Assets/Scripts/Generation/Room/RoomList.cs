@@ -10,11 +10,10 @@ namespace Generation
     public class RoomList
     {
         #if UNITY_EDITOR
-        [SerializeField] 
-        private List<Texture2D> rooms;
+        [SerializeField] private List<Texture2D> rooms;
         #endif
-        [SerializeField, HideInInspector]
-        private List<Room> roomData;
+        
+        [SerializeField, HideInInspector] private List<Room> roomData;
         public List<Room> RoomData { get => this.roomData; private set => this.roomData = value; }
 
         public RoomList(List<Room> givenData)

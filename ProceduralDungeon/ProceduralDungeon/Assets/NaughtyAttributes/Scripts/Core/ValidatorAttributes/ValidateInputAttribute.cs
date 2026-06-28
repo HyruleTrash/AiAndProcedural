@@ -10,8 +10,8 @@ namespace NaughtyAttributes
 
         public ValidateInputAttribute(string callbackName, string message = null)
         {
-            CallbackName = callbackName;
-            Message = message;
+            this.CallbackName = callbackName;
+            this.Message = message;
         }
     }
 }

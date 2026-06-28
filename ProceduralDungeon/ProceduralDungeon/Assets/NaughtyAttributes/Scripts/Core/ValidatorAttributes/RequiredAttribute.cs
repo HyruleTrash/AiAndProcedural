@@ -9,7 +9,7 @@ namespace NaughtyAttributes
 
         public RequiredAttribute(string message = null)
         {
-            Message = message;
+            this.Message = message;
         }
     }
 }

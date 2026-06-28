@@ -13,8 +13,8 @@ namespace NaughtyAttributes
 
         public HorizontalLineAttribute(float height = DefaultHeight, EColor color = DefaultColor)
         {
-            Height = height;
-            Color = color;
+            this.Height = height;
+            this.Color = color;
         }
     }
 }

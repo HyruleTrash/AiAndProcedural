@@ -6,6 +6,6 @@ namespace BehaviourTree
     {
         private Func<bool> toExecute;
         public TaskNode(Func<bool> toExecute) => this.toExecute = toExecute;
-        public NodeState Call() => toExecute.Invoke() ? NodeState.Success : NodeState.Failed;
+        public NodeState Call() => this.toExecute.Invoke() ? NodeState.Success : NodeState.Failed;
     }
 }

@@ -10,12 +10,12 @@ public class NavMeshRebaker : MonoBehaviour
 
     private void OnValidate()
     {
-        navMesh ??= GetComponent<NavMeshSurface>();
-        enabled = navMesh;
+        this.navMesh ??= GetComponent<NavMeshSurface>();
+        this.enabled = this.navMesh;
     }
 
     private void FixedUpdate()
     {
-        navMesh.BuildNavMesh();
+        this.navMesh.BuildNavMesh();
     }
 }

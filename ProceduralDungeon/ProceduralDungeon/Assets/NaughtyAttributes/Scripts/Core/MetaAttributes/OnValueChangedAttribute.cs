@@ -9,7 +9,7 @@ namespace NaughtyAttributes
 
         public OnValueChangedAttribute(string callbackName)
         {
-            CallbackName = callbackName;
+            this.CallbackName = callbackName;
         }
     }
 }

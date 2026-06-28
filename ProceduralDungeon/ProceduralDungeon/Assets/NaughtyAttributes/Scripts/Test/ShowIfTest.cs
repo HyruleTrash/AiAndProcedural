@@ -33,17 +33,17 @@ namespace NaughtyAttributes.Test
         public ShowIfNest1 nest1;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class ShowIfNest1
     {
         public bool show1;
         public bool show2;
         public ShowIfEnum enum1;
         [EnumFlags] public ShowIfEnumFlag enum2;
-        public bool Show1 { get { return show1; } }
-        public bool Show2 { get { return show2; } }
-        public ShowIfEnum Enum1 { get { return enum1; } }
-        public ShowIfEnumFlag Enum2 { get { return enum2; } }
+        public bool Show1 { get { return this.show1; } }
+        public bool Show2 { get { return this.show2; } }
+        public ShowIfEnum Enum1 { get { return this.enum1; } }
+        public ShowIfEnumFlag Enum2 { get { return this.enum2; } }
 
         [ShowIf(EConditionOperator.And, "Show1", "Show2")]
         [AllowNesting] // Because it's nested we need to explicitly allow nesting
@@ -68,29 +68,29 @@ namespace NaughtyAttributes.Test
         public ShowIfNest2 nest2;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class ShowIfNest2
     {
         public bool show1;
         public bool show2;
         public ShowIfEnum enum1;
         [EnumFlags] public ShowIfEnumFlag enum2;
-        public bool GetShow1() { return show1; }
-        public bool GetShow2() { return show2; }
-        public ShowIfEnum GetEnum1() { return enum1; }
-        public ShowIfEnumFlag GetEnum2() { return enum2; }
+        public bool GetShow1() { return this.show1; }
+        public bool GetShow2() { return this.show2; }
+        public ShowIfEnum GetEnum1() { return this.enum1; }
+        public ShowIfEnumFlag GetEnum2() { return this.enum2; }
 
         [ShowIf(EConditionOperator.And, "GetShow1", "GetShow2")]
         [MinMaxSlider(0.0f, 1.0f)] // AllowNesting attribute is not needed, because the field is already marked with a custom naughty property drawer
-        public Vector2 showIfAll = new Vector2(0.25f, 0.75f);
+        public Vector2 showIfAll = new(0.25f, 0.75f);
 
         [ShowIf(EConditionOperator.Or, "GetShow1", "GetShow2")]
         [MinMaxSlider(0.0f, 1.0f)] // AllowNesting attribute is not needed, because the field is already marked with a custom naughty property drawer
-        public Vector2 showIfAny = new Vector2(0.25f, 0.75f);
+        public Vector2 showIfAny = new(0.25f, 0.75f);
 
         [ShowIf("GetEnum1", ShowIfEnum.Case2)]
         [MinMaxSlider(0.0f, 1.0f)] // AllowNesting attribute is not needed, because the field is already marked with a custom naughty property drawer
-        public Vector2 showIfEnum = new Vector2(0.25f, 0.75f);
+        public Vector2 showIfEnum = new(0.25f, 0.75f);
 
         [ShowIf("GetEnum2", ShowIfEnumFlag.Flag0)]
         [MinMaxSlider(0.0f, 1.0f)] // AllowNesting attribute is not needed, because the field is already marked with a custom naughty property drawer

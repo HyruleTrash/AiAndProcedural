@@ -18,7 +18,7 @@ namespace NaughtyAttributes.Editor
 
             // Validate
             ValidatorAttribute[] validatorAttributes = PropertyUtility.GetAttributes<ValidatorAttribute>(property);
-            foreach (var validatorAttribute in validatorAttributes)
+            foreach (ValidatorAttribute validatorAttribute in validatorAttributes)
             {
                 validatorAttribute.GetValidator().ValidateProperty(property);
             }
@@ -54,8 +54,10 @@ namespace NaughtyAttributes.Editor
 
         static SpecialCaseDrawerAttributeExtensions()
         {
-            _drawersByAttributeType = new Dictionary<Type, SpecialCasePropertyDrawerBase>();
-            _drawersByAttributeType[typeof(ReorderableListAttribute)] = ReorderableListPropertyDrawer.Instance;
+            _drawersByAttributeType = new Dictionary<Type, SpecialCasePropertyDrawerBase>
+                {
+                    [typeof(ReorderableListAttribute)] = ReorderableListPropertyDrawer.Instance
+                };
         }
 
         public static SpecialCasePropertyDrawerBase GetDrawer(this SpecialCaseDrawerAttribute attr)

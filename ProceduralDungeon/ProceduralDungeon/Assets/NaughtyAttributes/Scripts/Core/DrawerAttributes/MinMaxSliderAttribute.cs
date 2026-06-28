@@ -10,8 +10,8 @@ namespace NaughtyAttributes
 
         public MinMaxSliderAttribute(float minValue, float maxValue)
         {
-            MinValue = minValue;
-            MaxValue = maxValue;
+            this.MinValue = minValue;
+            this.MaxValue = maxValue;
         }
     }
 }

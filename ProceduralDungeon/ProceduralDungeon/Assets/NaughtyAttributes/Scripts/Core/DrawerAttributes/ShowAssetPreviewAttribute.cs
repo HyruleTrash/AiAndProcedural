@@ -13,8 +13,8 @@ namespace NaughtyAttributes
 
         public ShowAssetPreviewAttribute(int width = DefaultWidth, int height = DefaultHeight)
         {
-            Width = width;
-            Height = height;
+            this.Width = width;
+            this.Height = height;
         }
     }
 }

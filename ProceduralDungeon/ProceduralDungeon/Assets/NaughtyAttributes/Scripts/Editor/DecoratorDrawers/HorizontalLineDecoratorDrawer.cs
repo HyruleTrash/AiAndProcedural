@@ -8,7 +8,7 @@ namespace NaughtyAttributes.Editor
     {
         public override float GetHeight()
         {
-            HorizontalLineAttribute lineAttr = (HorizontalLineAttribute)attribute;
+            HorizontalLineAttribute lineAttr = (HorizontalLineAttribute)this.attribute;
             return EditorGUIUtility.singleLineHeight + lineAttr.Height;
         }
 
@@ -16,7 +16,7 @@ namespace NaughtyAttributes.Editor
         {
             Rect rect = EditorGUI.IndentedRect(position);
             rect.y += EditorGUIUtility.singleLineHeight / 3.0f;
-            HorizontalLineAttribute lineAttr = (HorizontalLineAttribute)attribute;
+            HorizontalLineAttribute lineAttr = (HorizontalLineAttribute)this.attribute;
             NaughtyEditorGUI.HorizontalLine(rect, lineAttr.Height, lineAttr.Color.GetColor());
         }
     }

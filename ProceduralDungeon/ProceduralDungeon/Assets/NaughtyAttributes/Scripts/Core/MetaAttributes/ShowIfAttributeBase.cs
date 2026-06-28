@@ -15,14 +15,14 @@ namespace NaughtyAttributes
 
         public ShowIfAttributeBase(string condition)
         {
-            ConditionOperator = EConditionOperator.And;
-            Conditions = new string[1] { condition };
+            this.ConditionOperator = EConditionOperator.And;
+            this.Conditions = new string[1] { condition };
         }
 
         public ShowIfAttributeBase(EConditionOperator conditionOperator, params string[] conditions)
         {
-            ConditionOperator = conditionOperator;
-            Conditions = conditions;
+            this.ConditionOperator = conditionOperator;
+            this.Conditions = conditions;
         }
 
         public ShowIfAttributeBase(string enumName, Enum enumValue)
@@ -33,7 +33,7 @@ namespace NaughtyAttributes
                 throw new ArgumentNullException(nameof(enumValue), "This parameter must be an enum value.");
             }
 
-            EnumValue = enumValue;
+            this.EnumValue = enumValue;
         }
     }
 }

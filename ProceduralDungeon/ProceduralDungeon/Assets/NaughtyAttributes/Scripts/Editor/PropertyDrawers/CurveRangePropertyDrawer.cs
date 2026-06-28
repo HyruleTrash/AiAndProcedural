@@ -27,8 +27,8 @@ namespace NaughtyAttributes.Editor
                 return;
             }
 
-            var curveRangeAttribute = (CurveRangeAttribute)attribute;
-            var curveRanges = new Rect(
+            CurveRangeAttribute curveRangeAttribute = (CurveRangeAttribute)this.attribute;
+            Rect curveRanges = new(
                 curveRangeAttribute.Min.x,
                 curveRangeAttribute.Min.y,
                 curveRangeAttribute.Max.x - curveRangeAttribute.Min.x,

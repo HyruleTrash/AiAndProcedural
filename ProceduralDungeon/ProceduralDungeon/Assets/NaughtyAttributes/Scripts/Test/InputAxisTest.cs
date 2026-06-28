@@ -12,7 +12,7 @@ namespace NaughtyAttributes.Test
         [Button]
         private void LogInputAxis0()
         {
-            Debug.Log(inputAxis0);
+            Debug.Log(this.inputAxis0);
         }
     }
 

@@ -92,7 +92,7 @@ namespace NaughtyAttributes.Editor
 
         private static int IndexOf(string[] scenes, string scene)
         {
-            var index = Array.IndexOf(scenes, scene);
+            int index = Array.IndexOf(scenes, scene);
             return Mathf.Clamp(index, 0, scenes.Length - 1);
         }
     }

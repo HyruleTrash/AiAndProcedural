@@ -7,21 +7,23 @@ namespace NaughtyAttributes.Editor
 {
     public class ReorderableListPropertyDrawer : SpecialCasePropertyDrawerBase
     {
-        public static readonly ReorderableListPropertyDrawer Instance = new ReorderableListPropertyDrawer();
+        public static readonly ReorderableListPropertyDrawer Instance = new();
 
-        private readonly Dictionary<string, ReorderableList> _reorderableListsByPropertyName = new Dictionary<string, ReorderableList>();
+        private readonly Dictionary<string, ReorderableList> _reorderableListsByPropertyName = new();
 
         private GUIStyle _labelStyle;
 
         private GUIStyle GetLabelStyle()
         {
-            if (_labelStyle == null)
+            if (this._labelStyle == null)
             {
-                _labelStyle = new GUIStyle(EditorStyles.boldLabel);
-                _labelStyle.richText = true;
+                this._labelStyle = new GUIStyle(EditorStyles.boldLabel)
+                {
+                    richText = true
+                };
             }
 
-            return _labelStyle;
+            return this._labelStyle;
         }
 
         private string GetPropertyKeyName(SerializedProperty property)
@@ -35,7 +37,7 @@ namespace NaughtyAttributes.Editor
             {
                 string key = GetPropertyKeyName(property);
 
-                if (_reorderableListsByPropertyName.TryGetValue(key, out ReorderableList reorderableList) == false)
+                if (this._reorderableListsByPropertyName.TryGetValue(key, out ReorderableList reorderableList) == false)
                 {
                     return 0;
                 }
@@ -53,7 +55,7 @@ namespace NaughtyAttributes.Editor
                 string key = GetPropertyKeyName(property);
 
                 ReorderableList reorderableList = null;
-                if (!_reorderableListsByPropertyName.ContainsKey(key))
+                if (!this._reorderableListsByPropertyName.ContainsKey(key))
                 {
                     reorderableList = new ReorderableList(property.serializedObject, property, true, true, true, true)
                     {
@@ -79,10 +81,10 @@ namespace NaughtyAttributes.Editor
                         }
                     };
 
-                    _reorderableListsByPropertyName[key] = reorderableList;
+                    this._reorderableListsByPropertyName[key] = reorderableList;
                 }
 
-                reorderableList = _reorderableListsByPropertyName[key];
+                reorderableList = this._reorderableListsByPropertyName[key];
 
                 if (rect == default)
                 {
@@ -103,7 +105,7 @@ namespace NaughtyAttributes.Editor
 
         public void ClearCache()
         {
-            _reorderableListsByPropertyName.Clear();
+            this._reorderableListsByPropertyName.Clear();
         }
 
         private Object GetAssignableObject(Object obj, ReorderableList list)
@@ -149,8 +151,8 @@ namespace NaughtyAttributes.Editor
 
         private void HandleDragAndDrop(Rect rect, ReorderableList list)
         {
-            var currentEvent = Event.current;
-            var usedEvent = false;
+            Event currentEvent = Event.current;
+            bool usedEvent = false;
 
             switch (currentEvent.type)
             {

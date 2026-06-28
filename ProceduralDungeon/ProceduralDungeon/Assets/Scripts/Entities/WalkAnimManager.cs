@@ -14,19 +14,19 @@ public class WalkAnimManager : MonoBehaviour
 
     private void OnValidate()
     {
-        animator ??= GetComponent<Animator>();
-        scaleBasedOnLookDirection ??= GetComponent<ScaleBasedOnLookDirection>();
-        enabled = animator && scaleBasedOnLookDirection;
+        this.animator ??= GetComponent<Animator>();
+        this.scaleBasedOnLookDirection ??= GetComponent<ScaleBasedOnLookDirection>();
+        this.enabled = this.animator && this.scaleBasedOnLookDirection;
     }
         
     public void Connect(IEntityMovement movement)
     {
-        movementComponent = movement;
-        movementComponent.IsMovingChanged.AddListener(SetWalkingAnimation);
-        scaleBasedOnLookDirection.directionChanged += ChangeWalkingSpeed;
+        this.movementComponent = movement;
+        this.movementComponent.IsMovingChanged.AddListener(SetWalkingAnimation);
+        this.scaleBasedOnLookDirection.directionChanged += ChangeWalkingSpeed;
     }
         
-    public void Disconnect() => movementComponent.IsMovingChanged.RemoveListener(SetWalkingAnimation);
-    private void SetWalkingAnimation(bool isWalking) => animator.SetBool(IsWalkingIndex, isWalking);
-    private void ChangeWalkingSpeed() => animator.SetFloat(WalkSpeedIndex, scaleBasedOnLookDirection.flipped ? -1f : 1f);
+    public void Disconnect() => this.movementComponent.IsMovingChanged.RemoveListener(SetWalkingAnimation);
+    private void SetWalkingAnimation(bool isWalking) => this.animator.SetBool(IsWalkingIndex, isWalking);
+    private void ChangeWalkingSpeed() => this.animator.SetFloat(WalkSpeedIndex, this.scaleBasedOnLookDirection.flipped ? -1f : 1f);
 }

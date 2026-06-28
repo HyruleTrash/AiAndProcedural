@@ -6,9 +6,9 @@
 
         public override NodeState Call()
         {
-            foreach (var child in children)
+            foreach (INode child in this.children)
             {
-                var result = child.Call();
+                NodeState result = child.Call();
                 if (result == NodeState.Failed) return NodeState.Failed;
             }
             return NodeState.Success;

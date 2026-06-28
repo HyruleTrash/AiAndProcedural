@@ -9,8 +9,8 @@ namespace BehaviourTree
 
         public override NodeState Call()
         {
-            var states = new List<NodeState>();
-            foreach (var child in children) states.Add(child.Call());
+            List<NodeState> states = new();
+            foreach (INode child in this.children) states.Add(child.Call());
             return states.Count(state => state == NodeState.Success) > 0 ? NodeState.Success : NodeState.Failed;
         }
     }

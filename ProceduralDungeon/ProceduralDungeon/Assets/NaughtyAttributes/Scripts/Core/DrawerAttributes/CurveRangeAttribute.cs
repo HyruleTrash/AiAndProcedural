@@ -12,9 +12,9 @@ namespace NaughtyAttributes
 
         public CurveRangeAttribute(Vector2 min, Vector2 max, EColor color = EColor.Clear)
         {
-            Min = min;
-            Max = max;
-            Color = color;
+            this.Min = min;
+            this.Max = max;
+            this.Color = color;
         }
 
         public CurveRangeAttribute(EColor color)

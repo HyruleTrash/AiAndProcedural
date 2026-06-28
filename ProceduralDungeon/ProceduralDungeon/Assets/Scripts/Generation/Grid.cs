@@ -10,25 +10,25 @@ namespace Generation
     /// </summary>
     public class Grid
     {
-        private List<RoomInstance> rooms = new();
+        private readonly List<RoomRuntime> rooms = new();
 
-        public RoomInstance GetRoomAtPosition(Vector2Int position)
+        public RoomRuntime GetRoomAtPosition(Vector2Int position)
         {
-            foreach (var instance in rooms)
+            foreach (RoomRuntime instance in this.rooms)
             {
-                var center = instance.position;
-                var room = instance.dataRef;
+                Vector2Int center = instance.position;
+                Room room = instance.@ref;
 
-                var min = new Vector2(
+                Vector2 min = new(
                     center.x - room.Width / 2f + 1f,
                     center.y - room.Height / 2f + 1f
                 );
-                var max = new Vector2(
+                Vector2 max = new(
                     center.x + room.Width / 2f - 1f,
                     center.y + room.Height / 2f - 1f
                 );
 
-                var inside =
+                bool inside =
                     position.x >= min.x &&
                     position.x <= max.x &&
                     position.y >= min.y &&
@@ -41,78 +41,76 @@ namespace Generation
             return null;
         }
 
-        public bool CheckRoomPossible(RoomData roomToCheck, Vector2Int center, out RoomInstance firstHit)
+        public bool CheckRoomPossible(Room roomToCheck, Vector2Int center, out RoomRuntime firstHit)
         {
-            var newMin = new Vector2Int(
+            Vector2Int newMin = new(
                 center.x - roomToCheck.Width / 2,
                 center.y - roomToCheck.Height / 2
             );
-            var newMax = new Vector2Int(
+            Vector2Int newMax = new(
                 center.x + roomToCheck.Width / 2,
                 center.y + roomToCheck.Height / 2
             );
 
-            foreach (var instance in rooms)
+            foreach (RoomRuntime instance in this.rooms)
             {
-                var otherCenter = instance.position;
-                var other = instance.dataRef;
+                Vector2Int otherCenter = instance.position;
+                Room other = instance.@ref;
 
-                var otherMin = new Vector2Int(
+                Vector2Int otherMin = new(
                     otherCenter.x - other.Width / 2,
                     otherCenter.y - other.Height / 2
                 );
 
-                var otherMax = new Vector2Int(
+                Vector2Int otherMax = new(
                     otherCenter.x + other.Width / 2,
                     otherCenter.y + other.Height / 2
                 );
 
-                var overlaps =
+                bool overlaps =
                     newMin.x < otherMax.x &&
                     newMax.x > otherMin.x &&
                     newMin.y < otherMax.y &&
                     newMax.y > otherMin.y;
 
-                if (overlaps)
-                {
-                    firstHit = instance;
-                    return false;
-                }
+                if (!overlaps) continue;
+                firstHit = instance;
+                return false;
             }
 
             firstHit = null;
             return true;
         }
 
-        public RoomInstance PlaceRoom(RoomData room, Vector2Int center)
+        public RoomRuntime PlaceRoom(Room room, Vector2Int center)
         {
-            var roomInstance = new RoomInstance
+            RoomRuntime roomRuntime = new()
             {
                 position = center,
-                dataRef = room
+                @ref = room
             };
-            rooms.Add(roomInstance);
-            return roomInstance;
+            this.rooms.Add(roomRuntime);
+            return roomRuntime;
         }
 
         public Vector2Int GetWorldSize(out Vector2Int offset)
         {
-            var minX = int.MaxValue;
-            var minY = int.MaxValue;
-            var maxX = int.MinValue;
-            var maxY = int.MinValue;
+            int minX = int.MaxValue;
+            int minY = int.MaxValue;
+            int maxX = int.MinValue;
+            int maxY = int.MinValue;
 
-            foreach (var roomInstance in rooms)
+            foreach (RoomRuntime roomInstance in this.rooms)
             {
-                var halfW = roomInstance.dataRef.Width / 2;
-                var halfH = roomInstance.dataRef.Height / 2;
+                int halfW = roomInstance.@ref.Width / 2;
+                int halfH = roomInstance.@ref.Height / 2;
 
-                var min = new Vector2Int(
+                Vector2Int min = new(
                     roomInstance.position.x - halfW,
                     roomInstance.position.y - halfH
                 );
 
-                var max = new Vector2Int(
+                Vector2Int max = new(
                     roomInstance.position.x + halfW,
                     roomInstance.position.y + halfH
                 );
@@ -129,28 +127,28 @@ namespace Generation
 
         public Color[] GetPixels(Vector2Int size, Vector2Int offset)
         {
-            var pixels = new Color[size.x * size.y];
-            foreach (var roomInstance in rooms)
+            Color[] pixels = new Color[size.x * size.y];
+            foreach (RoomRuntime roomInstance in this.rooms)
             {
-                var roomWidth = roomInstance.dataRef.Width;
-                var halfW = roomInstance.dataRef.Width / 2;
-                var halfH = roomInstance.dataRef.Height / 2;
-                var roomPixels = roomInstance.GetPixels();
-                for (var i = 0; i < roomPixels.Length; i++)
+                int roomWidth = roomInstance.@ref.Width;
+                int halfW = roomInstance.@ref.Width / 2;
+                int halfH = roomInstance.@ref.Height / 2;
+                Color[] roomPixels = roomInstance.GetPixels();
+                for (int i = 0; i < roomPixels.Length; i++)
                 {
-                    var roomPixel = roomPixels[i];
-                    var pixelPositionInRoom = new Vector2Int(i % roomWidth, i / roomWidth); // using room width, and height, translate flat i to vector2
+                    Color roomPixel = roomPixels[i];
+                    Vector2Int pixelPositionInRoom = new(i % roomWidth, i / roomWidth); // using room width, and height, translate flat i to vector2
                     
-                    var pixelPositionInWorld = new Vector2Int(
+                    Vector2Int pixelPositionInWorld = new(
                         roomInstance.position.x - halfW + pixelPositionInRoom.x,
                         roomInstance.position.y - halfH + pixelPositionInRoom.y
                     );
-                    var pixelPositionOnTexture = pixelPositionInWorld + offset;
+                    Vector2Int pixelPositionOnTexture = pixelPositionInWorld + offset;
 
                     if (pixelPositionOnTexture.x >= 0 && pixelPositionOnTexture.x < size.x &&
                         pixelPositionOnTexture.y >= 0 && pixelPositionOnTexture.y < size.y)
                     {
-                        var targetIndex =
+                        int targetIndex =
                             pixelPositionOnTexture.y * size.x +
                             pixelPositionOnTexture.x; // flatten pixelPositionOnTexture
                         pixels[targetIndex] = roomPixel;
@@ -162,7 +160,7 @@ namespace Generation
 
         public void RemoveUnusedDoorways()
         {
-            foreach (var roomInstance in rooms) roomInstance.MutateRemoveLeftDoorPixels();
+            foreach (RoomRuntime roomInstance in this.rooms) roomInstance.MutateRemoveLeftDoorPixels();
         }
     }
 }

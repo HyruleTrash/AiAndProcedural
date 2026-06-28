@@ -9,7 +9,7 @@ namespace NaughtyAttributes
 
         public BoxGroupAttribute(string name = "")
         {
-            Name = name;
+            this.Name = name;
         }
     }
 }

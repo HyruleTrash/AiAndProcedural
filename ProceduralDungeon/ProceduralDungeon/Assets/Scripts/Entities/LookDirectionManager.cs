@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
+using Util;
 
 public class LookDirectionManager : MonoBehaviour
 {
@@ -10,16 +11,16 @@ public class LookDirectionManager : MonoBehaviour
 
     public void SetLookAt(Vector2 lookAt)
     {
-        toLookAt = lookAt;
-        var newLookDirection = (toLookAt - transform.position.xy()).normalized;
-        if (Vector2.Dot(newLookDirection, LookDirection) > 0.999f) return;
-        LookDirection = newLookDirection;
-        onDirectionChanged.Invoke(newLookDirection);
+        this.toLookAt = lookAt;
+        Vector2 newLookDirection = (this.toLookAt - this.transform.position.xy()).normalized;
+        if (Vector2.Dot(newLookDirection, this.LookDirection) > 0.999f) return;
+        this.LookDirection = newLookDirection;
+        this.onDirectionChanged.Invoke(newLookDirection);
     }
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, transform.position + (Vector3)LookDirection);
+        Gizmos.DrawRay(this.transform.position, this.transform.position + (Vector3)this.LookDirection);
     }
 }

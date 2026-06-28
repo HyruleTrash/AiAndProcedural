@@ -14,7 +14,7 @@ namespace NaughtyAttributes.Editor
         public const float IndentLength = 15.0f;
         public const float HorizontalSpacing = 2.0f;
 
-        private static GUIStyle _buttonStyle = new GUIStyle(GUI.skin.button) { richText = true };
+        private static GUIStyle _buttonStyle = new(GUI.skin.button) { richText = true };
 
         private delegate void PropertyFieldFunction(Rect rect, SerializedProperty property, GUIContent label, bool includeChildren);
 
@@ -25,7 +25,7 @@ namespace NaughtyAttributes.Editor
 
         public static void PropertyField_Layout(SerializedProperty property, bool includeChildren)
         {
-            Rect dummyRect = new Rect();
+            Rect dummyRect = new();
             PropertyField_Implementation(dummyRect, property, includeChildren, DrawPropertyField_Layout);
         }
 
@@ -57,7 +57,7 @@ namespace NaughtyAttributes.Editor
 
                 // Validate
                 ValidatorAttribute[] validatorAttributes = PropertyUtility.GetAttributes<ValidatorAttribute>(property);
-                foreach (var validatorAttribute in validatorAttributes)
+                foreach (ValidatorAttribute validatorAttribute in validatorAttributes)
                 {
                     validatorAttribute.GetValidator().ValidateProperty(property);
                 }
@@ -347,7 +347,7 @@ namespace NaughtyAttributes.Editor
                 {
                     EditorGUILayout.EnumPopup(label, (Enum)value);
                 }
-                else if (valueType.BaseType == typeof(System.Reflection.TypeInfo))
+                else if (valueType.BaseType == typeof(TypeInfo))
                 {
                     EditorGUILayout.TextField(label, value.ToString());
                 }

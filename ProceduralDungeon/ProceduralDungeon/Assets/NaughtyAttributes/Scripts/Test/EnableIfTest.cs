@@ -33,17 +33,17 @@ namespace NaughtyAttributes.Test
         public EnableIfNest1 nest1;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class EnableIfNest1
     {
         public bool enable1;
         public bool enable2;
         public EnableIfEnum enum1;
         [EnumFlags] public EnableIfEnumFlag enum2;
-        public bool Enable1 { get { return enable1; } }
-        public bool Enable2 { get { return enable2; } }
-        public EnableIfEnum Enum1 { get { return enum1; } }
-        public EnableIfEnumFlag Enum2 { get { return enum2; } }
+        public bool Enable1 { get { return this.enable1; } }
+        public bool Enable2 { get { return this.enable2; } }
+        public EnableIfEnum Enum1 { get { return this.enum1; } }
+        public EnableIfEnumFlag Enum2 { get { return this.enum2; } }
 
         [EnableIf(EConditionOperator.And, "Enable1", "Enable2")]
         [AllowNesting] // Because it's nested we need to explicitly allow nesting
@@ -68,29 +68,29 @@ namespace NaughtyAttributes.Test
         public EnableIfNest2 nest2;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class EnableIfNest2
     {
         public bool enable1;
         public bool enable2;
         public EnableIfEnum enum1;
         [EnumFlags] public EnableIfEnumFlag enum2;
-        public bool GetEnable1() { return enable1; }
-        public bool GetEnable2() { return enable2; }
-        public EnableIfEnum GetEnum1() { return enum1; }
-        public EnableIfEnumFlag GetEnum2() { return enum2; }
+        public bool GetEnable1() { return this.enable1; }
+        public bool GetEnable2() { return this.enable2; }
+        public EnableIfEnum GetEnum1() { return this.enum1; }
+        public EnableIfEnumFlag GetEnum2() { return this.enum2; }
 
         [EnableIf(EConditionOperator.And, "GetEnable1", "GetEnable2")]
         [MinMaxSlider(0.0f, 1.0f)] // AllowNesting attribute is not needed, because the field is already marked with a custom naughty property drawer
-        public Vector2 enableIfAll = new Vector2(0.25f, 0.75f);
+        public Vector2 enableIfAll = new(0.25f, 0.75f);
 
         [EnableIf(EConditionOperator.Or, "GetEnable1", "GetEnable2")]
         [MinMaxSlider(0.0f, 1.0f)] // AllowNesting attribute is not needed, because the field is already marked with a custom naughty property drawer
-        public Vector2 enableIfAny = new Vector2(0.25f, 0.75f);
+        public Vector2 enableIfAny = new(0.25f, 0.75f);
 
         [EnableIf("GetEnum1", EnableIfEnum.Case2)]
         [MinMaxSlider(0.0f, 1.0f)] // AllowNesting attribute is not needed, because the field is already marked with a custom naughty property drawer
-        public Vector2 enableIfEnum = new Vector2(0.25f, 0.75f);
+        public Vector2 enableIfEnum = new(0.25f, 0.75f);
 
         [EnableIf("GetEnum2", EnableIfEnumFlag.Flag0)]
         [MinMaxSlider(0.0f, 1.0f)] // AllowNesting attribute is not needed, because the field is already marked with a custom naughty property drawer
@@ -101,7 +101,7 @@ namespace NaughtyAttributes.Test
         public Vector2 enableIfEnumFlagMulti;
     }
 
-    [System.Serializable]
+    [Serializable]
     public enum EnableIfEnum
     {
         Case0,

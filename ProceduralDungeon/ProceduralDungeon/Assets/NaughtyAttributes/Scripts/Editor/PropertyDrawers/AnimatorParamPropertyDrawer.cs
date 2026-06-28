@@ -37,7 +37,7 @@ namespace NaughtyAttributes.Editor
             }
 
             int parametersCount = animatorController.parameters.Length;
-            List<AnimatorControllerParameter> animatorParameters = new List<AnimatorControllerParameter>(parametersCount);
+            List<AnimatorControllerParameter> animatorParameters = new(parametersCount);
             for (int i = 0; i < parametersCount; i++)
             {
                 AnimatorControllerParameter parameter = animatorController.parameters[i];

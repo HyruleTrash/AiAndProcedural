@@ -16,7 +16,7 @@ namespace Player
         
         [Header("Events"), Space]
         public UnityEvent<bool> isMovingChanged;
-        public UnityEvent<bool> IsMovingChanged => isMovingChanged;
+        public UnityEvent<bool> IsMovingChanged => this.isMovingChanged;
 
         [Header("Config")]
         [SerializeField]
@@ -40,23 +40,23 @@ namespace Player
 
         private void OnValidate()
         {
-            rb ??= GetComponent<Rigidbody2D>();
-            enabled = rb;
+            this.rb ??= GetComponent<Rigidbody2D>();
+            this.enabled = this.rb;
         }
 
         public void Connect(InputActionAsset inputAsset)
         {
-            inputActionAsset = inputAsset;
-            moveAction = inputActionAsset.FindAction(actionNameMovement);
-            moveAction.performed += OnMoveActionPerformed;
-            moveAction.canceled += OnMoveActionStopped;
-            moveAction.Enable();
+            this.inputActionAsset = inputAsset;
+            this.moveAction = this.inputActionAsset.FindAction(this.actionNameMovement);
+            this.moveAction.performed += OnMoveActionPerformed;
+            this.moveAction.canceled += OnMoveActionStopped;
+            this.moveAction.Enable();
         }
         
         public void Disconnect()
         {
-            moveAction.performed -= OnMoveActionPerformed;
-            moveAction.canceled -= OnMoveActionStopped;
+            this.moveAction.performed -= OnMoveActionPerformed;
+            this.moveAction.canceled -= OnMoveActionStopped;
         }
 
         private void OnMoveActionPerformed(InputAction.CallbackContext ctx) => UpdateMovementData(ctx);
@@ -64,33 +64,33 @@ namespace Player
 
         private void UpdateMovementData(InputAction.CallbackContext ctx)
         {
-            inputDirection = ctx.ReadValue<Vector2>();
-            isWalking = inputDirection != Vector2.zero;
-            isMovingChanged.Invoke(isWalking);
+            this.inputDirection = ctx.ReadValue<Vector2>();
+            this.isWalking = this.inputDirection != Vector2.zero;
+            this.isMovingChanged.Invoke(this.isWalking);
         }
 
         private void Update()
         {
-            var currentDirection = rb.linearVelocity.normalized;
-            if (isWalking)
+            Vector2 currentDirection = this.rb.linearVelocity.normalized;
+            if (this.isWalking)
             {
-                var changingDirStrength = (-Vector2.Dot(inputDirection, currentDirection) + 1) * turningStrength;
-                if (changingDirStrength <= applyTurnMin)
+                float changingDirStrength = (-Vector2.Dot(this.inputDirection, currentDirection) + 1) * this.turningStrength;
+                if (changingDirStrength <= this.applyTurnMin)
                     changingDirStrength = 1;
-                
-                rb.AddForce(inputDirection * (speed * Time.deltaTime * changingDirStrength), ForceMode2D.Impulse);
+
+                this.rb.AddForce(this.inputDirection * (this.speed * Time.deltaTime * changingDirStrength), ForceMode2D.Impulse);
             }
             else
             {
-                if (rb.linearVelocity.magnitude >= applyDragMin)
-                    rb.AddForce(-currentDirection * (drag * Time.deltaTime), ForceMode2D.Impulse);
+                if (this.rb.linearVelocity.magnitude >= this.applyDragMin)
+                    this.rb.AddForce(-currentDirection * (this.drag * Time.deltaTime), ForceMode2D.Impulse);
                 else
-                    rb.linearVelocity = Vector3.zero;
+                    this.rb.linearVelocity = Vector3.zero;
             }
 
             // Limit velocity
-            rb.linearVelocity = new Vector2(Mathf.Clamp(rb.linearVelocity.x, -velocityLimit, velocityLimit),
-                Mathf.Clamp(rb.linearVelocity.y, -velocityLimit, velocityLimit));
+            this.rb.linearVelocity = new Vector2(Mathf.Clamp(this.rb.linearVelocity.x, -this.velocityLimit, this.velocityLimit),
+                Mathf.Clamp(this.rb.linearVelocity.y, -this.velocityLimit, this.velocityLimit));
         }
     }
 }

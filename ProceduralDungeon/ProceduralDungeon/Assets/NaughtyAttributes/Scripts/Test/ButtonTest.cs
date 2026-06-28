@@ -10,19 +10,19 @@ namespace NaughtyAttributes.Test
         [Button(enabledMode: EButtonEnableMode.Always)]
         private void IncrementMyInt()
         {
-            myInt++;
+            this.myInt++;
         }
 
         [Button("Decrement My Int", EButtonEnableMode.Editor)]
         private void DecrementMyInt()
         {
-            myInt--;
+            this.myInt--;
         }
 
         [Button(enabledMode: EButtonEnableMode.Playmode)]
         private void LogMyInt(string prefix = "MyInt = ")
         {
-            Debug.Log(prefix + myInt);
+            Debug.Log(prefix + this.myInt);
         }
 
         [Button("StartCoroutine")]
@@ -31,7 +31,7 @@ namespace NaughtyAttributes.Test
             int seconds = 5;
             for (int i = 0; i < seconds; i++)
             {
-                myInt++;
+                this.myInt++;
                 yield return new WaitForSeconds(1.0f);
             }
         }

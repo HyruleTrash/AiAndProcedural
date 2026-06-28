@@ -1,15 +1,14 @@
 ﻿using System;
-using UnityEngine;
 
-namespace Generation
+namespace Util
 {
-    public static class RNG
+    public static class Rng
     {
         private static readonly char[] Alphabet = "0123456789ABCDEF".ToCharArray();
         
         public static string MutateNext(string originalSeed)
         {
-            var seed = ParseSeed(originalSeed);
+            ulong seed = ParseSeed(originalSeed);
             return ParseSeed(MutateNext(seed));
         }
 
@@ -19,7 +18,7 @@ namespace Generation
             const ulong BIT_NOISE2 = 0x68E31DA468E31DA4;
             const ulong BIT_NOISE3 = 0x1B56C4E91B56C4E9;
             
-            var result = originalSeed;
+            ulong result = originalSeed;
             result *= BIT_NOISE1;
             result ^= (result >> 8);
             result *= BIT_NOISE2;
@@ -36,12 +35,12 @@ namespace Generation
         /// <returns>Seed as a string</returns>
         public static string ParseSeed(ulong seed)
         {
-            var chars = new char[16]; // amount of characters we're getting from the uint64
+            char[] chars = new char[16]; // amount of characters we're getting from the uint64
             
             // Fill from right to left
-            for (var i = 15; i >= 0; i--)
+            for (int i = 15; i >= 0; i--)
             {
-                var index = (int)(seed & 0xF); // using a bitmask extract needed bits, as index
+                int index = (int)(seed & 0xF); // using a bitmask extract needed bits, as index
                 chars[i] = Alphabet[index];
                 seed >>= 4; // shift by char size
             }
@@ -58,9 +57,9 @@ namespace Generation
             ulong result = 0;
             
             // read from left to right
-            for (var i = 0; i < Math.Min(seed.Length, 16); i++)
+            for (int i = 0; i < Math.Min(seed.Length, 16); i++)
             {
-                var value = GetHexValue(seed[i]);
+                int value = GetHexValue(seed[i]);
                 result = (result << 4) | (uint)value; // shift result to left adding more zeros, then add found value to result
             }
             
@@ -81,15 +80,15 @@ namespace Generation
 
         public static int RandomRange(int min, int max, string randomSeed)
         {
-            var seed = ParseSeed(randomSeed);
-            var normalized = (double)seed / ulong.MaxValue;
+            ulong seed = ParseSeed(randomSeed);
+            double normalized = (double)seed / ulong.MaxValue;
             return (int)(normalized * (max - min)) + min;
         }
         
         public static float RandomRange(float min, float max, string randomSeed)
         {
-            var seed = ParseSeed(randomSeed);
-            var normalized = (double)seed / ulong.MaxValue;
+            ulong seed = ParseSeed(randomSeed);
+            double normalized = (double)seed / ulong.MaxValue;
             return (float)(normalized * (max - min)) + min;
         }
     }

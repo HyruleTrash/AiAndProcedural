@@ -22,25 +22,25 @@ namespace Player
 
         private void OnValidate()
         {
-            healthComponent ??= GetComponent<HealthComponent>();
-            movementComponent ??= GetComponent<Movement>();
-            lookAtComponent ??= GetComponent<LookAt>();
-            enabled = healthComponent && lookAtComponent&& movementComponent && playerCamera && inputActionAsset != null;
-            walkAnimManager ??= GetComponent<WalkAnimManager>();
+            this.healthComponent ??= GetComponent<HealthComponent>();
+            this.movementComponent ??= GetComponent<Movement>();
+            this.lookAtComponent ??= GetComponent<LookAt>();
+            this.enabled = this.healthComponent && this.lookAtComponent&& this.movementComponent && this.playerCamera && this.inputActionAsset != null;
+            this.walkAnimManager ??= GetComponent<WalkAnimManager>();
         }
 
         private void Start()
         {
-            movementComponent.Connect(inputActionAsset);
-            lookAtComponent.Connect(inputActionAsset, playerCamera);
-            walkAnimManager?.Connect(movementComponent);
+            this.movementComponent.Connect(this.inputActionAsset);
+            this.lookAtComponent.Connect(this.inputActionAsset, this.playerCamera);
+            this.walkAnimManager?.Connect(this.movementComponent);
         }
 
         private void OnDestroy()
         {
-            movementComponent.Disconnect();
-            lookAtComponent.Disconnect();
-            walkAnimManager?.Disconnect();
+            this.movementComponent.Disconnect();
+            this.lookAtComponent.Disconnect();
+            this.walkAnimManager?.Disconnect();
         }
     }
 }

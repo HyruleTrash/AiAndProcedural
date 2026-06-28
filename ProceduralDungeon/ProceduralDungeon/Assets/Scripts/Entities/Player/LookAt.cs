@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Util;
 
 namespace Player
 {
@@ -22,35 +23,35 @@ namespace Player
 
         private void OnValidate()
         {
-            lookDirectionManager ??= GetComponent<LookDirectionManager>();
-            enabled = lookDirectionManager;
+            this.lookDirectionManager ??= GetComponent<LookDirectionManager>();
+            this.enabled = this.lookDirectionManager;
         }
 
         public void Connect(InputActionAsset inputAsset, Camera newCamera)
         {
-            inputActionAsset = inputAsset;
-            playerCamera = newCamera;
-            lookAction = inputActionAsset.FindAction(actionNameLook);
-            lookAction.performed += OnLookActionPerformed;
-            lookAction.Enable();
+            this.inputActionAsset = inputAsset;
+            this.playerCamera = newCamera;
+            this.lookAction = this.inputActionAsset.FindAction(this.actionNameLook);
+            this.lookAction.performed += OnLookActionPerformed;
+            this.lookAction.Enable();
         }
 
-        public void Disconnect() => lookAction.performed -= OnLookActionPerformed;
+        public void Disconnect() => this.lookAction.performed -= OnLookActionPerformed;
         private void OnLookActionPerformed(InputAction.CallbackContext ctx)
         {
             if (ctx.control.device is Mouse)
             {
-                var mouseScreen = Mouse.current.position.ReadValue();
-                var mouseWorld = playerCamera.ScreenToWorldPoint(mouseScreen);
-                lookDirectionManager.SetLookAt(mouseWorld);
-                gunRotation?.UpdateRotation(mouseWorld);
-                inputDirection = lookDirectionManager.LookDirection;
+                Vector2 mouseScreen = Mouse.current.position.ReadValue();
+                Vector3 mouseWorld = this.playerCamera.ScreenToWorldPoint(mouseScreen);
+                this.lookDirectionManager.SetLookAt(mouseWorld);
+                this.gunRotation?.UpdateRotation(mouseWorld);
+                this.inputDirection = this.lookDirectionManager.LookDirection;
             }
             else
             {
-                lookDirectionManager.SetLookAt(inputDirection.normalized + transform.position.xy());
-                gunRotation?.UpdateRotation(inputDirection.normalized + gunRotation.transform.position.xy());
-                inputDirection = ctx.ReadValue<Vector2>();
+                this.lookDirectionManager.SetLookAt(this.inputDirection.normalized + this.transform.position.xy());
+                this.gunRotation?.UpdateRotation(this.inputDirection.normalized + this.gunRotation.transform.position.xy());
+                this.inputDirection = ctx.ReadValue<Vector2>();
             }
         }
     }

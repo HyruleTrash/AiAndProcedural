@@ -11,22 +11,23 @@ public class NavigateToPosition : MonoBehaviour
 
     private void OnValidate()
     {
-        navMeshAgent ??= GetComponent<NavMeshAgent>();
-        enabled = navMeshAgent && navMeshAgent.enabled;
+        this.navMeshAgent ??= GetComponent<NavMeshAgent>();
+        this.enabled = this.navMeshAgent && this.navMeshAgent.enabled;
     }
 
     public void SetTargetPosition(Vector2? position)
     {
-        targetPosition = position;
-        if (targetPosition == null)
+        this.targetPosition = position;
+        if (this.targetPosition == null)
             return;
 
-        navMeshAgent.enabled = true;
-        try { navMeshAgent.SetDestination(targetPosition.Value); }
-        catch (Exception _) {
+        this.navMeshAgent.enabled = true;
+        try {
+            this.navMeshAgent.SetDestination(this.targetPosition.Value); }
+        catch (Exception) {
             // ignored
         }
     }
 
-    public Vector2? GetTargetPosition() => targetPosition;
+    public Vector2? GetTargetPosition() => this.targetPosition;
 }

@@ -12,16 +12,16 @@ namespace NaughtyAttributes
 
         public ProgressBarAttribute(string name, float maxValue, EColor color = EColor.Blue)
         {
-            Name = name;
-            MaxValue = maxValue;
-            Color = color;
+            this.Name = name;
+            this.MaxValue = maxValue;
+            this.Color = color;
         }
 
         public ProgressBarAttribute(string name, string maxValueName, EColor color = EColor.Blue)
         {
-            Name = name;
-            MaxValueName = maxValueName;
-            Color = color;
+            this.Name = name;
+            this.MaxValueName = maxValueName;
+            this.Color = color;
         }
 
         public ProgressBarAttribute(float maxValue, EColor color = EColor.Blue)

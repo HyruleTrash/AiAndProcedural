@@ -11,16 +11,16 @@ public class SetHealthText : MonoBehaviour
 
     private void OnValidate()
     {
-        healthText ??= GetComponent<TextMeshPro>();
-        healthComponent ??= GetComponentInParent<HealthComponent>();
+        this.healthText ??= GetComponent<TextMeshPro>();
+        this.healthComponent ??= GetComponentInParent<HealthComponent>();
     }
 
     private void OnEnable()
     {
-        healthComponent.onHealthChange.AddListener(OnHealthChange);
-        OnHealthChange(healthComponent.MaxHealth);
+        this.healthComponent.onHealthChange.AddListener(OnHealthChange);
+        OnHealthChange(this.healthComponent.MaxHealth);
     }
 
-    private void OnDisable() => healthComponent.onHealthChange.RemoveListener(OnHealthChange);
-    private void OnHealthChange(float health) => healthText.text = $"HP: {health}/{healthComponent.MaxHealth}";
+    private void OnDisable() => this.healthComponent.onHealthChange.RemoveListener(OnHealthChange);
+    private void OnHealthChange(float health) => this.healthText.text = $"HP: {health}/{this.healthComponent.MaxHealth}";
 }

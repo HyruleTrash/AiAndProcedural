@@ -13,46 +13,45 @@ public class VisionCone : MonoBehaviour
     private LayerMask obstacleLayerMask;
     [SerializeField]
     private float viewDistance;
-    public float ViewDistance { get => viewDistance; private set => viewDistance = value; }
+    public float ViewDistance { get => this.viewDistance; private set => this.viewDistance = value; }
     [SerializeField, Range(0, 360)]
     private float fieldOfView;
-    public float FieldOfView { get => fieldOfView; private set => fieldOfView = value; }
+    public float FieldOfView { get => this.fieldOfView; private set => this.fieldOfView = value; }
     [SerializeField]
     private float minDistance = 0.1f;
 
     public Vector3 DirFromAngle(float angleInDegrees, bool isGlobal)
     {
-        if (!isGlobal) angleInDegrees -= transform.eulerAngles.z + offsetRotation.eulerAngles.z;
+        if (!isGlobal) angleInDegrees -= this.transform.eulerAngles.z + this.offsetRotation.eulerAngles.z;
         return new Vector3(MathF.Sin(angleInDegrees * Mathf.Deg2Rad), MathF.Cos(angleInDegrees * Mathf.Deg2Rad), 0);
     }
 
     public GameObject[] GetCurrentlySeenObjects()
     {
-        var hits = Physics2D.CircleCastAll(transform.position, viewDistance, Vector2.up, 0, targetLayerMask);
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(this.transform.position, this.viewDistance, Vector2.up, 0, this.targetLayerMask);
         return hits.Length == 0 ? Array.Empty<GameObject>() : AreTransformsInCone(hits.Select(hit => hit.collider.gameObject).ToArray());
     }
 
     public GameObject[] AreTransformsInCone(GameObject[] gameObjects)
     {
-        var visibleHits = gameObjects.Where(obj =>
+        GameObject[] visibleHits = gameObjects.Where(obj =>
         {
             if (!obj.activeInHierarchy) return false;
             
-            var target = obj.transform;
-            var dirToTarget = (target.position - transform.position).normalized;
+            Transform target = obj.transform;
+            Vector3 dirToTarget = (target.position - this.transform.position).normalized;
 
-            var angle = Vector3.Angle(transform.right, dirToTarget);
-            if (!(angle < fieldOfView / 2)) return false;
+            float angle = Vector3.Angle(this.transform.right, dirToTarget);
+            if (!(angle < this.fieldOfView / 2)) return false;
             
-            var distToTarget = Vector2.Distance(transform.position, target.transform.position);
-            if (distToTarget < minDistance) return true;
+            float distToTarget = Vector2.Distance(this.transform.position, target.transform.position);
+            if (distToTarget < this.minDistance) return true;
             
-            var result = Physics2D.Raycast(transform.position, dirToTarget, distToTarget + 1,
-                obstacleLayerMask + targetLayerMask);
+            RaycastHit2D result = Physics2D.Raycast(this.transform.position, dirToTarget, distToTarget + 1, this.obstacleLayerMask + this.targetLayerMask);
             if (!result) return false;
             
-            if ((obstacleLayerMask.value & (1 << result.collider.gameObject.layer)) != 0) return false;
-            if ((targetLayerMask.value & (1 << result.collider.gameObject.layer)) != 0) return true;
+            if ((this.obstacleLayerMask.value & (1 << result.collider.gameObject.layer)) != 0) return false;
+            if ((this.targetLayerMask.value & (1 << result.collider.gameObject.layer)) != 0) return true;
 
             return false;
         }).ToArray();
@@ -62,12 +61,12 @@ public class VisionCone : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        var seen = GetCurrentlySeenObjects();
+        GameObject[] seen = GetCurrentlySeenObjects();
         
-        var color = Color.red;
+        Color color = Color.red;
         Gizmos.color = color;
         
-        foreach (var obj in seen)
+        foreach (GameObject obj in seen)
         {
             if (!obj) continue;
             Gizmos.DrawSphere(obj.transform.position + Vector3.back, 0.5f);

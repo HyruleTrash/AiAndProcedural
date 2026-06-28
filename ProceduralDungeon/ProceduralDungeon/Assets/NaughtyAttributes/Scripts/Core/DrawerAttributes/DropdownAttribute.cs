@@ -11,7 +11,7 @@ namespace NaughtyAttributes
 
         public DropdownAttribute(string valuesName)
         {
-            ValuesName = valuesName;
+            this.ValuesName = valuesName;
         }
     }
 
@@ -25,17 +25,17 @@ namespace NaughtyAttributes
 
         public DropdownList()
         {
-            _values = new List<KeyValuePair<string, object>>();
+            this._values = new List<KeyValuePair<string, object>>();
         }
 
         public void Add(string displayName, T value)
         {
-            _values.Add(new KeyValuePair<string, object>(displayName, value));
+            this._values.Add(new KeyValuePair<string, object>(displayName, value));
         }
 
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
-            return _values.GetEnumerator();
+            return this._values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -45,8 +45,8 @@ namespace NaughtyAttributes
 
         public static explicit operator DropdownList<object>(DropdownList<T> target)
         {
-            DropdownList<object> result = new DropdownList<object>();
-            foreach (var kvp in target)
+            DropdownList<object> result = new();
+            foreach (KeyValuePair<string, object> kvp in target)
             {
                 result.Add(kvp.Key, kvp.Value);
             }

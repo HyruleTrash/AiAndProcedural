@@ -12,7 +12,7 @@ namespace NaughtyAttributes.Test
         [Button]
         private void LogTag0()
         {
-            Debug.Log(tag0);
+            Debug.Log(this.tag0);
         }
     }
 

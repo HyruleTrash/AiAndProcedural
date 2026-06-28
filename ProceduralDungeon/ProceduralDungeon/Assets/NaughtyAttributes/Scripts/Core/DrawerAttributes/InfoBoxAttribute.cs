@@ -17,8 +17,8 @@ namespace NaughtyAttributes
 
         public InfoBoxAttribute(string text, EInfoBoxType type = EInfoBoxType.Normal)
         {
-            Text = text;
-            Type = type;
+            this.Text = text;
+            this.Type = type;
         }
     }
 }

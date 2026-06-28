@@ -7,25 +7,22 @@ using UnityEngine;
 namespace NaughtyAttributes.Editor
 {
     [CanEditMultipleObjects]
-    [CustomEditor(typeof(UnityEngine.Object), true)]
+    [CustomEditor(typeof(Object), true)]
     public class NaughtyInspector : UnityEditor.Editor
     {
-        private List<SerializedProperty> _serializedProperties = new List<SerializedProperty>();
+        private List<SerializedProperty> _serializedProperties = new();
         private IEnumerable<FieldInfo> _nonSerializedFields;
         private IEnumerable<PropertyInfo> _nativeProperties;
         private IEnumerable<MethodInfo> _methods;
-        private Dictionary<string, SavedBool> _foldouts = new Dictionary<string, SavedBool>();
+        private Dictionary<string, SavedBool> _foldouts = new();
 
         protected virtual void OnEnable()
         {
-            _nonSerializedFields = ReflectionUtility.GetAllFields(
-                target, f => f.GetCustomAttributes(typeof(ShowNonSerializedFieldAttribute), true).Length > 0);
+            this._nonSerializedFields = ReflectionUtility.GetAllFields(this.target, f => f.GetCustomAttributes(typeof(ShowNonSerializedFieldAttribute), true).Length > 0);
 
-            _nativeProperties = ReflectionUtility.GetAllProperties(
-                target, p => p.GetCustomAttributes(typeof(ShowNativePropertyAttribute), true).Length > 0);
+            this._nativeProperties = ReflectionUtility.GetAllProperties(this.target, p => p.GetCustomAttributes(typeof(ShowNativePropertyAttribute), true).Length > 0);
 
-            _methods = ReflectionUtility.GetAllMethods(
-                target, m => m.GetCustomAttributes(typeof(ButtonAttribute), true).Length > 0);
+            this._methods = ReflectionUtility.GetAllMethods(this.target, m => m.GetCustomAttributes(typeof(ButtonAttribute), true).Length > 0);
         }
 
         protected virtual void OnDisable()
@@ -35,9 +32,9 @@ namespace NaughtyAttributes.Editor
 
         public override void OnInspectorGUI()
         {
-            GetSerializedProperties(ref _serializedProperties);
+            GetSerializedProperties(ref this._serializedProperties);
 
-            bool anyNaughtyAttribute = _serializedProperties.Any(p => PropertyUtility.GetAttribute<INaughtyAttribute>(p) != null);
+            bool anyNaughtyAttribute = this._serializedProperties.Any(p => PropertyUtility.GetAttribute<INaughtyAttribute>(p) != null);
             if (!anyNaughtyAttribute)
             {
                 DrawDefaultInspector();
@@ -55,13 +52,13 @@ namespace NaughtyAttributes.Editor
         protected void GetSerializedProperties(ref List<SerializedProperty> outSerializedProperties)
         {
             outSerializedProperties.Clear();
-            using (var iterator = serializedObject.GetIterator())
+            using (SerializedProperty iterator = this.serializedObject.GetIterator())
             {
                 if (iterator.NextVisible(true))
                 {
                     do
                     {
-                        outSerializedProperties.Add(serializedObject.FindProperty(iterator.name));
+                        outSerializedProperties.Add(this.serializedObject.FindProperty(iterator.name));
                     }
                     while (iterator.NextVisible(false));
                 }
@@ -70,10 +67,10 @@ namespace NaughtyAttributes.Editor
 
         protected void DrawSerializedProperties()
         {
-            serializedObject.Update();
+            this.serializedObject.Update();
 
             // Draw non-grouped serialized properties
-            foreach (var property in GetNonGroupedProperties(_serializedProperties))
+            foreach (SerializedProperty property in GetNonGroupedProperties(this._serializedProperties))
             {
                 if (property.name.Equals("m_Script", System.StringComparison.Ordinal))
                 {
@@ -89,7 +86,7 @@ namespace NaughtyAttributes.Editor
             }
 
             // Draw grouped serialized properties
-            foreach (var group in GetGroupedProperties(_serializedProperties))
+            foreach (IGrouping<string, SerializedProperty> group in GetGroupedProperties(this._serializedProperties))
             {
                 IEnumerable<SerializedProperty> visibleProperties = group.Where(p => PropertyUtility.IsVisible(p));
                 if (!visibleProperties.Any())
@@ -98,7 +95,7 @@ namespace NaughtyAttributes.Editor
                 }
 
                 NaughtyEditorGUI.BeginBoxGroup_Layout(group.Key);
-                foreach (var property in visibleProperties)
+                foreach (SerializedProperty property in visibleProperties)
                 {
                     NaughtyEditorGUI.PropertyField_Layout(property, includeChildren: true);
                 }
@@ -107,7 +104,7 @@ namespace NaughtyAttributes.Editor
             }
 
             // Draw foldout serialized properties
-            foreach (var group in GetFoldoutProperties(_serializedProperties))
+            foreach (IGrouping<string, SerializedProperty> group in GetFoldoutProperties(this._serializedProperties))
             {
                 IEnumerable<SerializedProperty> visibleProperties = group.Where(p => PropertyUtility.IsVisible(p));
                 if (!visibleProperties.Any())
@@ -115,27 +112,27 @@ namespace NaughtyAttributes.Editor
                     continue;
                 }
 
-                if (!_foldouts.ContainsKey(group.Key))
+                if (!this._foldouts.ContainsKey(group.Key))
                 {
-                    _foldouts[group.Key] = new SavedBool($"{target.GetInstanceID()}.{group.Key}", false);
+                    this._foldouts[group.Key] = new SavedBool($"{this.target.GetInstanceID()}.{group.Key}", false);
                 }
 
-                _foldouts[group.Key].Value = EditorGUILayout.Foldout(_foldouts[group.Key].Value, group.Key, true);
-                if (_foldouts[group.Key].Value)
+                this._foldouts[group.Key].Value = EditorGUILayout.Foldout(this._foldouts[group.Key].Value, group.Key, true);
+                if (this._foldouts[group.Key].Value)
                 {
-                    foreach (var property in visibleProperties)
+                    foreach (SerializedProperty property in visibleProperties)
                     {
                         NaughtyEditorGUI.PropertyField_Layout(property, true);
                     }
                 }
             }
 
-            serializedObject.ApplyModifiedProperties();
+            this.serializedObject.ApplyModifiedProperties();
         }
 
         protected void DrawNonSerializedFields(bool drawHeader = false)
         {
-            if (_nonSerializedFields.Any())
+            if (this._nonSerializedFields.Any())
             {
                 if (drawHeader)
                 {
@@ -145,16 +142,16 @@ namespace NaughtyAttributes.Editor
                         EditorGUILayout.GetControlRect(false), HorizontalLineAttribute.DefaultHeight, HorizontalLineAttribute.DefaultColor.GetColor());
                 }
 
-                foreach (var field in _nonSerializedFields)
+                foreach (FieldInfo field in this._nonSerializedFields)
                 {
-                    NaughtyEditorGUI.NonSerializedField_Layout(serializedObject.targetObject, field);
+                    NaughtyEditorGUI.NonSerializedField_Layout(this.serializedObject.targetObject, field);
                 }
             }
         }
 
         protected void DrawNativeProperties(bool drawHeader = false)
         {
-            if (_nativeProperties.Any())
+            if (this._nativeProperties.Any())
             {
                 if (drawHeader)
                 {
@@ -164,16 +161,16 @@ namespace NaughtyAttributes.Editor
                         EditorGUILayout.GetControlRect(false), HorizontalLineAttribute.DefaultHeight, HorizontalLineAttribute.DefaultColor.GetColor());
                 }
 
-                foreach (var property in _nativeProperties)
+                foreach (PropertyInfo property in this._nativeProperties)
                 {
-                    NaughtyEditorGUI.NativeProperty_Layout(serializedObject.targetObject, property);
+                    NaughtyEditorGUI.NativeProperty_Layout(this.serializedObject.targetObject, property);
                 }
             }
         }
 
         protected void DrawButtons(bool drawHeader = false)
         {
-            if (_methods.Any())
+            if (this._methods.Any())
             {
                 if (drawHeader)
                 {
@@ -183,9 +180,9 @@ namespace NaughtyAttributes.Editor
                         EditorGUILayout.GetControlRect(false), HorizontalLineAttribute.DefaultHeight, HorizontalLineAttribute.DefaultColor.GetColor());
                 }
 
-                foreach (var method in _methods)
+                foreach (MethodInfo method in this._methods)
                 {
-                    NaughtyEditorGUI.Button(serializedObject.targetObject, method);
+                    NaughtyEditorGUI.Button(this.serializedObject.targetObject, method);
                 }
             }
         }
@@ -211,9 +208,11 @@ namespace NaughtyAttributes.Editor
 
         private static GUIStyle GetHeaderGUIStyle()
         {
-            GUIStyle style = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
-            style.fontStyle = FontStyle.Bold;
-            style.alignment = TextAnchor.UpperCenter;
+            GUIStyle style = new(EditorStyles.centeredGreyMiniLabel)
+            {
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.UpperCenter
+            };
 
             return style;
         }

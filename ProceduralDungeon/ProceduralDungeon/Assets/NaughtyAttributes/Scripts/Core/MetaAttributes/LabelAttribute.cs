@@ -9,7 +9,7 @@ namespace NaughtyAttributes
 
         public LabelAttribute(string label)
         {
-            Label = label;
+            this.Label = label;
         }
     }
 }

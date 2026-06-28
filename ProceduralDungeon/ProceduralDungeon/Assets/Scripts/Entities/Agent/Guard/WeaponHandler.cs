@@ -7,23 +7,23 @@ namespace Guard
     {
         [SerializeReference]
         private Weapon weaponRef;
-        public Weapon Weapon => weaponRef;
+        public Weapon Weapon => this.weaponRef;
 
-        public void SetWeapon(Weapon toSet) => weaponRef = toSet;
+        public void SetWeapon(Weapon toSet) => this.weaponRef = toSet;
 
         private void OnValidate()
         {
             if (Application.isPlaying)
                 return;
-            weaponRef = null;
+            this.weaponRef = null;
         }
 
         public float GetDamage()
         {
-            if (weaponRef) return weaponRef.damage;
+            if (this.weaponRef) return this.weaponRef.damage;
             return 0;
         }
         
-        public bool HasWeapon() => weaponRef;
+        public bool HasWeapon() => this.weaponRef;
     }
 }

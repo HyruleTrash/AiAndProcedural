@@ -11,14 +11,14 @@ namespace NaughtyAttributes
 
         public AnimatorParamAttribute(string animatorName)
         {
-            AnimatorName = animatorName;
-            AnimatorParamType = null;
+            this.AnimatorName = animatorName;
+            this.AnimatorParamType = null;
         }
 
         public AnimatorParamAttribute(string animatorName, AnimatorControllerParameterType animatorParamType)
         {
-            AnimatorName = animatorName;
-            AnimatorParamType = animatorParamType;
+            this.AnimatorName = animatorName;
+            this.AnimatorParamType = animatorParamType;
         }
     }
 }

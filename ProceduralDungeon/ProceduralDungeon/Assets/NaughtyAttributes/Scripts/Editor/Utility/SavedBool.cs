@@ -11,24 +11,24 @@ namespace NaughtyAttributes.Editor
         {
             get
             {
-                return _value;
+                return this._value;
             }
             set
             {
-                if (_value == value)
+                if (this._value == value)
                 {
                     return;
                 }
 
-                _value = value;
-                EditorPrefs.SetBool(_name, value);
+                this._value = value;
+                EditorPrefs.SetBool(this._name, value);
             }
         }
 
         public SavedBool(string name, bool value)
         {
-            _name = name;
-            _value = EditorPrefs.GetBool(name, value);
+            this._name = name;
+            this._value = EditorPrefs.GetBool(name, value);
         }
     }
 }

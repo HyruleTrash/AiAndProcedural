@@ -9,7 +9,7 @@ namespace NaughtyAttributes.Test
         {
             get
             {
-                return transform;
+                return this.transform;
             }
         }
 
@@ -18,7 +18,7 @@ namespace NaughtyAttributes.Test
         {
             get
             {
-                return transform.parent;
+                return this.transform.parent;
             }
         }
 

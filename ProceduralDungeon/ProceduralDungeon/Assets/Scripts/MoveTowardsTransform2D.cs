@@ -26,67 +26,64 @@ public class MoveTowardsTransform2D : MonoBehaviour
     private Vector3 smoothedVelocity;
     private Vector3 lastTargetPosition;
 
-    private void Start() => lastTargetPosition = toLerpTowards.position;
+    private void Start() => this.lastTargetPosition = this.toLerpTowards.position;
     private void OnValidate()
     {
-        if (!enabled)
+        if (!this.enabled)
             return;
-        enabled = toLerpTowards &&
-                  speed > 0 &&
-                  curve != null &&
-                  curveStrength > 0 &&
-                  ((pixelSnapping && pixelPerUnit > 0) || !pixelSnapping);
+        this.enabled = this.toLerpTowards && this.speed > 0 && this.curve != null && this.curveStrength > 0 &&
+                       ((this.pixelSnapping && this.pixelPerUnit > 0) || !this.pixelSnapping);
     }
 
     private void LateUpdate()
     {
-        var rawVelocity = (toLerpTowards.position - lastTargetPosition) / Time.deltaTime;
-        smoothedVelocity = Vector3.Lerp(smoothedVelocity, rawVelocity, velocitySmooth * Time.deltaTime);
-        var velocity = smoothedVelocity;
-        var predictedTarget = toLerpTowards.position + Vector3.ClampMagnitude(velocity * lookAheadTime, distFromTargetMax);
-        lastTargetPosition = toLerpTowards.position;
+        Vector3 rawVelocity = (this.toLerpTowards.position - this.lastTargetPosition) / Time.deltaTime;
+        this.smoothedVelocity = Vector3.Lerp(this.smoothedVelocity, rawVelocity, this.velocitySmooth * Time.deltaTime);
+        Vector3 velocity = this.smoothedVelocity;
+        Vector3 predictedTarget = this.toLerpTowards.position + Vector3.ClampMagnitude(velocity * this.lookAheadTime, this.distFromTargetMax);
+        this.lastTargetPosition = this.toLerpTowards.position;
         
-        var toLerpTowardsPosition = new Vector3(predictedTarget.x, predictedTarget.y, transform.position.z);
-        var distFromDesiredPosition = Vector3.Distance(transform.position, toLerpTowardsPosition);
+        Vector3 toLerpTowardsPosition = new(predictedTarget.x, predictedTarget.y, this.transform.position.z);
+        float distFromDesiredPosition = Vector3.Distance(this.transform.position, toLerpTowardsPosition);
         
         if (ClampMaxPosition(distFromDesiredPosition, toLerpTowardsPosition)) return;
-        var nextPos = CalcNextPos(toLerpTowardsPosition, distFromDesiredPosition);
-        transform.position = nextPos;
+        Vector3 nextPos = CalcNextPos(toLerpTowardsPosition, distFromDesiredPosition);
+        this.transform.position = nextPos;
         ApplyPixelSnapping(nextPos);
     }
 
     private bool ClampMaxPosition(float distFromDesiredPosition, Vector3 toLerpTowardsPosition)
     {
-        if (!(distFromDesiredPosition > distFromTargetMax)) return false;
-        var posToBeAt = (transform.position - toLerpTowardsPosition).normalized * distFromTargetMax;
-        transform.position = toLerpTowardsPosition + posToBeAt;
+        if (!(distFromDesiredPosition > this.distFromTargetMax)) return false;
+        Vector3 posToBeAt = (this.transform.position - toLerpTowardsPosition).normalized * this.distFromTargetMax;
+        this.transform.position = toLerpTowardsPosition + posToBeAt;
         return true;
     }
 
     private float GetAlpha(float distFromDesiredPosition)
     {
-        var alpha = distFromDesiredPosition / distFromTargetMax;
+        float alpha = distFromDesiredPosition / this.distFromTargetMax;
         alpha = Mathf.Clamp01(alpha);
-        alpha = 1f + curve.Evaluate(alpha) * curveStrength;
+        alpha = 1f + this.curve.Evaluate(alpha) * this.curveStrength;
         return alpha;
     }
 
     private Vector3 CalcNextPos(Vector3 toLerpTowardsPosition, float distFromDesiredPosition)
     {
-        if (distFromDesiredPosition < distFromTargetMin)
-            return transform.position;
-        var alpha = GetAlpha(distFromDesiredPosition);
-        var step = distFromDesiredPosition * alpha * speed * Time.deltaTime;
+        if (distFromDesiredPosition < this.distFromTargetMin)
+            return this.transform.position;
+        float alpha = GetAlpha(distFromDesiredPosition);
+        float step = distFromDesiredPosition * alpha * this.speed * Time.deltaTime;
         step = Mathf.Min(step, distFromDesiredPosition);
-        return Vector3.MoveTowards(transform.position, toLerpTowardsPosition, step);
+        return Vector3.MoveTowards(this.transform.position, toLerpTowardsPosition, step);
     }
 
     private void ApplyPixelSnapping(Vector3 nextPos)
     {
-        if (!pixelSnapping) 
+        if (!this.pixelSnapping) 
             return; 
-        nextPos.x = Mathf.Round(nextPos.x * pixelPerUnit) / pixelPerUnit; 
-        nextPos.y = Mathf.Round(nextPos.y * pixelPerUnit) / pixelPerUnit; 
-        transform.position = nextPos;
+        nextPos.x = Mathf.Round(nextPos.x * this.pixelPerUnit) / this.pixelPerUnit; 
+        nextPos.y = Mathf.Round(nextPos.y * this.pixelPerUnit) / this.pixelPerUnit;
+        this.transform.position = nextPos;
     }
 }

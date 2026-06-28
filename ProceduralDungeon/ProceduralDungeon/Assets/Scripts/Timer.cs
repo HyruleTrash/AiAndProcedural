@@ -12,38 +12,38 @@ public class Timer
     {
         this._maxTime = maxTime;
         this.onEnd = onEnd;
-        running = true;
+        this.running = true;
     }
         
     public Timer(float maxTime)
     {
         this._maxTime = maxTime;
-        running = true;
+        this.running = true;
     }
         
     public void Reset()
     {
-        _currentTime = 0;
-        running = true;
+        this._currentTime = 0;
+        this.running = true;
     }
 
     public void Update(double dt)
     {
-        if (!running)
+        if (!this.running)
             return;
-        _currentTime += dt;
-        onPlaying?.Invoke(_currentTime);
+        this._currentTime += dt;
+        this.onPlaying?.Invoke(this._currentTime);
         CheckIfEndIsReached();
     }
 
     public void CheckIfEndIsReached()
     {
-        if (_currentTime >= _maxTime)
+        if (this._currentTime >= this._maxTime)
         {
-            onEnd?.Invoke();
-            running = false;
+            this.onEnd?.Invoke();
+            this.running = false;
         }
     }
 
-    public void Add(float time) => _maxTime += time;
+    public void Add(float time) => this._maxTime += time;
 }

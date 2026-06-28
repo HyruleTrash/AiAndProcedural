@@ -6,7 +6,7 @@ public class HealthComponent : MonoBehaviour, IDamageable
 {
     [SerializeField] 
     private float maxHealth = 100f;
-    public float MaxHealth => maxHealth;
+    public float MaxHealth => this.maxHealth;
     [SerializeField] 
     private float currentHealth = 100f;
     [Space]
@@ -17,21 +17,20 @@ public class HealthComponent : MonoBehaviour, IDamageable
     private Timer invincibilityTimer;
     private bool invincible = false;
 
-    private void OnEnable() => invincibilityTimer = new Timer(maxInvincibilityTime, () => invincible = false);
-    private void Update() => invincibilityTimer.Update(Time.deltaTime);
+    private void OnEnable() => this.invincibilityTimer = new Timer(this.maxInvincibilityTime, () => this.invincible = false);
+    private void Update() => this.invincibilityTimer.Update(Time.deltaTime);
 
     public void TakeDamage(float amount)
     {
-        var lastHealth = currentHealth;
-        currentHealth = Mathf.Clamp(currentHealth - amount, 0f, maxHealth);
-        if (Mathf.Approximately(lastHealth, currentHealth)) return;
-        onHealthChange.Invoke(currentHealth);
-        if (currentHealth <= 0f)
-            onHealthDepleted.Invoke();
-        
-        invincible = true;
-        invincibilityTimer.Reset();
+        float lastHealth = this.currentHealth;
+        this.currentHealth = Mathf.Clamp(this.currentHealth - amount, 0f, this.maxHealth);
+        if (Mathf.Approximately(lastHealth, this.currentHealth)) return;
+        this.onHealthChange.Invoke(this.currentHealth);
+        if (this.currentHealth <= 0f) this.onHealthDepleted.Invoke();
+
+        this.invincible = true;
+        this.invincibilityTimer.Reset();
     }
 
-    public bool CanTakeDamage() => currentHealth > 0f && !invincible;
+    public bool CanTakeDamage() => this.currentHealth > 0f && !this.invincible;
 }

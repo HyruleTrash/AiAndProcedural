@@ -10,9 +10,9 @@ public class RoomTexturePreProcessor : AssetPostprocessor
 
     void OnPreprocessTexture()
     {
-        if (!assetPath.StartsWith(TargetFolder)) return;
+        if (!this.assetPath.StartsWith(TargetFolder)) return;
         
-        var importer = (TextureImporter)assetImporter;
+        TextureImporter importer = (TextureImporter)this.assetImporter;
 
         importer.textureType = TextureImporterType.Default;
         importer.textureShape = TextureImporterShape.Texture2D;
@@ -31,7 +31,7 @@ public class RoomTexturePreProcessor : AssetPostprocessor
         foreach (string path in importedAssets)
         {
             if (!path.StartsWith(TargetFolder) || !IsTextureFile(path)) continue;
-            RoomTileLookup.roomDataHasBeenUpdated.Invoke();
+            RoomTileLookup.RoomDataHasBeenUpdated.Invoke();
             Debug.Log("New rooms have been added, or have updated, make sure to save dirty room lists!");
             break;
         }
@@ -39,7 +39,7 @@ public class RoomTexturePreProcessor : AssetPostprocessor
     
     private static bool IsTextureFile(string path)
     {
-        var extension = Path.GetExtension(path).ToLower();
+        string extension = Path.GetExtension(path).ToLower();
         return extension == ".png" || extension == ".jpg" || extension == ".jpeg";
     }
 }

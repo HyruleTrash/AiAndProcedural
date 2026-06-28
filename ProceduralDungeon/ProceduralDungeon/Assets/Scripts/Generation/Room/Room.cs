@@ -8,11 +8,11 @@ using UnityEngine;
 namespace Generation
 {
     [Serializable]
-    public class RoomData
+    public class Room
     {
         [SerializeField]
         private string layout;
-        public string Layout { get => layout; private set => layout = value; }
+        public string Layout { get => this.layout; private set => this.layout = value; }
         
         [SerializeField] 
         private int size;
@@ -20,17 +20,17 @@ namespace Generation
         private int width;
         [SerializeField] 
         private int height;
-        public int Size { get => size; private set => size = value; }
-        public int Width { get => width; private set => width = value; }
-        public int Height { get => height; private set => height = value; }
+        public int Size { get => this.size; private set => this.size = value; }
+        public int Width { get => this.width; private set => this.width = value; }
+        public int Height { get => this.height; private set => this.height = value; }
         
         [SerializeField]
         private Vector2[] contentPoints;
-        public Vector2[] ContentPoints { get => contentPoints; private set => contentPoints = value; }
+        public Vector2[] ContentPoints { get => this.contentPoints; private set => this.contentPoints = value; }
 
         [SerializeField]
         private List<DoorPointListItem> doorPoints;
-        public List<DoorPointListItem> DoorPoints { get => doorPoints; private set => doorPoints = value; }
+        public List<DoorPointListItem> DoorPoints { get => this.doorPoints; private set => this.doorPoints = value; }
 
         [Serializable]
         public struct DoorPointListItem
@@ -46,14 +46,14 @@ namespace Generation
             public Vector2Int roomPoint;
         }
 
-        public RoomData(Texture2D texture)
+        public Room(Texture2D texture)
         {
-            layout = GetStringLayout(texture);
-            Size = texture.height * texture.width;
-            width = texture.width;
-            height = texture.height;
-            contentPoints = GetContentPoints(layout, width);
-            doorPoints = FillDoorPoints(layout, width, height);
+            this.layout = GetStringLayout(texture);
+            this.Size = texture.height * texture.width;
+            this.width = texture.width;
+            this.height = texture.height;
+            this.contentPoints = GetContentPoints(this.layout, this.width);
+            this.doorPoints = FillDoorPoints(this.layout, this.width, this.height);
         }
 
         /// <summary>
@@ -61,8 +61,8 @@ namespace Generation
         /// </summary>
         private string GetStringLayout(Texture2D texture)
         {
-            var result = new StringBuilder();
-            var pixels = texture.GetPixels32();
+            StringBuilder result = new();
+            Color32[] pixels = texture.GetPixels32();
 
             const float tolerance = 0.1f;
             bool CheckColor(Color a, Color b) => 
@@ -71,16 +71,16 @@ namespace Generation
                 Math.Abs(a.b - b.b) < tolerance && 
                 Math.Abs(a.a - b.a) < tolerance;
             
-            var lookupInstance = RoomTileLookup.LookupInstance;
+            RoomTileLookup lookupInstance = RoomTileLookup.LookupInstance;
             
-            for (var y = 0; y < texture.height; y++)
+            for (int y = 0; y < texture.height; y++)
             {
-                for (var x = 0; x < texture.width; x++)
+                for (int x = 0; x < texture.width; x++)
                 {
-                    var pixel = pixels[y * texture.width + x];
+                    Color32 pixel = pixels[y * texture.width + x];
 
-                    var found = false;
-                    foreach (var lookupInstanceTile in lookupInstance.tiles)
+                    bool found = false;
+                    foreach (RoomTileLookup.ListInstance lookupInstanceTile in lookupInstance.tiles)
                     {
                         if (!CheckColor(pixel, lookupInstanceTile.tile.color))
                             continue;
@@ -98,14 +98,14 @@ namespace Generation
 
         private static Vector2[] GetContentPoints(string layout, int width)
         {
-            var contentPoints = new List<Vector2>();
+            List<Vector2> contentPoints = new();
             
-            var lookupInstance = RoomTileLookup.LookupInstance;
-            var contentChar = lookupInstance.GetTile("Content")?.text;
+            RoomTileLookup lookupInstance = RoomTileLookup.LookupInstance;
+            char? contentChar = lookupInstance.GetTile("Content")?.text;
             
-            for (var i = 0; i < layout.Length; i++)
+            for (int i = 0; i < layout.Length; i++)
             {
-                var c = layout[i];
+                char c = layout[i];
                 if (c  == contentChar)
                     contentPoints.Add(new Vector2Int(i % width, i / width));
             }
@@ -115,32 +115,32 @@ namespace Generation
         
         private static List<DoorPointListItem> FillDoorPoints(string layout, int width, int height)
         {
-            var lookupInstance = RoomTileLookup.LookupInstance;
+            RoomTileLookup lookupInstance = RoomTileLookup.LookupInstance;
             
-            var result = new List<DoorPointListItem>()
+            List<DoorPointListItem> result = new()
             {
-                new(){key = Vector2Int.up, value = new()},
-                new(){key = Vector2Int.down, value = new()},
-                new(){key = Vector2Int.left, value = new()},
-                new(){key = Vector2Int.right, value = new()}
+                new(){key = Vector2Int.up, value = new List<DoorPointGroup>()},
+                new(){key = Vector2Int.down, value = new List<DoorPointGroup>()},
+                new(){key = Vector2Int.left, value = new List<DoorPointGroup>()},
+                new(){key = Vector2Int.right, value = new List<DoorPointGroup>()}
             };
 
-            var hadIndeces = new List<int>();
-            var doorwayChar = lookupInstance.GetTile("Doorway")?.text;
+            List<int> hadIndeces = new();
+            char? doorwayChar = lookupInstance.GetTile("Doorway")?.text;
             if (doorwayChar == null)
                 throw new Exception("Doorway character not found");
 
-            for (var i = 0; i < layout.Length; i++)
+            for (int i = 0; i < layout.Length; i++)
             {
-                var c = layout[i];
+                char c = layout[i];
                 if (c != doorwayChar.Value || hadIndeces.Contains(i))
                     continue;
 
-                var doorPointGroup = new DoorPointGroup();
+                DoorPointGroup doorPointGroup = new();
                 doorPointGroup.points.Add(new Vector2Int(i % width, i / width));
                 hadIndeces.Add(i);
                 GetDoorPointNeighbours(doorPointGroup, i, layout, ref hadIndeces, doorwayChar.Value, width);
-                var key = GetDirectionGetDoorPointGroup(doorPointGroup, width, height);
+                Vector2Int key = GetDirectionGetDoorPointGroup(doorPointGroup, width, height);
                 result.First(a => a.key == key).value.Add(doorPointGroup);
             }
 
@@ -150,19 +150,19 @@ namespace Generation
         private static void GetDoorPointNeighbours(DoorPointGroup doorPointGroup, int originIndex, string layout,
             ref List<int> hadIndeces, char doorwayChar, int width)
         {
-            var indecesToCheck = new List<int>()
+            List<int> indecesToCheck = new()
             {
                 originIndex + width,
                 originIndex - width,
             };
             
-            var x = originIndex % width; // check x to prevent wrapping to the next row
+            int x = originIndex % width; // check x to prevent wrapping to the next row
             if (x < width - 1) indecesToCheck.Add(originIndex + 1);
             if (x > 0) indecesToCheck.Add(originIndex - 1);
 
             while (indecesToCheck.Count > 0)
             {
-                var current = indecesToCheck.Last();
+                int current = indecesToCheck.Last();
                 if (hadIndeces.Contains(current) || current < 0 || current > layout.Length - 1 || layout[current] != doorwayChar)
                 {
                     hadIndeces.Add(current);
@@ -185,16 +185,16 @@ namespace Generation
         
         private static Vector2Int GetDirectionGetDoorPointGroup(DoorPointGroup doorPointGroup, int width, int height)
         {
-            var average = doorPointGroup.points.Aggregate(Vector2.zero, (current, point) => current + point);
+            Vector2 average = doorPointGroup.points.Aggregate(Vector2.zero, (current, point) => current + point);
             average /= doorPointGroup.points.Count;
             
-            var dir = (average - new Vector2(width / 2f, height / 2f)).normalized;
+            Vector2 dir = (average - new Vector2(width / 2f, height / 2f)).normalized;
 
-            var smallestDot = -2f;
-            var foundDir = Vector2Int.zero;
-            foreach (var cardinalDirection in WorldGenerator.CardinalDirections)
+            float smallestDot = -2f;
+            Vector2Int foundDir = Vector2Int.zero;
+            foreach (Vector2Int cardinalDirection in Util.Extensions.CardinalDirections)
             {
-                var dot = Vector2.Dot(cardinalDirection, dir);
+                float dot = Vector2.Dot(cardinalDirection, dir);
                 if (!(dot > smallestDot)) continue;
                 smallestDot = dot;
                 foundDir = cardinalDirection;
@@ -217,23 +217,23 @@ namespace Generation
         {
             StringBuilder builder = new();
             builder.AppendLine("room: {\n");
-            builder.AppendLine($"Size: {size}");
-            builder.AppendLine($"Width: {width}");
-            builder.AppendLine($"Height: {height}");
-            builder.AppendLine(layout);
+            builder.AppendLine($"Size: {this.size}");
+            builder.AppendLine($"Width: {this.width}");
+            builder.AppendLine($"Height: {this.height}");
+            builder.AppendLine(this.layout);
             builder.AppendLine("}");
             return builder.ToString();
         }
 
         public static Color[] GetPixels(string layout, int width, int height, AreaType areaType, RoomType roomType)
         {
-            var pixels = new Color[width * height];
-            var lookupInstance = RoomTileLookup.LookupInstance;
+            Color[] pixels = new Color[width * height];
+            RoomTileLookup lookupInstance = RoomTileLookup.LookupInstance;
 
-            var offset = 0;
-            for (var i = 0; i < layout.Length; i++)
+            int offset = 0;
+            for (int i = 0; i < layout.Length; i++)
             {
-                var c = layout[i];
+                char c = layout[i];
 
                 if (c == lookupInstance.GetTile("NextLine")?.text)
                 {
@@ -241,7 +241,7 @@ namespace Generation
                     continue;
                 }
                 
-                foreach (var listInstance in lookupInstance.tiles)
+                foreach (RoomTileLookup.ListInstance listInstance in lookupInstance.tiles)
                 {
                     if (listInstance.tile.text == c)
                         pixels[i - offset] = lookupInstance.GetColor(areaType, roomType, listInstance.key);

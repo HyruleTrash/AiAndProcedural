@@ -11,13 +11,13 @@ namespace BehaviourTree
         public void Initialize(INode node)
         {
             this.node = node;
-            initialized = true;
+            this.initialized = true;
         }
 
         private void Update()
         {
-            if (!initialized) return;
-            node.Call();
+            if (!this.initialized) return;
+            this.node.Call();
         }
     }
 }

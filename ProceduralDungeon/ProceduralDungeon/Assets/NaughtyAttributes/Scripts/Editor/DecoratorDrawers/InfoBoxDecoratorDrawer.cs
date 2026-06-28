@@ -13,10 +13,10 @@ namespace NaughtyAttributes.Editor
 
         public override void OnGUI(Rect rect)
         {
-            InfoBoxAttribute infoBoxAttribute = (InfoBoxAttribute)attribute;
+            InfoBoxAttribute infoBoxAttribute = (InfoBoxAttribute)this.attribute;
 
             float indentLength = NaughtyEditorGUI.GetIndentLength(rect);
-            Rect infoBoxRect = new Rect(
+            Rect infoBoxRect = new(
                 rect.x + indentLength,
                 rect.y,
                 rect.width - indentLength,
@@ -27,7 +27,7 @@ namespace NaughtyAttributes.Editor
 
         private float GetHelpBoxHeight()
         {
-            InfoBoxAttribute infoBoxAttribute = (InfoBoxAttribute)attribute;
+            InfoBoxAttribute infoBoxAttribute = (InfoBoxAttribute)this.attribute;
             float minHeight = EditorGUIUtility.singleLineHeight * 2.0f;
             float desiredHeight = GUI.skin.box.CalcHeight(new GUIContent(infoBoxAttribute.Text), EditorGUIUtility.currentViewWidth);
             float height = Mathf.Max(minHeight, desiredHeight);

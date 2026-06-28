@@ -21,7 +21,7 @@ namespace NaughtyAttributes.Editor
             if (property.propertyType == SerializedPropertyType.String)
             {
                 // generate the taglist + custom tags
-                List<string> tagList = new List<string>();
+                List<string> tagList = new();
                 tagList.Add("(None)");
                 tagList.Add("Untagged");
                 tagList.AddRange(UnityEditorInternal.InternalEditorUtility.tags);

@@ -28,7 +28,7 @@ namespace NaughtyAttributes.Editor
             }
             else
             {
-                string message = attribute.GetType().Name + " can be used only on enums";
+                string message = this.attribute.GetType().Name + " can be used only on enums";
                 DrawDefaultPropertyAndHelpBox(rect, property, message, MessageType.Warning);
             }
 

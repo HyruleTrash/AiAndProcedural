@@ -7,12 +7,12 @@ public class VisionConeEditor : Editor
 {
     private void OnSceneGUI()
     {
-        var visionCone = (VisionCone)target;
+        VisionCone visionCone = (VisionCone)this.target;
         Handles.color = Color.white;
         Handles.DrawWireArc(visionCone.transform.position, Vector3.forward, Vector3.right, 360, visionCone.ViewDistance);
 
-        var viewAngleA = visionCone.DirFromAngle(-visionCone.FieldOfView / 2, false);
-        var viewAngleB = visionCone.DirFromAngle(visionCone.FieldOfView / 2, false);
+        Vector3 viewAngleA = visionCone.DirFromAngle(-visionCone.FieldOfView / 2, false);
+        Vector3 viewAngleB = visionCone.DirFromAngle(visionCone.FieldOfView / 2, false);
         
         Handles.DrawLine(visionCone.transform.position, visionCone.transform.position + viewAngleA * visionCone.ViewDistance);
         Handles.DrawLine(visionCone.transform.position, visionCone.transform.position + viewAngleB * visionCone.ViewDistance);

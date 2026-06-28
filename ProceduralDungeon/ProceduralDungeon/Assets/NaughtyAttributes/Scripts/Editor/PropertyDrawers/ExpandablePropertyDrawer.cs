@@ -24,11 +24,11 @@ namespace NaughtyAttributes.Editor
 
                 if (property.isExpanded)
                 {
-                    using (SerializedObject serializedObject = new SerializedObject(scriptableObject))
+                    using (SerializedObject serializedObject = new(scriptableObject))
                     {
                         float totalHeight = EditorGUIUtility.singleLineHeight;
 
-                        using (var iterator = serializedObject.GetIterator())
+                        using (SerializedProperty iterator = serializedObject.GetIterator())
                         {
                             if (iterator.NextVisible(true))
                             {
@@ -89,7 +89,7 @@ namespace NaughtyAttributes.Editor
                     else
                     {
                         // Draw a foldout
-                        Rect foldoutRect = new Rect()
+                        Rect foldoutRect = new()
                         {
                             x = rect.x,
                             y = rect.y,
@@ -100,7 +100,7 @@ namespace NaughtyAttributes.Editor
                         property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, label, toggleOnLabelClick: true);
 
                         // Draw the scriptable object field
-                        Rect propertyRect = new Rect()
+                        Rect propertyRect = new()
                         {
                             x = rect.x,
                             y = rect.y,
@@ -136,7 +136,7 @@ namespace NaughtyAttributes.Editor
                 return;
             }
 
-            Rect boxRect = new Rect()
+            Rect boxRect = new()
             {
                 x = 0.0f,
                 y = rect.y + EditorGUIUtility.singleLineHeight,
@@ -148,10 +148,10 @@ namespace NaughtyAttributes.Editor
 
             using (new EditorGUI.IndentLevelScope())
             {
-                SerializedObject serializedObject = new SerializedObject(scriptableObject);
+                SerializedObject serializedObject = new(scriptableObject);
                 serializedObject.Update();
 
-                using (var iterator = serializedObject.GetIterator())
+                using (SerializedProperty iterator = serializedObject.GetIterator())
                 {
                     float yOffset = EditorGUIUtility.singleLineHeight;
 
@@ -172,7 +172,7 @@ namespace NaughtyAttributes.Editor
                             }
 
                             float childHeight = GetPropertyHeight(childProperty);
-                            Rect childRect = new Rect()
+                            Rect childRect = new()
                             {
                                 x = rect.x,
                                 y = rect.y + yOffset,

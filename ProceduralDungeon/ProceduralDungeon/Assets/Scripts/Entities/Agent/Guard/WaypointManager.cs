@@ -20,15 +20,15 @@ namespace Guard
             PingPong
         }
         
-        public bool OnValidate() => waypoints.Count >= 2 && minimumDistanceToWaypoint > 0f;
+        public bool OnValidate() => this.waypoints.Count >= 2 && this.minimumDistanceToWaypoint > 0f;
         
         public void OnDrawGizmosSelected()
         {
             if (!OnValidate())
                 return;
             Gizmos.color = Color.green;
-            Vector2? lastPos = loopType == WaypointLoopType.Loop ? waypoints.Last() : null;
-            foreach (var waypoint in waypoints)
+            Vector2? lastPos = this.loopType == WaypointLoopType.Loop ? this.waypoints.Last() : null;
+            foreach (Vector2 waypoint in this.waypoints)
             {
                 Gizmos.DrawSphere(waypoint, 0.1f);
                 if (lastPos != null)
@@ -41,38 +41,38 @@ namespace Guard
         {
             if (targetPosition == null)
                 return Vector2.zero;
-            var index = waypoints.FindIndex(a => a == targetPosition.Value);
-            var nextIndex = direction ? index + 1 : index - 1;
+            int index = this.waypoints.FindIndex(a => a == targetPosition.Value);
+            int nextIndex = this.direction ? index + 1 : index - 1;
 
-            switch (loopType)
+            switch (this.loopType)
             {
-                case WaypointLoopType.PingPong when (nextIndex < 0 || nextIndex >= waypoints.Count):
-                    direction = !direction;
-                    nextIndex = Math.Clamp(nextIndex, 0, waypoints.Count - 1);
+                case WaypointLoopType.PingPong when (nextIndex < 0 || nextIndex >= this.waypoints.Count):
+                    this.direction = !this.direction;
+                    nextIndex = Math.Clamp(nextIndex, 0, this.waypoints.Count - 1);
                     break;
                 case WaypointLoopType.Loop: 
-                    if (nextIndex >= waypoints.Count && direction)
+                    if (nextIndex >= this.waypoints.Count && this.direction)
                         nextIndex = 0;
-                    if (nextIndex < 0 && !direction)
-                        nextIndex = waypoints.Count - 1;
+                    if (nextIndex < 0 && !this.direction)
+                        nextIndex = this.waypoints.Count - 1;
                     break;
                 default:
-                    nextIndex = Math.Clamp(nextIndex, 0, waypoints.Count - 1);
+                    nextIndex = Math.Clamp(nextIndex, 0, this.waypoints.Count - 1);
                     break;
             }
             
-            return waypoints[nextIndex];
+            return this.waypoints[nextIndex];
         }
 
         public Vector2 GetNearestWayPoint(Vector2 position)
         {
-            var closetsPoint = waypoints[0];
-            var closetsDist = Vector2.Distance(waypoints[0], position);
+            Vector2 closetsPoint = this.waypoints[0];
+            float closetsDist = Vector2.Distance(this.waypoints[0], position);
             
-            for (var i = 1; i < waypoints.Count; i++)
+            for (int i = 1; i < this.waypoints.Count; i++)
             {
-                var waypoint = waypoints[i];
-                var dist = Vector2.Distance(waypoint, position);
+                Vector2 waypoint = this.waypoints[i];
+                float dist = Vector2.Distance(waypoint, position);
                 if (!(dist < closetsDist)) continue;
                 closetsPoint = waypoint;
                 closetsDist = dist;

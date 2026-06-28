@@ -8,7 +8,7 @@
 
         public NodeState Call()
         {
-            var result = toInvert.Call();
+            NodeState result = this.toInvert.Call();
             return result switch
             {
                 NodeState.Success => NodeState.Failed,

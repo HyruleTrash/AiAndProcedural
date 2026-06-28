@@ -10,12 +10,12 @@ namespace NaughtyAttributes.Test
 
         private void OnValueChangedMethod1()
         {
-            Debug.LogFormat("int0: {0}", int0);
+            Debug.LogFormat("int0: {0}", this.int0);
         }
 
         private void OnValueChangedMethod2()
         {
-            Debug.LogFormat("int0: {0}", int0);
+            Debug.LogFormat("int0: {0}", this.int0);
         }
 
         public OnValueChangedNest1 nest1;
@@ -30,7 +30,7 @@ namespace NaughtyAttributes.Test
 
         private void OnValueChangedMethod()
         {
-            Debug.LogFormat("int1: {0}", int1);
+            Debug.LogFormat("int1: {0}", this.int1);
         }
 
         public OnValueChangedNest2 nest2;
@@ -45,7 +45,7 @@ namespace NaughtyAttributes.Test
 
         private void OnValueChangedMethod()
         {
-            Debug.LogFormat("int2: {0}", int2);
+            Debug.LogFormat("int2: {0}", this.int2);
         }
     }
 }

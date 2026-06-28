@@ -17,7 +17,7 @@ namespace NaughtyAttributes.Editor
         {
             EditorGUI.BeginProperty(rect, label, property);
 
-            MinMaxSliderAttribute minMaxSliderAttribute = (MinMaxSliderAttribute)attribute;
+            MinMaxSliderAttribute minMaxSliderAttribute = (MinMaxSliderAttribute)this.attribute;
 
             if (property.propertyType == SerializedPropertyType.Vector2 || property.propertyType == SerializedPropertyType.Vector2Int)
             {
@@ -29,25 +29,25 @@ namespace NaughtyAttributes.Editor
                 float sliderWidth = rect.width - labelWidth - 2.0f * floatFieldWidth;
                 float sliderPadding = 5.0f;
 
-                Rect labelRect = new Rect(
+                Rect labelRect = new(
                     rect.x,
                     rect.y,
                     labelWidth,
                     rect.height);
 
-                Rect sliderRect = new Rect(
+                Rect sliderRect = new(
                     rect.x + labelWidth + floatFieldWidth + sliderPadding - indentLength,
                     rect.y,
                     sliderWidth - 2.0f * sliderPadding + indentLength,
                     rect.height);
 
-                Rect minFloatFieldRect = new Rect(
+                Rect minFloatFieldRect = new(
                     rect.x + labelWidth - indentLength,
                     rect.y,
                     floatFieldWidth + indentLength,
                     rect.height);
 
-                Rect maxFloatFieldRect = new Rect(
+                Rect maxFloatFieldRect = new(
                     rect.x + labelWidth + floatFieldWidth + sliderWidth - indentLength,
                     rect.y,
                     floatFieldWidth + indentLength,

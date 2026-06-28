@@ -9,12 +9,12 @@ namespace NaughtyAttributes
 
         public MaxValueAttribute(float maxValue)
         {
-            MaxValue = maxValue;
+            this.MaxValue = maxValue;
         }
 
         public MaxValueAttribute(int maxValue)
         {
-            MaxValue = maxValue;
+            this.MaxValue = maxValue;
         }
     }
 }

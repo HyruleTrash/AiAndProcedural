@@ -7,13 +7,13 @@ public class WeaponHandlerPickup : MonoBehaviour
     [SerializeField]
     private Weapon weaponRef;
 
-    private void OnValidate() => enabled = weaponRef;
+    private void OnValidate() => this.enabled = this.weaponRef;
     private void OnTriggerEnter2D(Collider2D other)
     {
-        var weaponHandler = other.gameObject.GetComponent<WeaponHandler>();
+        WeaponHandler weaponHandler = other.gameObject.GetComponent<WeaponHandler>();
         if (!weaponHandler || weaponHandler.HasWeapon()) return;
-        weaponHandler.SetWeapon(weaponRef);
-        enabled = false;
-        Destroy(gameObject);
+        weaponHandler.SetWeapon(this.weaponRef);
+        this.enabled = false;
+        Destroy(this.gameObject);
     }
 }

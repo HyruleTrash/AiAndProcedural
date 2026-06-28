@@ -2,6 +2,7 @@
 using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.Events;
+using Util;
 
 namespace Guard
 {
@@ -21,72 +22,69 @@ namespace Guard
         private Rigidbody2D rb;
         [Header("Events"), Space]
         public UnityEvent<bool> isMovingChanged;
-        public UnityEvent<bool> IsMovingChanged => isMovingChanged;
+        public UnityEvent<bool> IsMovingChanged => this.isMovingChanged;
         private bool isMoving = false;
 
         private void OnValidate()
         {
-            lookDirectionManager ??= GetComponent<LookDirectionManager>();
-            rb ??= GetComponent<Rigidbody2D>();
-            navigateToPosition ??= GetComponentInChildren<NavigateToPosition>();
-            
-            enabled = navigateToPosition &&
-                      waypointManager.OnValidate() && 
-                      rb &&
-                      lookDirectionManager;
-            
-            walkAnimManager ??= GetComponent<WalkAnimManager>();
+            this.lookDirectionManager ??= GetComponent<LookDirectionManager>();
+            this.rb ??= GetComponent<Rigidbody2D>();
+            this.navigateToPosition ??= GetComponentInChildren<NavigateToPosition>();
+
+            this.enabled = this.navigateToPosition && this.waypointManager.OnValidate() && this.rb && this.lookDirectionManager;
+
+            this.walkAnimManager ??= GetComponent<WalkAnimManager>();
         }
         
         private void FixedUpdate()
         {
             // move to navAgent, and remove this offset
-            rb.MovePosition(rb.position + (Vector2)navigateToPosition.transform.localPosition);
-            navigateToPosition.transform.localPosition = Vector3.zero;
+            this.rb.MovePosition(this.rb.position + (Vector2)this.navigateToPosition.transform.localPosition);
+            this.navigateToPosition.transform.localPosition = Vector3.zero;
 
             // set look direction
-            var target = navigateToPosition.GetTargetPosition();
-            var newIsMoving = false;
-            if (target.HasValue && Vector2.Distance(target.Value, transform.position) > 0.1f)
+            Vector2? target = this.navigateToPosition.GetTargetPosition();
+            bool newIsMoving = false;
+            if (target.HasValue && Vector2.Distance(target.Value, this.transform.position) > 0.1f)
             {
                 newIsMoving = true;
-                lookDirectionManager.SetLookAt(target.Value);
+                this.lookDirectionManager.SetLookAt(target.Value);
             }
 
-            if (newIsMoving == isMoving) return;
-            isMoving = newIsMoving;
-            isMovingChanged.Invoke(newIsMoving);
+            if (newIsMoving == this.isMoving) return;
+            this.isMoving = newIsMoving;
+            this.isMovingChanged.Invoke(newIsMoving);
         }
         
-        private void OnDrawGizmosSelected() => waypointManager.OnDrawGizmosSelected();
-        private void Start() => walkAnimManager?.Connect(this);
-        private void OnDestroy() => walkAnimManager?.Disconnect();
+        private void OnDrawGizmosSelected() => this.waypointManager.OnDrawGizmosSelected();
+        private void Start() => this.walkAnimManager?.Connect(this);
+        private void OnDestroy() => this.walkAnimManager?.Disconnect();
 
         #region WaypointManager
         
-        public bool IsCurrentWaypointNull() => navigateToPosition.GetTargetPosition() == null;
+        public bool IsCurrentWaypointNull() => this.navigateToPosition.GetTargetPosition() == null;
         
         public bool SetCurrentWaypoint(Vector2? getNearestWayPoint)
         {
-            navigateToPosition.SetTargetPosition(getNearestWayPoint);
+            this.navigateToPosition.SetTargetPosition(getNearestWayPoint);
             return !IsCurrentWaypointNull();
         }
         
-        public Vector2 GetNextWaypoint() => waypointManager.GetNextWaypoint(navigateToPosition.GetTargetPosition());
+        public Vector2 GetNextWaypoint() => this.waypointManager.GetNextWaypoint(this.navigateToPosition.GetTargetPosition());
         
-        public Vector2 GetNearestWayPoint() => waypointManager.GetNearestWayPoint(transform.position.xy());
+        public Vector2 GetNearestWayPoint() => this.waypointManager.GetNearestWayPoint(this.transform.position.xy());
         
         public bool IsAgentNearCurrentWaypoint()
         {
-            var currentWaypoint = navigateToPosition.GetTargetPosition();
+            Vector2? currentWaypoint = this.navigateToPosition.GetTargetPosition();
             if (currentWaypoint == null) return false;
-            return Vector2.Distance(currentWaypoint.Value, transform.position) <= waypointManager.minimumDistanceToWaypoint;
+            return Vector2.Distance(currentWaypoint.Value, this.transform.position) <= this.waypointManager.minimumDistanceToWaypoint;
         }
         
         public Vector2 GetCurrentWaypoint()
         {
-            var target = navigateToPosition.GetTargetPosition();
-            if (target == null) return transform.position;
+            Vector2? target = this.navigateToPosition.GetTargetPosition();
+            if (target == null) return this.transform.position;
             return target.Value;
         }
         

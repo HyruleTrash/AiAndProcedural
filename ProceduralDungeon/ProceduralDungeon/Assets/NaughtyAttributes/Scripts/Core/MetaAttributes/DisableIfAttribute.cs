@@ -8,19 +8,19 @@ namespace NaughtyAttributes
         public DisableIfAttribute(string condition)
             : base(condition)
         {
-            Inverted = true;
+            this.Inverted = true;
         }
 
         public DisableIfAttribute(EConditionOperator conditionOperator, params string[] conditions)
             : base(conditionOperator, conditions)
         {
-            Inverted = true;
+            this.Inverted = true;
         }
 
         public DisableIfAttribute(string enumName, object enumValue)
             : base(enumName, enumValue as Enum)
         {
-            Inverted = true;
+            this.Inverted = true;
         }
     }
 }

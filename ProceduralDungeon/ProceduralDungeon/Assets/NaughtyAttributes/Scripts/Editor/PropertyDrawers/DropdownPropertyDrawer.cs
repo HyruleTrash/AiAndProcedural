@@ -12,7 +12,7 @@ namespace NaughtyAttributes.Editor
     {
         protected override float GetPropertyHeight_Internal(SerializedProperty property, GUIContent label)
         {
-            DropdownAttribute dropdownAttribute = (DropdownAttribute)attribute;
+            DropdownAttribute dropdownAttribute = (DropdownAttribute)this.attribute;
             object values = GetValues(property, dropdownAttribute.ValuesName);
             FieldInfo fieldInfo = ReflectionUtility.GetField(PropertyUtility.GetTargetObjectWithProperty(property), property.name);
 
@@ -27,7 +27,7 @@ namespace NaughtyAttributes.Editor
         {
             EditorGUI.BeginProperty(rect, label, property);
 
-            DropdownAttribute dropdownAttribute = (DropdownAttribute)attribute;
+            DropdownAttribute dropdownAttribute = (DropdownAttribute)this.attribute;
             object target = PropertyUtility.GetTargetObjectWithProperty(property);
 
             object valuesObject = GetValues(property, dropdownAttribute.ValuesName);
@@ -70,8 +70,8 @@ namespace NaughtyAttributes.Editor
                     // Current value index, values and display options
                     int index = -1;
                     int selectedValueIndex = -1;
-                    List<object> values = new List<object>();
-                    List<string> displayOptions = new List<string>();
+                    List<object> values = new();
+                    List<string> displayOptions = new();
                     IDropdownList dropdown = (IDropdownList)valuesObject;
 
                     using (IEnumerator<KeyValuePair<string, object>> dropdownEnumerator = dropdown.GetEnumerator())

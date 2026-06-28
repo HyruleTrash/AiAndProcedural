@@ -17,9 +17,9 @@ namespace BehaviourTree
 
         public NodeState Call()
         {
-            if (isInverted)
-                return !condition.Invoke() ? toExecute.Call() : NodeState.Failed;
-            return condition.Invoke() ? toExecute.Call() : NodeState.Failed;
+            if (this.isInverted)
+                return !this.condition.Invoke() ? this.toExecute.Call() : NodeState.Failed;
+            return this.condition.Invoke() ? this.toExecute.Call() : NodeState.Failed;
         }
     }
 }

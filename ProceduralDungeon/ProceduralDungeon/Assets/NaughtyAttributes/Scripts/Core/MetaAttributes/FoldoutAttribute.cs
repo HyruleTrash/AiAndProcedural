@@ -9,7 +9,7 @@ namespace NaughtyAttributes
 
         public FoldoutAttribute(string name)
         {
-            Name = name;
+            this.Name = name;
         }
     }
 }

@@ -20,22 +20,22 @@ public class ScaleBasedOnLookDirection : MonoBehaviour
     public bool flipped = false;
     public Action directionChanged;
 
-    private void OnValidate() => enabled = childrenToFlip is { Count: > 0 };
+    private void OnValidate() => this.enabled = this.childrenToFlip is { Count: > 0 };
 
     public void SetScaleBasedOnLookDirection(Vector2 lookDirection)
     {
-        var flip = Mathf.Sign(childrenToFlip[0].transform.localScale.x) != Mathf.Sign(lookDirection.x);
+        bool flip = Mathf.Sign(this.childrenToFlip[0].transform.localScale.x) != Mathf.Sign(lookDirection.x);
         if (!flip) return;
-        foreach (var child in childrenToFlip)
+        foreach (ToFlip child in this.childrenToFlip)
         {
-            var scale = child.transform.localScale;
+            Vector3 scale = child.transform.localScale;
             if (child.flipX) scale.x *= -1;
             if (child.flipY) scale.y *= -1;
             
             child.transform.localScale = scale;
         }
 
-        flipped = childrenToFlip[0].transform.localScale.x < 0;
-        directionChanged?.Invoke();
+        this.flipped = this.childrenToFlip[0].transform.localScale.x < 0;
+        this.directionChanged?.Invoke();
     }
 }

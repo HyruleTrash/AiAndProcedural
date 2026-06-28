@@ -9,12 +9,12 @@ namespace NaughtyAttributes
 
         public MinValueAttribute(float minValue)
         {
-            MinValue = minValue;
+            this.MinValue = minValue;
         }
 
         public MinValueAttribute(int minValue)
         {
-            MinValue = minValue;
+            this.MinValue = minValue;
         }
     }
 }

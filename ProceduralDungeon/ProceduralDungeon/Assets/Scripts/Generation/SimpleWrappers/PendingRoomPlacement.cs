@@ -4,11 +4,11 @@ namespace Generation
 {
     /// <summary>
     /// Container classes to deal with coroutines not allowing out parameters
-    /// Represents a getter room result
+    /// Represents a possible room
     /// </summary>
-    public class GetRoomResult
+    public class PendingRoomPlacement
     {
-        public Room? foundRoom;
+        public Room? possibleRoom;
         public Vector2Int? center;
         public Room.DoorPointGroup? doorGroup;
     }

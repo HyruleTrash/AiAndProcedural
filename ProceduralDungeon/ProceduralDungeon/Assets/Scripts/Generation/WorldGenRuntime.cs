@@ -65,7 +65,7 @@ namespace Generation
             this.gridRuntime.Clear();
         }
 
-        private void AddToHadRooms(Room foundRoom, int roomRepetitionAllowance)
+        private void RegisterHadRoom(Room foundRoom, int roomRepetitionAllowance)
         {
             this.hadRooms.Add(foundRoom);
             if (this.hadRooms.Count >= roomRepetitionAllowance) this.hadRooms.RemoveRange(this.hadRooms.Count - roomRepetitionAllowance, this.hadRooms.Count);
@@ -80,41 +80,37 @@ namespace Generation
         {
             while (true)
             {
-                yield return this.unityConnection.StartCoroutine(WalkthroughAreas());
+                yield return this.unityConnection.StartCoroutine(WalkAllAreas());
                 
-                AreaRuntime? lastArea = this.hadAreas.Last();
-                RoomRuntimeRef bossRoomRef = new();
-
-                while (true)
-                {
-                    yield return this.unityConnection.StartCoroutine(AddRoom(lastArea, bossRoomRef));
-                    if (bossRoomRef.instance != null) break;
-                }
+                // AreaRuntime? lastArea = this.hadAreas.Last(); TODO
+                // RoomRuntimeRef bossRoomRef = new();
+                //
+                // while (true)
+                // {
+                //     yield return this.unityConnection.StartCoroutine(AddRoom(lastArea, bossRoomRef));
+                //     if (bossRoomRef.instance != null) break;
+                // }
                 
                 NotificationManager.Log($"ANALYSE PHASE STARTING");
-                if (Vector2.Distance(this.currentPosition, Vector2.zero) >= this.minDistToBossRoom) break;
+                break;
+                // if (Vector2.Distance(this.currentPosition, Vector2.zero) >= this.minDistToBossRoom) break;
 
                 NotificationManager.Log($"GENERATION FAILED, RESTARTING");
                 this.currentSeed = Rng.MutateNext(seed);
                 Reset(areaData, this.currentSeed);
-                bossRoomRef.instance = null;
+                // bossRoomRef.instance = null;
             }
 
             this.gridRuntime.RemoveUnusedDoorways();
         }
 
-        private IEnumerator WalkthroughAreas()
+        private IEnumerator WalkAllAreas()
         {
             while (this.backlog.Count > 0)
             {
                 NotificationManager.Log($"Walking through area backlog, current count: {this.backlog.Count}");
-                int foundIndex = Rng.RandomRange(0, this.backlog.Count, this.currentSeed);
-                this.currentSeed = Rng.MutateNext(this.currentSeed);
+                AreaRuntime pickedArea = GetRandomArea();
                 
-                AreaRuntime pickedArea = this.backlog[foundIndex].GetAreaGenData(this.currentSeed);
-                this.currentSeed = Rng.MutateNext(this.currentSeed);
-
-                this.backlog.RemoveAt(foundIndex);
                 yield return this.unityConnection.StartCoroutine(pickedArea.WalkthroughArea(this, this.unityConnection, this.owner.GetAnimWaitTime()));
                 this.hadAreas.Add(pickedArea);
                 
@@ -123,21 +119,38 @@ namespace Generation
 
             NotificationManager.Log("Done with walking through areas");
         }
+        
+        private AreaRuntime GetRandomArea()
+        {
+            int foundIndex = Rng.RandomRange(0, this.backlog.Count, this.currentSeed);
+            this.currentSeed = Rng.MutateNext(this.currentSeed);
+                
+            AreaRuntime pickedArea = this.backlog[foundIndex].GetAreaGenData(this.currentSeed);
+            this.backlog.RemoveAt(foundIndex);
+            
+            return pickedArea;
+        }
 
         public void Walk(RoomRuntime currentRoom)
         {
+            // go to door
             UpdateWalkDirection();
-
-            // Move to doorway of room
-            List<Room.DoorPointGroup> doorways = currentRoom.roomRef.DoorPoints.First(dir => dir.key == this.currentWalkDirection).value;
-            Room.DoorPointGroup doorway = doorways[Rng.RandomRange(0, doorways.Count, this.currentSeed)];
-            Vector2Int newPos = currentRoom.position + doorway.roomPoint + this.currentWalkDirection;
-            currentRoom.RemoveDoorFromLayout(doorway);
-            this.currentSeed = Rng.MutateNext(this.currentSeed);
-                
-            NotificationManager.Log($"Walking from {this.currentPosition} to {newPos}");
+            Room.DoorPointGroup doorway = WalkToDoor(currentRoom.roomRef, this.currentWalkDirection);
+            
+            // register that door was used, and space self outside of it
+            Vector2Int newPos = currentRoom.position + doorway.roomPoint + this.currentWalkDirection; // position just about outside of room
             this.currentPosition = newPos;
+            NotificationManager.Log($"Walking from {this.currentPosition} to {newPos}");
+            
+            currentRoom.RemoveDoorFromLayout(doorway);
 
+            UpdateSnapShot();
+            
+            this.currentSeed = Rng.MutateNext(this.currentSeed);
+        }
+
+        private void UpdateSnapShot()
+        {
             Action<WorldGenSnapshot> onUpdateSnapshot = this.owner.GetOnUpdateSnapshot(this);
             onUpdateSnapshot?.Invoke(new WorldGenSnapshot(this.gridRuntime, this.currentPosition));
         }
@@ -167,86 +180,40 @@ namespace Generation
             pickedTypeList.OnPicked(pickedArea);
             this.currentSeed = Rng.MutateNext(this.currentSeed);
 
-            GetRoomResult getRoomResult = new();
-            yield return this.unityConnection.StartCoroutine(TryGetTypedRoom(getRoomResult, pickedArea, pickedTypeList));
+            PendingRoomPlacement pendingRoom = new();
+            yield return this.unityConnection.StartCoroutine(TryGetTypedRoom(pendingRoom, pickedArea, pickedTypeList));
             
-            if (getRoomResult.foundRoom == null) yield break;
+            if (pendingRoom.possibleRoom == null) yield break;
 
-            if (getRoomResult.center != null)
+            if (pendingRoom.center != null)
             {
-                RoomRuntime placedRoom = this.gridRuntime.PlaceRoom(getRoomResult.foundRoom, getRoomResult.center.Value);
-                if (getRoomResult.doorGroup != null)
-                    placedRoom.RemoveDoorFromLayout(getRoomResult.doorGroup);
+                RoomRuntime placedRoom = this.gridRuntime.PlaceRoom(pendingRoom.possibleRoom, pendingRoom.center.Value);
+                if (pendingRoom.doorGroup != null)
+                    placedRoom.RemoveDoorFromLayout(pendingRoom.doorGroup);
                 placedRoom.areaType = pickedArea.AreaType;
                 placedRoom.roomType = pickedTypeList.roomType;
 
-                NotificationManager.Log($"Adding room of size: {getRoomResult.foundRoom.Size}");
-                AddToHadRooms(getRoomResult.foundRoom, this.owner.RoomRepetitionAllowance);
+                NotificationManager.Log($"Adding room of size: {pendingRoom.possibleRoom.Size}");
+                RegisterHadRoom(pendingRoom.possibleRoom, this.owner.RoomRepetitionAllowance);
 
-                pickedArea.Size -= getRoomResult.foundRoom.Size;
+                pickedArea.Size -= pendingRoom.possibleRoom.Size;
                 this.lastHadRoomType = pickedTypeList.roomType; // TODO: make allowance unique per type per area?
 
                 runtimeRef.instance = placedRoom;
             }
 
-            Action<WorldGenSnapshot> onUpdateSnapshot = this.owner.GetOnUpdateSnapshot(this);
-            onUpdateSnapshot?.Invoke(new WorldGenSnapshot(this.gridRuntime, this.currentPosition));
+            UpdateSnapShot();
         }
-
-        /// <summary>
-        /// Uses duplicated code to pull from the endRooms list, and spawn a boss room somewhere adjacent
-        /// </summary>
-        private IEnumerator TryGetBossRoom(GetRoomResult result, AreaRuntime pickedArea)
-        {
-            int tries = 0;
-            const int maxTries = 16;
-            const int lastTry = 64;
-            List<Room> pool = pickedArea.EndRooms;
-            if (pool.Count <= 0) yield break;
-
-            List<GetRoomResult> fallbacks = new();
-            while (true)
-            {
-                result = new GetRoomResult { foundRoom = pool[Rng.RandomRange(0, pool.Count, this.currentSeed)] };
-                this.currentSeed = Rng.MutateNext(this.currentSeed);
-                
-                if (!TryWalkThroughDoor(result)) continue;
-                
-                Action<WorldGenSnapshot> onUpdateSnapshot = this.owner.GetOnUpdateSnapshot(this);
-                onUpdateSnapshot?.Invoke(new WorldGenSnapshot(this.gridRuntime, result.center.Value));
-
-                if (this.gridRuntime.CheckRoomPossible(result.foundRoom, result.center.Value, out RoomRuntime? hit))
-                {
-                    if (Vector2.Distance(result.center.Value, Vector2.zero) >= this.minDistToBossRoom)
-                        break;
-                    fallbacks.Add(result);
-                    break;
-                }
-
-                if (tries >= maxTries && hit != null) Walk(hit);
-
-                if (tries > lastTry)
-                {
-                    result = fallbacks.Last();
-                    if (result.center != null) this.currentPosition = result.center.Value;
-                    break;
-                }
-
-                this.currentSeed = Rng.MutateNext(this.currentSeed);
-                tries++;
-                yield return this.owner.GetAnimWaitTime();
-            }
-        }
-
-        private IEnumerator TryGetTypedRoom(GetRoomResult getRoomResult, AreaRuntime pickedArea, TypedRoomList pickedTypeList)
+        
+        private IEnumerator TryGetTypedRoom(PendingRoomPlacement pendingRoomPlacement, AreaRuntime pickedArea, TypedRoomList pickedTypeList)
         {
             int tries = 0;
             int maxTries = pickedArea.RoomCount * 2;
-            while (getRoomResult.foundRoom == null)
+            while (pendingRoomPlacement.possibleRoom == null)
             {
-                yield return this.unityConnection.StartCoroutine(TryToGetPlaceAbleRoom(pickedTypeList, pickedArea, getRoomResult));
+                yield return this.unityConnection.StartCoroutine(TryToGetPlaceAbleRoom(pickedTypeList, pickedArea, pendingRoomPlacement));
 
-                if (getRoomResult.foundRoom != null) break;
+                if (pendingRoomPlacement.possibleRoom != null) break;
 
                 if (tries >= maxTries) yield break;
 
@@ -259,7 +226,10 @@ namespace Generation
             }
         }
         
-        private IEnumerator TryToGetPlaceAbleRoom(TypedRoomList pickedTypeList, AreaRuntime pickedArea, GetRoomResult result)
+        /// <summary>
+        /// Tries to find a spot where it can place a room, updates result accordingly
+        /// </summary>
+        private IEnumerator TryToGetPlaceAbleRoom(TypedRoomList pickedTypeList, AreaRuntime pickedArea, PendingRoomPlacement placement)
         {
             int tries = 0;
             const int maxTries = 64;
@@ -281,8 +251,10 @@ namespace Generation
                 }
 
                 List<Room> sizedPool = maxPool.Where(room => room.Size <= math.max(pickedTypeList.smallestRoomSize, pickedArea.Size)).ToList();
-                result.foundRoom = RoomList.TryGetRoom(this, sizedPool, this.hadRooms.ToArray());
-                if (result.foundRoom == null) // TryGetRoom failed
+                placement.possibleRoom = RoomList.TryGetRoom(this, sizedPool, this.hadRooms.ToArray());
+                
+                // TryGetRoom failed
+                if (placement.possibleRoom == null) 
                 {
                     if (tries > maxTries)
                     {
@@ -302,24 +274,29 @@ namespace Generation
                     continue;
                 }
 
-                if (hadRoomsTemp.Contains(result.foundRoom)) hadRoomsTemp.Add(result.foundRoom);
+                // register
+                if (hadRoomsTemp.Contains(placement.possibleRoom)) hadRoomsTemp.Add(placement.possibleRoom);
 
+                // move to new possible center position
                 if (this.currentWalkDirection == Vector2.zero)
                 {
-                    int halfWidth = result.foundRoom.Width / 2;
-                    int halfHeight = result.foundRoom.Height / 2;
+                    int halfWidth = placement.possibleRoom.Width / 2;
+                    int halfHeight = placement.possibleRoom.Height / 2;
                     Vector2Int offset = new(this.currentWalkDirection.x * halfWidth, this.currentWalkDirection.y * halfHeight);
-                    result.center = this.currentPosition;
-                    result.center += offset;
+                    placement.center = this.currentPosition;
+                    placement.center += offset;
                 }
-                else if (!TryWalkThroughDoor(result)) break;
+                else if (!TryWalkThroughDoor(placement, -this.currentWalkDirection)) break;
 
+                // movement failed, so show on visual
                 Action<WorldGenSnapshot> onUpdateSnapshot = this.owner.GetOnUpdateSnapshot(this);
-                onUpdateSnapshot?.Invoke(new WorldGenSnapshot(this.gridRuntime, result.center!.Value));
+                onUpdateSnapshot?.Invoke(new WorldGenSnapshot(this.gridRuntime, placement.center!.Value));
                 
-                if (this.gridRuntime.CheckRoomPossible(result.foundRoom, result.center!.Value, out RoomRuntime? hit)) break;
-                NotificationManager.Log($"Cant place room of size {result.foundRoom.Size}, at {result.center.Value}");
-                
+                if (this.gridRuntime.CheckRoomPossible(placement.possibleRoom, placement.center!.Value, out RoomRuntime? hit)) break;
+                NotificationManager.Log($"Cant place room of size {placement.possibleRoom.Size}, at {placement.center.Value}");
+
+                #region Attempt tracking
+
                 overlapAttempts++;
                 if (overlapAttempts > maxOverlapAttempts)
                 {
@@ -334,11 +311,14 @@ namespace Generation
 
                 if (hadRoomsTemp.Count >= maxPool.Count)
                 {
-                    result.foundRoom = null;
+                    placement.possibleRoom = null;
                     yield break;
                 }
                 
                 yield return this.owner.GetAnimWaitTime();
+
+                #endregion
+                
             }
         }
 
@@ -346,18 +326,23 @@ namespace Generation
         /// Moves the current position to the bounds of the current room based on walk direction
         /// </summary>
         /// <returns>false if walk failed, true if walk succeeded</returns>
-        private bool TryWalkThroughDoor(GetRoomResult result)
+        private bool TryWalkThroughDoor(PendingRoomPlacement placement, Vector2Int walkDirection)
         {
-            if (result.foundRoom == null) return false;
-            List<Room.DoorPointGroup> doorways = result.foundRoom.DoorPoints
-                .First(dir => dir.key == -this.currentWalkDirection).value;
-            result.doorGroup = doorways[Rng.RandomRange(0, doorways.Count, this.currentSeed)];
+            if (placement.possibleRoom == null) return false;
+            placement.doorGroup = WalkToDoor(placement.possibleRoom, walkDirection);
 
-            if (result.doorGroup == null) return false;
-            result.center = this.currentPosition - result.doorGroup.roomPoint;
+            if (placement.doorGroup == null) return false;
+            placement.center = this.currentPosition - placement.doorGroup.roomPoint;
             this.currentSeed = Rng.MutateNext(this.currentSeed);
             
             return true;
+        }
+
+        private Room.DoorPointGroup WalkToDoor(Room room, Vector2Int walkDirection)
+        {
+            List<Room.DoorPointGroup> doorways = room.DoorPoints
+                .First(dir => dir.key == walkDirection).value;
+            return doorways[Rng.RandomRange(0, doorways.Count, this.currentSeed)];
         }
     }
 }

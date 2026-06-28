@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Generation
@@ -13,17 +14,14 @@ namespace Generation
     {
         // data
         private MonoBehaviour owner = null!;
-
         [SerializeField] private List<Area> areaData = new();
         [SerializeField] private int roomRepetitionAllowance = 2;
-        [SerializeField] private int walkDirectionRepetitionAllowance = 2;
         
         // anim
         private Action<WorldGenSnapshot> onUpdateSnapshot = null!;
         private float animWaitTime;
         
         // Simple getters and setters
-        public int WalkDirectionRepetitionAllowance => this.walkDirectionRepetitionAllowance;
         public int RoomRepetitionAllowance => this.roomRepetitionAllowance;
 
         public void SetOwner(MonoBehaviour o) => this.owner = o;
@@ -50,6 +48,12 @@ namespace Generation
             
             snapshot.Update(genRuntime.gridRuntime, Vector2Int.zero);
             onFinish.Invoke();
+        }
+
+        public int GetWalkDirectionRepetitionAllowance(AreaType areaType)
+        {
+            Area? a = this.areaData.FirstOrDefault(a => a.areaType == areaType);
+            return a ? a.WalkDirectionRepetitionAllowance : 0;
         }
     }
 }

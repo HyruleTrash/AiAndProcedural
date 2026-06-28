@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Generation.AreaData
   areaType: 1
   minMaxSize: {x: 768, y: 2560}
+  walkDirectionRepetitionAllowance: 5
   roomTypes:
   - {fileID: 11400000, guid: aa45fda39f7fe8349a3e0d8b3ec9f737, type: 2}
   - {fileID: 11400000, guid: d32af08ae354519488002bfc34d6014a, type: 2}

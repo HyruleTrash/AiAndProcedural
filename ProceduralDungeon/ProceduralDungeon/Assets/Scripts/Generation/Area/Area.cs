@@ -15,10 +15,13 @@ namespace Generation
     {
         public AreaType areaType;
         [SerializeField] private Vector2Int minMaxSize; // x is min, y is max
+        public int WalkDirectionRepetitionAllowance => this.walkDirectionRepetitionAllowance;
+        [SerializeField, Range(0, 20)] private int walkDirectionRepetitionAllowance = 2;
+        
         [SerializeField, Expandable] private List<TypedRoomList> roomTypes = new();
         [SerializeField] private RoomList endRooms = null!;
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         private void OnValidate()
         {
             int smallestRoom = this.roomTypes.Select(roomTypeList => roomTypeList.smallestRoomSize).Prepend(int.MaxValue).Min();

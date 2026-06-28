@@ -135,7 +135,7 @@ namespace Generation
         public void Walk(RoomRuntime currentRoom)
         {
             // go to door
-            UpdateWalkDirection();
+            UpdateWalkDirection(currentRoom.areaType);
             Room.DoorPointGroup doorway = WalkToDoor(currentRoom.roomRef, this.currentWalkDirection);
             
             // register that door was used, and space self outside of it
@@ -155,7 +155,7 @@ namespace Generation
             onUpdateSnapshot?.Invoke(new WorldGenSnapshot(this.gridRuntime, this.currentPosition));
         }
 
-        private void UpdateWalkDirection()
+        private void UpdateWalkDirection(AreaType areaType)
         {
             while (true)
             {
@@ -167,7 +167,7 @@ namespace Generation
                 else
                     this.walkDirRepeated = 0;
 
-                if (this.walkDirRepeated > this.owner.WalkDirectionRepetitionAllowance) continue;
+                if (this.walkDirRepeated > this.owner.GetWalkDirectionRepetitionAllowance(areaType)) continue;
 
                 this.currentWalkDirection = Extensions.CardinalDirections[index];
                 break;

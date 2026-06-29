@@ -1,0 +1,256 @@
+﻿@startuml
+
+set namespaceSeparator none
+left to right direction
+
+skinparam BackgroundColor #FDFDFD
+skinparam RoundCorner 8
+
+skinparam class {
+    BackgroundColor #EDF2F7
+    BorderColor #A0AEC0
+    FontColor #2D3748
+
+    BackgroundColor<<MB>> #D1D9E6
+    BorderColor<<MB>> #8A9AAB
+
+    BackgroundColor<<SO>> #D2E4D8
+    BorderColor<<SO>> #94B49F
+}
+
+hide empty members
+
+!define MonoBehaviour(x) class x << (M,#8A9AAB) MB >>
+!define ScriptableObject(x) class x << (S,#94B49F) SO >>
+!define PrivateSerialized(x) - [<color:#00C732>S</color>] x
+!define PublicSerialized(x) + [<color:#00C732>S</color>] x
+
+class RoomTexturePreProcessor {
+}
+MonoBehaviour(GenManager) {
+  + TriggerGenWorld() : void
+  + StopGen() : void
+  + OnWaitTimeChanged() : void
+}
+class GridRuntime {
+  + GetRoomAtPosition() : RoomRuntime?
+  + CheckRoomPossible() : bool
+  + PlaceRoom() : RoomRuntime
+  + GetWorldSize() : Vector2Int
+  + GetPixels() : Color[]
+  + RemoveUnusedDoorways() : void
+  + Clear() : void
+}
+ScriptableObject(WorldGen) {
+  + RoomRepetitionAllowance : int
+  + MaxTries : int
+  + MaxOverlapAttempts : int
+  + MaxOverlapAttemptsBruteForce : int
+  + SetOwner() : void
+  + SetAnimWaitTime() : void
+  + GetAnimWaitTime() : float
+  + GetAnimYieldInstruction() : YieldInstruction
+  + GetOnUpdateSnapshot() : Action<WorldGenSnapshot>
+  + InstantiateAreaData() : void
+  + InitiateGen() : IEnumerator
+  + GetWalkDirectionRepetitionAllowance() : int
+  + StopGen() : void
+  + CreateAreaUI() : void
+}
+class WorldGenRuntime {
+  + currentSeed : string
+  + genRuntime : readonly WorldGenRuntime
+  + unityConnection : readonly MonoBehaviour
+  + yieldInstruction : readonly YieldInstruction?
+  + waitTime : readonly float
+  + GetRoomAtPosition() : RoomRuntime?
+  + MutateRng() : void
+  + StartGen() : IEnumerator
+  + StopGen() : void
+  + Walk() : void
+  + AddRoom() : IEnumerator
+  + TryFindRoomPlacement() : IEnumerator
+}
+class AnimDataWrapper {
+  + genRuntime : readonly WorldGenRuntime
+  + unityConnection : readonly MonoBehaviour
+  + yieldInstruction : readonly YieldInstruction?
+  + waitTime : readonly float
+}
+class WorldGenSnapshot {
+  + Update() : void
+  + GenDebugTex() : static void
+}
+ScriptableObject(Area) {
+  + areaType : AreaType
+  + WalkDirectionRepetitionAllowance : int
+  + CreatUI() : void
+}
+class AreaRuntime {
+  + EndRoomCount : int
+  + EndRooms : List<Room>
+  + WalkthroughArea() : IEnumerator
+  + GetPossibleBossRoom() : IEnumerator
+  + SizeCheck() : bool
+}
+class Room {
+  + key : Vector2Int
+  + value : List<DoorPointGroup>
+  + points : List<Vector2Int>
+  + roomPoint : Vector2Int
+  + ToString() : override string
+  + GetPixels() : static Color[]
+}
+struct DoorPointListItem {
+  + key : Vector2Int
+  + value : List<DoorPointGroup>
+}
+class DoorPointGroup {
+  + points : List<Vector2Int>
+  + roomPoint : Vector2Int
+}
+class RoomList {
+  + onRoomsChanged : Action
+  + OnValidate() : void
+  + OnDestroy() : void
+}
+class RoomRuntime {
+  + areaType : AreaType
+  + roomType : RoomType
+  + position : Vector2Int
+  + roomRef : Room
+  + CompareTo() : int
+  + RemoveDoorFromLayout() : void
+  + MutateRemoveLeftDoorPixels() : void
+  + GetPixels() : Color[]
+}
+class ColorList {
+  + list : ColorListInstance[]
+  + key : string
+  + colorList : TypedColors[]
+  + areaBased : bool
+  + roomTypeBased : bool
+  + areaType : AreaType
+  + roomType : RoomType
+  + color : Color
+  + GetColor() : Color
+}
+class ColorListInstance {
+  + key : string
+  + colorList : TypedColors[]
+}
+class TypedColors {
+  + areaBased : bool
+  + roomTypeBased : bool
+  + areaType : AreaType
+  + roomType : RoomType
+  + color : Color
+}
+struct RoomTile {
+  + text : char
+  + color : Color
+}
+MonoBehaviour(RoomTileLookup) {
+  + RoomDataHasBeenUpdated : static Action?
+  + tiles : ListInstance[]
+  + key : string
+  + tile : RoomTile
+  + GetTile() : RoomTile?
+}
+class ListInstance {
+  + key : string
+  + tile : RoomTile
+}
+class SingleUseTypedRoomList {
+  + OnPicked() : override void
+}
+ScriptableObject(TypedRoomList) {
+  + roomType : RoomType
+  + Duplicate() : TypedRoomList
+  + UndoPicked() : virtual void
+}
+class PendingRoomPlacement {
+  + possibleRoom : Room?
+  + possibleRoomType : RoomType
+  + center : Vector2Int?
+  + doorGroup : Room.DoorPointGroup?
+}
+class RoomRuntimeRef {
+  + instance : RoomRuntime?
+}
+class SliderAndTextInstance {
+  + name : string
+  + Initialize() : void
+  + ConnectSlidersToWorldGenData() : static void
+}
+
+MonoBehaviour(NotificationItem) {
+  + Initialize() : void
+}
+MonoBehaviour(NotificationManager) {
+}
+class Extensions {
+  + CardinalDirections : static readonly Vector2Int[]
+  + XY() : static Vector2
+  + RandomPoint() : static Vector3
+  + ToReadableString() : static string
+}
+class Rng {
+  + MutateNext() : static string
+  + ParseSeed() : static string
+  + ParseSeed() : static ulong
+  + RandomRange() : static int
+  + RandomRange() : static float
+}
+
+AnimDataWrapper --* WorldGenRuntime
+Area --* RoomList
+Area --* SliderAndTextInstance
+Area --* TypedRoomList
+AreaRuntime --> PendingRoomPlacement
+AreaRuntime --> Room
+AreaRuntime --* RoomList
+AreaRuntime --> RoomRuntime
+AreaRuntime --> RoomRuntimeRef
+AreaRuntime --* TypedRoomList
+AreaRuntime --> WorldGenRuntime
+ColorList --* ColorListInstance
+ColorListInstance --* TypedColors
+DoorPointListItem --> DoorPointGroup
+GenManager --* SliderAndTextInstance
+GenManager --* WorldGen
+GenManager --* WorldGenSnapshot
+GridRuntime --* Room
+GridRuntime --* RoomRuntime
+ListInstance --* RoomTile
+NotificationManager --* NotificationItem
+PendingRoomPlacement --* DoorPointGroup
+PendingRoomPlacement --* Room
+Room --* DoorPointGroup
+Room --* DoorPointListItem
+Room --* RoomTileLookup
+RoomList --* Room
+RoomRuntime --* Room
+RoomRuntime --> RoomTile
+RoomRuntime --> RoomTileLookup
+RoomRuntimeRef --> RoomRuntime
+RoomTileLookup --> ColorList
+RoomTileLookup --> ListInstance
+RoomTileLookup --> RoomTile
+TypedRoomList <|-- SingleUseTypedRoomList
+TypedRoomList --> RoomList
+WorldGen --> Area
+WorldGen --> WorldGenRuntime
+WorldGen --> WorldGenSnapshot
+WorldGenRuntime --> AnimDataWrapper
+WorldGenRuntime --* AreaRuntime
+WorldGenRuntime --> DoorPointGroup
+WorldGenRuntime --* GridRuntime
+WorldGenRuntime --> PendingRoomPlacement
+WorldGenRuntime --* Room
+WorldGenRuntime --> RoomRuntime
+WorldGenRuntime --> RoomRuntimeRef
+WorldGenRuntime --* WorldGen
+WorldGenRuntime --> WorldGenSnapshot
+WorldGenSnapshot --> GridRuntime
+@enduml

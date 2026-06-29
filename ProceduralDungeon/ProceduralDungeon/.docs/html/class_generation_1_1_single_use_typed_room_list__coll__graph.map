@@ -1,0 +1,17 @@
+<map id="Generation.SingleUseTypedRoomList" name="Generation.SingleUseTypedRoomList">
+<area shape="rect" id="Node000001" title=" " alt="" coords="189,663,366,764"/>
+<area shape="rect" id="Node000002" href="$class_generation_1_1_typed_room_list.html" title="Holds a list of rooms, of a certain type, used in an area&#39;s roomTypes list." alt="" coords="183,411,372,613"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="279,626,280,664,275,661,276,631"/>
+<area shape="rect" id="Node000003" href="$class_scriptable_object.html" title=" " alt="" coords="5,208,112,277"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="88,287,126,337,187,410,182,412,122,340,89,292"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="136,208,210,277"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="174,274,181,329,195,386,199,396,193,395,190,387,175,330,173,279"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="246,208,282,277"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="267,275,274,394,269,393,265,280"/>
+<area shape="rect" id="Node000006" href="$class_generation_1_1_room_list.html" title=" " alt="" coords="306,147,518,339"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="366,336,338,397,333,394,363,341"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="333,5,491,75"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="413,72,415,131,409,129,411,77"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="542,208,567,277"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="554,275,548,309,533,340,502,377,466,410,427,438,388,462,385,458,424,434,462,406,498,374,528,337,543,308,551,279"/>
+</map>

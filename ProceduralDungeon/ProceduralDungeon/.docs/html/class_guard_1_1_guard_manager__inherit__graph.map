@@ -1,0 +1,5 @@
+<map id="Guard.GuardManager" name="Guard.GuardManager">
+<area shape="rect" id="Node000001" title="Manages a guard instance their components and connects its functions." alt="" coords="5,123,244,795"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="74,5,175,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="125,87,127,123,122,122,125,92"/>
+</map>

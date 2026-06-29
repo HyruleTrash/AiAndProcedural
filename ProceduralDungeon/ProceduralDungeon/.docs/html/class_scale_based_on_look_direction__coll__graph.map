@@ -1,0 +1,11 @@
+<map id="ScaleBasedOnLookDirection" name="ScaleBasedOnLookDirection">
+<area shape="rect" id="Node000001" title="Flips the transform x scale based on where the look direction is." alt="" coords="202,163,410,269"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,13,106,83"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,88,229,161,224,164,116,93"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="130,5,344,91"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="243,88,257,138,261,149,256,147,252,140,240,93"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="369,13,404,83"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="374,81,349,140,344,150,340,146,344,138,370,84"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="437,13,485,83"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="451,81,437,112,418,140,405,154,402,149,414,137,433,110,447,84"/>
+</map>

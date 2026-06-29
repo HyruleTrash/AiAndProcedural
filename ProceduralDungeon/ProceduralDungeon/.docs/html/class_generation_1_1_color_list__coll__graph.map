@@ -1,0 +1,17 @@
+<map id="Generation.ColorList" name="Generation.ColorList">
+<area shape="rect" id="Node000001" title=" " alt="" coords="9,483,226,584"/>
+<area shape="rect" id="Node000002" href="$class_generation_1_1_color_list_1_1_color_list_instance.html" title=" " alt="" coords="35,325,200,411"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="119,408,120,467,115,465,116,413"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="63,176,105,245"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="92,243,108,309,102,309,91,248"/>
+<area shape="rect" id="Node000004" href="$class_generation_1_1_color_list_1_1_typed_colors.html" title=" " alt="" coords="129,168,298,253"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="187,255,154,312,150,309,189,251"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,5,40,75"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="21,72,29,110,35,127,45,142,59,154,74,158,115,166,111,169,73,163,57,158,41,146,30,129,24,111,21,77"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="131,5,197,75"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="160,72,162,108,168,143,172,153,167,153,163,145,157,109,159,77"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="227,5,301,75"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="256,72,237,145,235,153,230,151,232,143,254,77"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="347,5,389,75"/>
+<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="362,72,350,111,329,146,313,161,309,157,325,142,345,109,359,77"/>
+</map>

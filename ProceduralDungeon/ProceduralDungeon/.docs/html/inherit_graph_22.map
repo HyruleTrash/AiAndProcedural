@@ -1,0 +1,13 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$class_scriptable_object.html" title=" " alt="" coords="5,81,123,108"/>
+<area shape="rect" id="Node000001" href="$class_generation_1_1_area.html" title="Holds references and default data for an entire area." alt="" coords="203,5,318,32"/>
+<area shape="poly" id="edge41_Node000000_Node000001" title=" " alt="" coords="103,72,170,42,207,31,203,34,172,46,106,76"/>
+<area shape="rect" id="Node000002" href="$class_generation_1_1_typed_room_list.html" title="Holds a list of rooms, of a certain type, used in an area&#39;s roomTypes list." alt="" coords="171,56,350,83"/>
+<area shape="poly" id="edge42_Node000000_Node000002" title=" " alt="" coords="137,83,172,80,168,82,139,88"/>
+<area shape="rect" id="Node000004" href="$class_generation_1_1_world_gen.html" title="Holds the generation algorithm, tying all gen data together." alt="" coords="188,107,333,133"/>
+<area shape="poly" id="edge44_Node000000_Node000004" title=" " alt="" coords="138,102,190,110,185,111,138,107"/>
+<area shape="rect" id="Node000005" href="$class_weapon.html" title=" " alt="" coords="226,157,294,184"/>
+<area shape="poly" id="edge45_Node000000_Node000005" title=" " alt="" coords="105,113,172,143,229,162,223,163,170,148,104,118"/>
+<area shape="rect" id="Node000003" href="$class_generation_1_1_single_use_typed_room_list.html" title=" " alt="" coords="398,48,581,91"/>
+<area shape="poly" id="edge43_Node000002_Node000003" title=" " alt="" coords="366,67,400,69,395,70,366,72"/>
+</map>

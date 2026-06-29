@@ -1,0 +1,15 @@
+<map id="Guard.WeaponHandler" name="Guard.WeaponHandler">
+<area shape="rect" id="Node000001" title=" " alt="" coords="111,325,281,475"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,176,106,245"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="90,255,143,325,138,326,89,260"/>
+<area shape="rect" id="Node000003" href="$interface_i_damager.html" title=" " alt="" coords="130,176,261,245"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="197,258,198,326,193,325,194,262"/>
+<area shape="rect" id="Node000004" href="$class_weapon.html" title=" " alt="" coords="286,168,463,253"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="337,251,279,315,276,311,333,255"/>
+<area shape="rect" id="Node000005" href="$class_scriptable_object.html" title=" " alt="" coords="202,5,309,75"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="288,84,348,168,343,169,287,89"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="332,5,416,75"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="376,72,377,152,372,151,373,77"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="440,5,476,75"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="453,72,445,110,430,145,424,156,420,152,425,143,440,108,450,77"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="RoomTexturePreProcessor" name="RoomTexturePreProcessor">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,123,310,299"/>
+<area shape="rect" id="Node000002" href="$class_asset_postprocessor.html" title=" " alt="" coords="94,5,222,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="159,87,160,124,155,122,157,92"/>
+</map>

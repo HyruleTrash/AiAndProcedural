@@ -1,0 +1,5 @@
+<map id="Generation.GenManager" name="Generation.GenManager">
+<area shape="rect" id="Node000001" title="Connects the world gen to unity, made to hold the references and timing." alt="" coords="5,123,197,651"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="51,5,152,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,87,104,123,99,123,101,92"/>
+</map>

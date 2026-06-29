@@ -1,0 +1,7 @@
+<map id="Generation.TypedRoomList" name="Generation.TypedRoomList">
+<area shape="rect" id="Node000001" title="Holds a list of rooms, of a certain type, used in an area&#39;s roomTypes list." alt="" coords="5,123,194,411"/>
+<area shape="rect" id="Node000003" href="$class_generation_1_1_single_use_typed_room_list.html" title=" " alt="" coords="11,459,188,560"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="101,423,102,460,97,458,99,428"/>
+<area shape="rect" id="Node000002" href="$class_scriptable_object.html" title=" " alt="" coords="46,5,153,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="100,87,102,123,97,123,100,92"/>
+</map>

@@ -1,0 +1,1139 @@
+﻿@startuml
+
+set namespaceSeparator none
+left to right direction
+
+skinparam BackgroundColor #FDFDFD
+skinparam RoundCorner 8
+
+skinparam class {
+    BackgroundColor #EDF2F7
+    BorderColor #A0AEC0
+    FontColor #2D3748
+
+    BackgroundColor<<MB>> #D1D9E6
+    BorderColor<<MB>> #8A9AAB
+
+    BackgroundColor<<SO>> #D2E4D8
+    BorderColor<<SO>> #94B49F
+}
+
+hide empty members
+
+!define MonoBehaviour(x) class x << (M,#8A9AAB) MB >>
+!define ScriptableObject(x) class x << (S,#94B49F) SO >>
+!define PrivateSerialized(x) - [<color:#00C732>S</color>] x
+!define PublicSerialized(x) + [<color:#00C732>S</color>] x
+
+MonoBehaviour(GameQuitManager) {
+  - Update() : void
+  - QuitGame() : static void
+}
+MonoBehaviour(MoveTowardsTransform2D) {
+  PrivateSerialized(pixelPerUnit : float)
+  PrivateSerialized(pixelSnapping : bool)
+  + toLerpTowards : Transform
+  PrivateSerialized(distFromTargetMin : float)
+  PrivateSerialized(distFromTargetMax : float)
+  PrivateSerialized(lookAheadTime : float)
+  PrivateSerialized(speed : float)
+  PrivateSerialized(curve : AnimationCurve)
+  PrivateSerialized(curveStrength : float)
+  PrivateSerialized(velocitySmooth : float)
+  - smoothedVelocity : Vector3
+  - lastTargetPosition : Vector3
+  - rawVelocity : Vector3
+  - velocity : Vector3
+  - predictedTarget : Vector3
+  - toLerpTowardsPosition : Vector3
+  - distFromDesiredPosition : float
+  - nextPos : Vector3
+  - false : return
+  - posToBeAt : Vector3
+  - true : return
+  - alpha : float
+  - alpha : return
+  - step : float
+  - Start() : void
+  - OnValidate() : void
+  - LateUpdate() : void
+  - ClampMaxPosition() : bool
+  - GetAlpha() : float
+  - CalcNextPos() : Vector3
+  - ApplyPixelSnapping() : void
+}
+MonoBehaviour(NavMeshRebaker) {
+  PrivateSerialized(navMesh : NavMeshSurface)
+  - OnValidate() : void
+  - FixedUpdate() : void
+}
+MonoBehaviour(RotateTowardsPoint) {
+  - delta : Vector2
+  - angle : float
+  - euler : Vector3
+  + UpdateRotation() : void
+}
+class Timer {
+  - currentTime : double
+  - maxTime : float
+  - running : bool
+  - onEnd : readonly Action
+  - onEnd : float maxTime, Action
+  - Timer() : public
+  + Reset() : void
+  + Update() : void
+  - CheckIfEndIsReached() : void
+  + Add() : void
+}
+interface IDamager {
+  + GetDamage() : float
+}
+ScriptableObject(Weapon) {
+  PrivateSerialized(prefab : GameObject)
+  - set : private
+  + attackRange : float
+  + damage : float
+  + IsInRange() : bool
+}
+MonoBehaviour(WeaponSpawner) {
+  + instance : GameObject
+  + weapon : Weapon
+  PublicSerialized(tilemap : Tilemap)
+  PublicSerialized(spawnableWeapons : List<Weapon>)
+  PublicSerialized(liveWeapons : List<WeaponInstance>)
+  PrivateSerialized(bounds : Bounds)
+  PrivateSerialized(spawnAmount : int)
+  - attempt : int
+  - weapon : Weapon
+  - spawnPosition : Vector3
+  - posCheck : Tuple<bool, Vector3>
+  - instance : weapon,
+  - closestInstance : WeaponInstance
+  - distance : float
+  - newDist : float
+  - closestInstance : return
+  - i : int
+  - x : WeaponInstance
+  - cellPosition : Vector3Int
+  - newPos : Vector3
+  - OnValidate() : void
+  - Start() : void
+  + Spawn() : void
+  + GetNearest() : WeaponInstance
+  - CleanWeaponInstances() : void
+  + AlignPositionToTilemap() : Tuple<bool, Vector3>
+  - Vector2() : new
+  - OnDrawGizmosSelected() : void
+}
+class WeaponInstance {
+  + instance : GameObject
+  + weapon : Weapon
+}
+class RoomTexturePreProcessor {
+  - TargetFolder : const string
+  - importer : TextureImporter
+  - extension : string
+  - extension : return
+  - OnPreprocessTexture() : void
+  - OnPostprocessAllAssets() : static void
+  - IsTextureFile() : static bool
+}
+interface IEntityMovement {
+}
+MonoBehaviour(LookDirectionManager) {
+  - set : private
+  - toLookAt : Vector2
+  + onDirectionChanged : UnityEvent<Vector2>
+  - newLookDirection : Vector2
+  + SetLookAt() : void
+  - OnDrawGizmosSelected() : void
+}
+MonoBehaviour(ScaleBasedOnLookDirection) {
+  + transform : Transform
+  + flipX : bool
+  + flipY : bool
+  PrivateSerialized(childrenToFlip : List<ToFlip>)
+  + flipped : bool
+  + directionChanged : Action
+  - flip : bool
+  - scale : Vector3
+  - OnValidate() : void
+  + SetScaleBasedOnLookDirection() : void
+}
+class ToFlip {
+  + transform : Transform
+  + flipX : bool
+  + flipY : bool
+}
+MonoBehaviour(SetHealthText) {
+  PrivateSerialized(healthText : TextMeshPro)
+  PrivateSerialized(healthComponent : HealthComponent)
+  - OnValidate() : void
+  - OnEnable() : void
+  - OnDisable() : void
+  - OnHealthChange() : void
+}
+MonoBehaviour(WalkAnimManager) {
+  PrivateSerialized(animator : Animator)
+  PrivateSerialized(scaleBasedOnLookDirection : ScaleBasedOnLookDirection)
+  - IsWalkingIndex : static readonly int
+  - WalkSpeedIndex : static readonly int
+  - movementComponent : IEntityMovement
+  - OnValidate() : void
+  + Connect() : void
+  + Disconnect() : void
+  - SetWalkingAnimation() : void
+  - ChangeWalkingSpeed() : void
+}
+MonoBehaviour(WeaponHandlerPickup) {
+  PrivateSerialized(weaponRef : Weapon)
+  - weaponHandler : WeaponHandler
+  - OnValidate() : void
+  - OnTriggerEnter2D() : void
+}
+MonoBehaviour(NavigateToPosition) {
+  PrivateSerialized(navMeshAgent : NavMeshAgent)
+  - targetPosition : Vector2?
+  - OnValidate() : void
+  + SetTargetPosition() : void
+  + GetTargetPosition() : Vector2?
+}
+MonoBehaviour(VisionCone) {
+  PrivateSerialized(offsetRotation : Quaternion)
+  PrivateSerialized(targetLayerMask : LayerMask)
+  PrivateSerialized(obstacleLayerMask : LayerMask)
+  PrivateSerialized(viewDistance : float)
+  - set : private
+  - fieldOfView : float
+  PrivateSerialized(minDistance : float)
+  - hits : RaycastHit2D[]
+  - visibleHits : GameObject[]
+  - false : return
+  - target : Transform
+  - dirToTarget : Vector3
+  - angle : float
+  - distToTarget : float
+  - true : return
+  - result : RaycastHit2D
+  - visibleHits : return
+  - seen : GameObject[]
+  - color : Color
+  - Range() : SerializeField,
+  + DirFromAngle() : Vector3
+  - Vector3() : return new
+  + GetCurrentlySeenObjects() : GameObject[]
+  + AreTransformsInCone() : GameObject[]
+  - OnDrawGizmosSelected() : void
+}
+MonoBehaviour(BehaviourTree) {
+  - node : INode
+  - initialized : bool
+  + Initialize() : void
+  - Update() : void
+}
+class CompositeNode {
+  - children : readonly INode[]
+  - CompositeNode() : protected
+  + Call() : abstract NodeState
+}
+class ConditionNode {
+  - condition : Func<bool>
+  - isInverted : readonly bool
+  - toExecute : INode
+  - isInverted : Func<bool> condition, INode toExecute, bool
+  - ConditionNode() : public
+  + Call() : NodeState
+}
+interface INode {
+  + Call() : NodeState
+}
+class InvertNode {
+  - toInvert : INode
+  - result : NodeState
+  - _ : NodeState.Success,
+  - InvertNode() : public
+  + Call() : NodeState
+}
+class ParallelNode {
+  - states : List<NodeState>
+  - ParallelNode() : public
+  + Call() : override NodeState
+}
+class SelectorNode {
+  - result : NodeState
+  - SelectorNode() : public
+  + Call() : override NodeState
+}
+class SequenceNode {
+  - result : NodeState
+  - SequenceNode() : public
+  + Call() : override NodeState
+}
+class TaskNode {
+  - toExecute : Func<bool>
+  - TaskNode() : public
+  + Call() : NodeState
+}
+MonoBehaviour(GuardManager) {
+  - HasWeapon1 : static readonly int
+  - Attack : static readonly int
+  PrivateSerialized(animator : Animator)
+  PrivateSerialized(behaviourTree : BehaviourTree.BehaviourTree)
+  PrivateSerialized(healthComponent : HealthComponent)
+  PrivateSerialized(weaponHandler : WeaponHandler)
+  PrivateSerialized(movementComponent : Movement)
+  PrivateSerialized(visionCone : VisionCone)
+  PrivateSerialized(visionConeRotation : RotateTowardsPoint)
+  PrivateSerialized(stateText : TextMeshPro)
+  PrivateSerialized(lookAtSpeed : float)
+  - weaponSpawnerRef : HideInInspector, SerializeReference] private WeaponSpawner
+  - currentlyRegisteredPlayers : GameObject[]
+  - lastLookAtPosition : Vector2
+  - sawPlayer : SelectorNode
+  - cantSeePlayer : ParallelNode
+  - true : return
+  - state : bool
+  - state : return
+  - null : return
+  - false : return
+  - player : GameObject
+  - damageable : IDamageable
+  - playerPos : Vector2?
+  - Header() : Space,
+  - OnValidate() : void
+  - OnEnable() : void
+  - ConditionNode() : new
+  - ParallelNode() : new
+  - TaskNode() : new
+  - SequenceNode() : new
+  - SelectorNode() : new
+  - TaskNode() : IsPlayerInAttackRange, new
+  - TaskNode() : this.movementComponent.IsCurrentWaypointNull, new
+  - TaskNode() : this.movementComponent.IsAgentNearCurrentWaypoint, new
+  - InvertNode() : new
+  - FixedUpdate() : void
+  - OnDrawGizmosSelected() : void
+  - SetStateText() : bool
+  - HasWeapon() : region Weapon management private bool
+  - GetNearestWeaponPosition() : Vector2
+  - CanSeePlayer() : region Player related private bool
+  - GetPlayerPosition() : Vector2?
+  - TryAttackPlayer() : bool
+  - IsPlayerInAttackRange() : bool
+}
+MonoBehaviour(Movement) {
+  PrivateSerialized(navigateToPosition : NavigateToPosition)
+  PrivateSerialized(walkAnimManager : WalkAnimManager)
+  PrivateSerialized(waypointManager : WaypointManager)
+  PrivateSerialized(lookDirectionManager : LookDirectionManager)
+  PrivateSerialized(rb : Rigidbody2D)
+  - isMovingChanged : Space] public UnityEvent<bool>
+  + IsMovingChanged : UnityEvent<bool>
+  - isMoving : bool
+  - target : Vector2?
+  - newIsMoving : bool
+  - currentWaypoint : Vector2?
+  - false : return
+  - OnValidate() : void
+  - FixedUpdate() : void
+  - OnDrawGizmosSelected() : void
+  - Start() : void
+  - OnDestroy() : void
+  - IsCurrentWaypointNull() : region WaypointManager public bool
+  + SetCurrentWaypoint() : bool
+  + GetNextWaypoint() : Vector2
+  + GetNearestWayPoint() : Vector2
+  + IsAgentNearCurrentWaypoint() : bool
+  + GetCurrentWaypoint() : Vector2
+}
+class WaypointManager {
+  + waypoints : List<Vector2>
+  + minimumDistanceToWaypoint : float
+  + loopType : WaypointLoopType
+  + direction : bool
+  - lastPos : Vector2?
+  - index : int
+  - nextIndex : int
+  - closetsPoint : Vector2
+  - closetsDist : float
+  - i : int
+  - waypoint : Vector2
+  - dist : float
+  - closetsPoint : return
+  + OnValidate() : bool
+  + OnDrawGizmosSelected() : void
+  + GetNextWaypoint() : Vector2
+  - when() : case WaypointLoopType.PingPong
+  + GetNearestWayPoint() : Vector2
+}
+MonoBehaviour(WeaponHandler) {
+  - weaponRef : SerializeReference] private Weapon?
+  + Weapon : Weapon?
+  + SetWeapon() : void
+  - OnValidate() : void
+  + GetDamage() : float
+  + HasWeapon() : bool
+}
+MonoBehaviour(LookAt) {
+  PrivateSerialized(actionNameLook : string)
+  PrivateSerialized(lookDirectionManager : LookDirectionManager)
+  PrivateSerialized(gunRotation : RotateTowardsPoint)
+  - playerCamera : Camera
+  - inputActionAsset : InputActionAsset
+  - lookAction : InputAction
+  - inputDirection : Vector2
+  - mouseScreen : Vector2
+  - mouseWorld : Vector3
+  - OnValidate() : void
+  + Connect() : void
+  + Disconnect() : void
+  - OnLookActionPerformed() : void
+}
+MonoBehaviour(Movement) {
+  PrivateSerialized(actionNameMovement : string)
+  PrivateSerialized(rb : Rigidbody2D)
+  - isMovingChanged : Space] public UnityEvent<bool>
+  + IsMovingChanged : UnityEvent<bool>
+  PrivateSerialized(speed : float)
+  PrivateSerialized(velocityLimit : float)
+  PrivateSerialized(turningStrength : float)
+  PrivateSerialized(applyTurnMin : float)
+  PrivateSerialized(drag : float)
+  PrivateSerialized(applyDragMin : float)
+  - inputActionAsset : InputActionAsset
+  - moveAction : InputAction
+  - inputDirection : Vector2
+  - isWalking : bool
+  - currentDirection : Vector2
+  - changingDirStrength : float
+  - OnValidate() : void
+  + Connect() : void
+  + Disconnect() : void
+  - OnMoveActionPerformed() : void
+  - OnMoveActionStopped() : void
+  - UpdateMovementData() : void
+  - Update() : void
+  - Vector2() : new
+}
+MonoBehaviour(PlayerManager) {
+  PrivateSerialized(healthComponent : HealthComponent)
+  PrivateSerialized(movementComponent : Movement)
+  PrivateSerialized(walkAnimManager : WalkAnimManager)
+  PrivateSerialized(lookAtComponent : LookAt)
+  PrivateSerialized(inputActionAsset : InputActionAsset)
+  PrivateSerialized(playerCamera : Camera)
+  - OnValidate() : void
+  - Start() : void
+  - OnDestroy() : void
+}
+MonoBehaviour(GenManager) {
+  PrivateSerialized(worldGen : WorldGen)
+  PrivateSerialized(mainSeed : string)
+  PrivateSerialized(seedTextElement : TextMeshProUGUI)
+  PrivateSerialized(tempWorldGenSprite : SpriteRenderer)
+  PrivateSerialized(inputFieldWaitTime : TMP_InputField)
+  PrivateSerialized(worldGenUiBox : Transform)
+  PrivateSerialized(mainUiBox : Transform)
+  PrivateSerialized(areaUIPrefab : GameObject)
+  PrivateSerialized(sliderAndTextPrefab : GameObject)
+  PrivateSerialized(sliderAndTextInstances : SliderAndTextInstance[])
+  PrivateSerialized(waitTime : float)
+  - genRoutine : Coroutine?
+  - snapshotRef : WorldGenSnapshot
+  - ss : this.mainSeed, OnFinish,
+  - GenerateMainSeed() : Button] public void
+  + TriggerGenWorld() : void
+  - OnFinish() : void
+  + StopGen() : void
+  - OnValidate() : void
+  - Start() : void
+  - typeof() : this.sliderAndTextInstances,
+  - UpdateWaitTime() : void
+  + OnWaitTimeChanged() : void
+}
+class GridRuntime {
+  - rooms : readonly List<RoomRuntime>
+  - center : Vector2Int
+  - room : Room
+  - min : Vector2
+  - max : Vector2
+  - inside : bool
+  - instance : return
+  - null : return
+  - newMin : Vector2Int
+  - newMax : Vector2Int
+  - otherCenter : Vector2Int
+  - other : Room
+  - otherMin : Vector2Int
+  - otherMax : Vector2Int
+  - overlaps : bool
+  - false : return
+  - true : return
+  - roomRuntime : RoomRuntime
+  - roomRef : center,
+  - roomRuntime : return
+  - minX : int
+  - minY : int
+  - maxX : int
+  - maxY : int
+  - halfW : int
+  - halfH : int
+  - min : Vector2Int
+  - max : Vector2Int
+  - pixels : Color[]
+  - roomWidth : int
+  - roomPixels : Color[]
+  - i : int
+  - roomPixel : Color
+  - pixelPositionInRoom : Vector2Int
+  - pixelPositionInWorld : Vector2Int
+  - pixelPositionOnTexture : Vector2Int
+  - targetIndex : int
+  - pixels : return
+  - direction : Vector2Int
+  - worldPosition : Vector2Int
+  - allDoorways : return
+  + GetRoomAtPosition() : RoomRuntime?
+  + CheckRoomPossible() : bool
+  + PlaceRoom() : RoomRuntime
+  + GetWorldSize() : Vector2Int
+  - Vector2Int() : new
+  - Vector2Int() : return new
+  + GetPixels() : Color[]
+  + RemoveUnusedDoorways() : void
+  + Clear() : void
+}
+ScriptableObject(WorldGen) {
+  - owner : MonoBehaviour
+  - areaData : SerializeField, Expandable] private List<Area>
+  - roomRepetitionAllowance : int
+  - minDistToBossRoom : float
+  - maxTries : int
+  - maxOverlapAttempts : int
+  - maxOverlapAttemptsBruteForce : int
+  - onUpdateSnapshot : Action<WorldGenSnapshot>
+  - animWaitTime : float
+  - genRuntime : WorldGenRuntime?
+  + RoomRepetitionAllowance : int
+  + MaxTries : int
+  + MaxOverlapAttempts : int
+  + MaxOverlapAttemptsBruteForce : int
+  - a : Area?
+  - instance : GameObject?
+  - possibleParents : TagComponent[]?
+  - parent : Transform?
+  - Range() : SerializeField,
+  + SetOwner() : void
+  + SetAnimWaitTime() : void
+  + GetAnimWaitTime() : float
+  + GetAnimYieldInstruction() : YieldInstruction
+  - WaitForSeconds() : new
+  + GetOnUpdateSnapshot() : Action<WorldGenSnapshot>
+  + InstantiateAreaData() : void
+  + InitiateGen() : IEnumerator
+  - WorldGenRuntime() : new
+  + GetWalkDirectionRepetitionAllowance() : int
+  + StopGen() : void
+  + CreateAreaUI() : void
+}
+class WorldGenRuntime {
+  - unityConnection : readonly MonoBehaviour
+  - owner : readonly WorldGen
+  + currentSeed : string
+  - isStopped : bool
+  - gridRuntime : readonly GridRuntime
+  - backlog : List<Area>
+  - hadAreas : readonly List<AreaRuntime>
+  - hadRooms : readonly List<Room>
+  - set : private
+  - currentWalkDirection : Vector2Int
+  - walkDirRepeated : int
+  - minDistToBossRoom : readonly float
+  - walkDirRepeatSetting : RepeatSetting
+  + genRuntime : readonly WorldGenRuntime
+  + unityConnection : readonly MonoBehaviour
+  + yieldInstruction : readonly YieldInstruction?
+  + waitTime : readonly float
+  - foundIndex : int
+  - pickedArea : AreaRuntime
+  - pickedArea : return
+  - waitTime : float
+  - break : yield
+  - bossRoomRef : RoomRuntimeRef
+  - animData : AnimDataWrapper
+  - doorway : Room.DoorPointGroup
+  - newPos : Vector2Int
+  - onUpdateSnapshot : Action<WorldGenSnapshot>
+  - maxAllowance : float
+  - index : int
+  - placedRoom : RoomRuntime
+  - tries : int
+  - overlapAttempts : int
+  - selectionResult : RoomSelectionResult
+  - yieldInstruction : YieldInstruction?
+  - yieldInstruction : yield return
+  - overlapAttempts : return
+  - halfWidth : int
+  - halfHeight : int
+  - offset : Vector2Int
+  - true : return
+  - sizedPool : List<Room>
+  - false : return
+  - doorways : List<Room.DoorPointGroup>
+  - i : int
+  - area : AreaRuntime
+  - pendingRoom : PendingRoomPlacement
+  - dist : float
+  - runtimeRef : RoomRuntimeRef
+  - WorldGenRuntime() : public
+  - AnimDataWrapper() : public
+  - Reset() : void
+  + GetRoomAtPosition() : RoomRuntime?
+  + MutateRng() : void
+  - RegisterHadRoom() : void
+  - GetRandomArea() : AreaRuntime
+  - GetHadAreaByType() : AreaRuntime
+  + StartGen() : IEnumerator
+  + StopGen() : void
+  - WalkAllAreas() : IEnumerator
+  + Walk() : void
+  - UpdateSnapShot() : void
+  - WorldGenSnapshot() : new
+  - UpdateWalkDirection() : void
+  - ArgumentOutOfRangeException() : throw new
+  + AddRoom() : IEnumerator
+  + TryFindRoomPlacement() : IEnumerator
+  - ProcessOverlapAttempts() : int
+  - TrySetPlacementPosition() : bool
+  - TrySelectRoomForAvailableSpace() : RoomSelectionResult
+  - TryWalkThroughDoor() : bool
+  - GetRandomDoor() : Room.DoorPointGroup
+  - TryAddBossRoom() : IEnumerator
+}
+class AnimDataWrapper {
+  + genRuntime : readonly WorldGenRuntime
+  + unityConnection : readonly MonoBehaviour
+  + yieldInstruction : readonly YieldInstruction?
+  + waitTime : readonly float
+  - AnimDataWrapper() : public
+}
+class WorldGenSnapshot {
+  - gridRuntime : GridRuntime?
+  - currentPosition : Vector2Int
+  - currentPosition : null, Vector2Int
+  - size : Vector2Int
+  - worldGenTex : Texture2D
+  - wrapMode : FilterMode.Point,
+  - anisoLevel : TextureWrapMode.Clamp,
+  - pixels : Color[]
+  - posIndex : int
+  - rect : Rect
+  - newSprite : Sprite
+  - WorldGenSnapshot() : public
+  + Update() : void
+  + GenDebugTex() : static void
+  - Vector2() : worldGenTex, rect, new
+}
+ScriptableObject(Area) {
+  + areaType : AreaType
+  - minSize : int
+  - maxSize : int
+  + WalkDirectionRepetitionAllowance : int
+  - walkDirectionRepetitionAllowance : int
+  - roomTypes : SerializeField, Expandable] private List<TypedRoomList>
+  PrivateSerialized(endRooms : RoomList)
+  - smallestEndRoomSize : SerializeField, HideInInspector] public int
+  PrivateSerialized(sliderAndTextInstances : SliderAndTextInstance[])
+  - smallestRoom : int
+  - newSmallest : int
+  - Range() : SerializeField,
+  - OnValidate() : if UNITY_EDITOR private void
+  - OnRoomsChanged() : void
+  - OnDestroy() : void
+  - GetAreaGenData() : endif public AreaRuntime
+  + CreatUI() : void
+  - typeof() : this.sliderAndTextInstances,
+}
+class AreaRuntime {
+  - roomTypes : readonly List<TypedRoomList>
+  - endRooms : readonly RoomList
+  - smallestEndRoomSize : readonly int
+  - RoomCount : int
+  + EndRoomCount : int
+  + EndRooms : List<Room>
+  - lastHadRoomType : RoomType?
+  - foundTypeList : TypedRoomList
+  - indexPool : List<int>
+  - resolution : const int
+  - guaranteedFound : bool
+  - i : int
+  - count : int
+  - j : int
+  - count : j <
+  - null : return
+  - hasValid : bool
+  - foundIndex : int
+  - foundTypeList : return
+  - genRuntime : WorldGenRuntime
+  - unityConnection : MonoBehaviour
+  - waitTime : float
+  - yieldInstruction : YieldInstruction?
+  - foundRoom : RoomRuntime?
+  - pendingRoom : PendingRoomPlacement
+  - runtimeRef : RoomRuntimeRef
+  - yieldInstruction : yield return
+  - pickedTypeList : TypedRoomList?
+  - tries : int
+  - maxTries : int
+  - maxPool : List<Room>
+  - break : yield
+  - largestSize : int
+  - isSpaceNeeded : bool
+  - largestSize : this.Size <
+  - true : return
+  - false : return
+  - AreaRuntime() : public
+  - RoomList() : new
+  - PickTypeList() : TypedRoomList?
+  + WalkthroughArea() : IEnumerator
+  - GetTypedPossibleRoom() : IEnumerator
+  + GetPossibleBossRoom() : IEnumerator
+  + SizeCheck() : bool
+}
+class Room {
+  PrivateSerialized(layout : string)
+  - set : private
+  PrivateSerialized(size : int)
+  PrivateSerialized(width : int)
+  PrivateSerialized(height : int)
+  PrivateSerialized(contentPoints : Vector2[])
+  PrivateSerialized(doorPoints : List<DoorPointListItem>)
+  + key : Vector2Int
+  + value : List<DoorPointGroup>
+  + points : List<Vector2Int>
+  + roomPoint : Vector2Int
+  - result : StringBuilder
+  - pixels : Color32[]
+  - tolerance : const float
+  - lookupInstance : RoomTileLookup?
+  - y : int
+  - x : int
+  - pixel : Color32
+  - found : bool
+  - contentPoints : List<Vector2>
+  - contentChar : char?
+  - i : int
+  - c : char
+  - result : List<DoorPointListItem>
+  - value : Vector2Int.up,
+  - value : Vector2Int.down,
+  - value : Vector2Int.left,
+  - value : Vector2Int.right,
+  - hadIndices : List<int>
+  - doorwayChar : char?
+  - doorPointGroup : DoorPointGroup
+  - key : Vector2Int
+  - result : return
+  - indecesToCheck : List<int>
+  - current : int
+  - average : Vector2
+  - dir : Vector2
+  - smallestDot : float
+  - foundDir : Vector2Int
+  - dot : float
+  - foundDir : return
+  - builder : StringBuilder
+  - pixels : Color[]
+  - pixels : return
+  - offset : int
+  - Room() : public
+  - GetStringLayout() : string
+  - CheckColor() : bool
+  - GetContentPoints() : static Vector2[]
+  - Vector2Int() : new
+  - FillDoorPoints() : static List<DoorPointListItem>
+  - Exception() : throw new
+  - GetDoorPointNeighbours() : static void
+  - GetDirectionGetDoorPointGroup() : static Vector2Int
+  - Vector2() : new
+  + ToString() : override string
+  + GetPixels() : static Color[]
+}
+struct DoorPointListItem {
+  + key : Vector2Int
+  + value : List<DoorPointGroup>
+}
+class DoorPointGroup {
+  + points : List<Vector2Int>
+  + roomPoint : Vector2Int
+}
+class RoomList {
+  - rooms : if UNITY_EDITOR [SerializeField] private List<Texture2D>
+  - roomData : endif [SerializeField, HideInInspector] private List<Room>
+  - set : private
+  - onRoomsChangedRegistered : if UNITY_EDITOR private bool
+  + onRoomsChanged : Action
+  - lastRooms : WorldGenRuntime genRuntime, List<Room> pool, Room[]
+  - usedSeed : string
+  - index : int
+  - null : return
+  - RoomList() : public
+  + OnValidate() : void
+  + OnDestroy() : void
+  - OnRoomDataUpdated() : void
+  - Room() : new
+  - TryGetRoom() : endif public static Room?
+}
+class RoomRuntime {
+  + areaType : AreaType
+  + roomType : RoomType
+  + position : Vector2Int
+  + roomRef : Room
+  - mutations : readonly List<string>
+  - lookup : RoomTileLookup?
+  - emptyChar : RoomTile?
+  - mutation : char[]
+  - targetIndex : int
+  - layout : char[]
+  - i : int
+  - c : char
+  - wallChar : RoomTile?
+  - doorChar : RoomTile?
+  - existingLayout : char[]
+  + CompareTo() : int
+  + RemoveDoorFromLayout() : void
+  - Exception() : throw new
+  - string() : new
+  - GetLayout() : string
+  - string() : return new
+  + MutateRemoveLeftDoorPixels() : void
+  + GetPixels() : Color[]
+}
+class ColorList {
+  + list : ColorListInstance[]
+  + key : string
+  + colorList : TypedColors[]
+  + areaBased : bool
+  + roomTypeBased : bool
+  + areaType : AreaType
+  + roomType : RoomType
+  + color : Color
+  - foundList : ColorListInstance?
+  - colorObj : TypedColors?
+  + GetColor() : Color
+  - AreaOrRoomTypeMatch() : bool
+}
+class ColorListInstance {
+  + key : string
+  + colorList : TypedColors[]
+}
+class TypedColors {
+  + areaBased : bool
+  + roomTypeBased : bool
+  + areaType : AreaType
+  + roomType : RoomType
+  + color : Color
+}
+struct RoomTile {
+  + text : char
+  + color : Color
+  - RoomTile() : public
+}
+MonoBehaviour(RoomTileLookup) {
+  + RoomDataHasBeenUpdated : static Action?
+  - lookupInstance : return
+  - set : private
+  - lookupInstance : static RoomTileLookup?
+  + tiles : ListInstance[]
+  PrivateSerialized(tileColors : ColorList)
+  + key : string
+  + tile : RoomTile
+  - OnEnable() : void
+  - OnDisable() : void
+  + GetTile() : RoomTile?
+  - UpdateRoomData() : if UNITY_EDITOR [Button] private void
+  - GetColor() : endif public Color
+}
+class ListInstance {
+  + key : string
+  + tile : RoomTile
+}
+class SingleUseTypedRoomList {
+  + OnPicked() : override void
+}
+ScriptableObject(TypedRoomList) {
+  + roomType : RoomType
+  PrivateSerialized(weight : float)
+  PrivateSerialized(rooms : RoomList)
+  - smallestRoomSize : SerializeField, HideInInspector] public int
+  - set : protected
+  - newInstance : TypedRoomList?
+  - TypedRoomList : as
+  - newInstance : return
+  - builder : StringBuilder
+  + Duplicate() : TypedRoomList
+  - RoomList() : new
+  - OnValidate() : if UNITY_EDITOR private void
+  - OnDestroy() : void
+  - OnRoomsChanged() : void
+  - OnPicked() : endif public virtual void
+  + UndoPicked() : virtual void
+  - RoomDataListToString() : static string
+}
+class PendingRoomPlacement {
+  + possibleRoom : Room?
+  + possibleRoomType : RoomType
+  + center : Vector2Int?
+  + doorGroup : Room.DoorPointGroup?
+}
+class RoomRuntimeRef {
+  + instance : RoomRuntime?
+}
+MonoBehaviour(HealthComponent) {
+  + MaxHealth : float
+  PrivateSerialized(maxHealth : float)
+  PrivateSerialized(currentHealth : float)
+  - onHealthChange : Space] public UnityEvent<float>
+  + onHealthDepleted : UnityEvent
+  PrivateSerialized(maxInvincibilityTime : float)
+  - invincibilityTimer : Timer
+  - invincible : bool
+  - lastHealth : float
+  - OnEnable() : void
+  - Timer() : new
+  - Update() : void
+  + TakeDamage() : void
+  + CanTakeDamage() : bool
+}
+interface IDamageable {
+  + TakeDamage() : void
+  + CanTakeDamage() : bool
+}
+MonoBehaviour(MapCameraController) {
+  PrivateSerialized(zoomSpeed : float)
+  PrivateSerialized(minZoom : float)
+  PrivateSerialized(maxZoom : float)
+  PrivateSerialized(dragButtons : MouseButton[])
+  - cam : Camera
+  - dragOrigin : Vector3
+  - isDragging : bool
+  - mouseScreenPos : Vector2
+  - difference : Vector3
+  - scrollValue : float
+  - scroll : float
+  - mouseBeforeZoom : Vector3
+  - mouseAfterZoom : Vector3
+  - true : return
+  - false : return
+  - Start() : void
+  - LateUpdate() : void
+  - PanCamera() : void
+  - ZoomCamera() : void
+  - GetButtonJustPressed() : bool
+  - GetButtonPressed() : bool
+}
+class SliderAndTextInstance {
+  + name : string
+  - text : NonSerialized] public TextMeshProUGUI
+  - slider : NonSerialized] public Slider
+  - totalText : NonSerialized] public TextMeshProUGUI
+  - textComponents : TextMeshProUGUI[]?
+  - flags : const BindingFlags
+  - field : FieldInfo?
+  - range : RangeAttribute
+  - intVal : int
+  - value : object
+  + Initialize() : void
+  + ConnectSlidersToWorldGenData() : static void
+  - UpdateSliderUIInitialState() : static void
+}
+MonoBehaviour(DirectionalStack) {
+  PrivateSerialized(layoutDirection : Vector2)
+  PrivateSerialized(spacing : float)
+  PrivateSerialized(initialPadding : float)
+  PrivateSerialized(childAlignment : TextAnchor)
+  PrivateSerialized(inverseStack : bool)
+  PrivateSerialized(controlChildWidth : bool)
+  PrivateSerialized(controlChildHeight : bool)
+  - autoSnapAnchors : Space] [SerializeField] private bool
+  - rectTransform : RectTransform
+  - childCount : int
+  - normalizedDir : Vector2
+  - anchorVector : Vector2
+  - parentRect : Rect
+  - currentPosition : Vector2
+  - i : int
+  - childCount : i <
+  - targetIndex : int
+  - child : RectTransform
+  - childSizeAlongAxis : float
+  - alignmentOffset : Vector2
+  - Awake() : void
+  - OnEnable() : void
+  - Update() : void
+  - OnTransformChildrenChanged() : void
+  - OnRectTransformDimensionsChange() : void
+  - OnValidate() : if UNITY_EDITOR private void
+  - UpdateLayout() : endif private void
+  - GetAnchorVector() : static Vector2
+  - Vector2() : new
+}
+MonoBehaviour(NotificationItem) {
+  PrivateSerialized(textComponent : TextMeshProUGUI)
+  PrivateSerialized(visibleDuration : float)
+  - fadeDuration : float
+  - originalColor : Color
+  - time : float
+  - t : float
+  - null : yield return
+  + Initialize() : void
+  - FadeAndDestroyRoutine() : IEnumerator
+  - WaitForSeconds() : yield return new
+  - Color() : new
+}
+MonoBehaviour(NotificationManager) {
+  - instance : static NotificationManager?
+  PrivateSerialized(notificationPrefab : GameObject)
+  PrivateSerialized(maxNotifications : int)
+  - spawnedObj : GameObject
+  - item : NotificationItem
+  - Awake() : void
+  - Log() : HideInCallstack] public static void
+  - OnTransformChildrenChanged() : void
+}
+class Extensions {
+  - local : Vector3
+  - scaled : Vector3
+  + CardinalDirections : static readonly Vector2Int[]
+  + XY() : static Vector2
+  + RandomPoint() : static Vector3
+  + ToReadableString() : static string
+}
+class Rng {
+  - Alphabet : static readonly char[]
+  - seed : ulong
+  - BIT_NOISE1 : const ulong
+  - BIT_NOISE2 : const ulong
+  - BIT_NOISE3 : const ulong
+  - result : ulong
+  - result : return
+  - chars : char[]
+  - i : int
+  - index : int
+  - value : int
+  - normalized : double
+  + MutateNext() : static string
+  - ParseSeed() : return
+  - MutateNext() : static ulong
+  + ParseSeed() : static string
+  - string() : return new
+  + ParseSeed() : static ulong
+  - GetHexValue() : static int
+  + RandomRange() : static int
+  + RandomRange() : static float
+}
+MonoBehaviour(TagComponent) {
+  PrivateSerialized(name : string)
+  + Compare() : bool
+}
+
+AnimDataWrapper --> WorldGenRuntime
+Area --> RoomList
+Area --> SliderAndTextInstance
+Area --> TypedRoomList
+AreaRuntime --> PendingRoomPlacement
+AreaRuntime --> Room
+AreaRuntime --> RoomList
+AreaRuntime --> RoomRuntime
+AreaRuntime --> RoomRuntimeRef
+AreaRuntime --> TypedRoomList
+AreaRuntime --> WorldGenRuntime
+BehaviourTree --> INode
+ColorList --> ColorListInstance
+ColorList --> TypedColors
+ColorListInstance --> TypedColors
+CompositeNode <|-- ParallelNode
+CompositeNode <|-- SelectorNode
+CompositeNode <|-- SequenceNode
+CompositeNode --> INode
+ConditionNode --> INode
+DoorPointListItem --> DoorPointGroup
+GenManager --> SliderAndTextInstance
+GenManager --> WorldGen
+GenManager --> WorldGenSnapshot
+GridRuntime --> Room
+GridRuntime --> RoomRuntime
+GuardManager --> BehaviourTree
+GuardManager --> HealthComponent
+GuardManager --> IDamageable
+GuardManager --> Movement
+GuardManager --> ParallelNode
+GuardManager --> RotateTowardsPoint
+GuardManager --> SelectorNode
+GuardManager --> VisionCone
+GuardManager --> WeaponHandler
+GuardManager --> WeaponSpawner
+HealthComponent --> Timer
+IDamageable <|.. HealthComponent
+IDamager <|.. WeaponHandler
+IEntityMovement <|.. Movement
+INode <|.. CompositeNode
+INode <|.. ConditionNode
+INode <|.. InvertNode
+INode <|.. TaskNode
+InvertNode --> INode
+ListInstance --> RoomTile
+LookAt --> LookDirectionManager
+LookAt --> RotateTowardsPoint
+Movement --> LookDirectionManager
+Movement --> NavigateToPosition
+Movement --> WalkAnimManager
+Movement --> WaypointManager
+NotificationManager --> NotificationItem
+PendingRoomPlacement --> DoorPointGroup
+PendingRoomPlacement --> Room
+PlayerManager --> HealthComponent
+PlayerManager --> LookAt
+PlayerManager --> Movement
+PlayerManager --> WalkAnimManager
+Room --> DoorPointGroup
+Room --> DoorPointListItem
+Room --> RoomTileLookup
+RoomList --> Room
+RoomList --> WorldGenRuntime
+RoomRuntime --> Room
+RoomRuntime --> RoomTile
+RoomRuntime --> RoomTileLookup
+RoomRuntimeRef --> RoomRuntime
+RoomTileLookup --> ColorList
+RoomTileLookup --> ListInstance
+RoomTileLookup --> RoomTile
+ScaleBasedOnLookDirection --> ToFlip
+SetHealthText --> HealthComponent
+TypedRoomList <|-- SingleUseTypedRoomList
+TypedRoomList --> RoomList
+WalkAnimManager --> IEntityMovement
+WalkAnimManager --> ScaleBasedOnLookDirection
+WeaponHandler --> Weapon
+WeaponHandlerPickup --> Weapon
+WeaponHandlerPickup --> WeaponHandler
+WeaponInstance --> Weapon
+WeaponSpawner --> Weapon
+WeaponSpawner --> WeaponInstance
+WorldGen --> Area
+WorldGen --> TagComponent
+WorldGen --> WorldGenRuntime
+WorldGen --> WorldGenSnapshot
+WorldGenRuntime --> AnimDataWrapper
+WorldGenRuntime --> Area
+WorldGenRuntime --> AreaRuntime
+WorldGenRuntime --> DoorPointGroup
+WorldGenRuntime --> GridRuntime
+WorldGenRuntime --> PendingRoomPlacement
+WorldGenRuntime --> Room
+WorldGenRuntime --> RoomRuntime
+WorldGenRuntime --> RoomRuntimeRef
+WorldGenRuntime --> WorldGen
+WorldGenRuntime --> WorldGenSnapshot
+WorldGenSnapshot --> GridRuntime
+@enduml

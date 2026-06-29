@@ -1,0 +1,5 @@
+<map id="Generation.GridRuntime" name="Generation.GridRuntime">
+<area shape="rect" id="Node000001" title="A container for runtime rooms." alt="" coords="5,163,240,541"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="41,5,205,91"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="123,88,125,146,120,146,122,93"/>
+</map>

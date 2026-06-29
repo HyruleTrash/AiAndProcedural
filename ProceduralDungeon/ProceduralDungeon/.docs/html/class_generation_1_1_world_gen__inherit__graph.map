@@ -1,0 +1,5 @@
+<map id="Generation.WorldGen" name="Generation.WorldGen">
+<area shape="rect" id="Node000001" title="Holds the generation algorithm, tying all gen data together." alt="" coords="5,123,224,885"/>
+<area shape="rect" id="Node000002" href="$class_scriptable_object.html" title=" " alt="" coords="62,5,168,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="115,87,117,123,112,123,115,92"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="DirectionalStack" name="DirectionalStack">
+<area shape="rect" id="Node000001" title="A simple layout component, for stacking ui elements." alt="" coords="5,123,226,539"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="66,5,166,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,87,118,123,113,123,115,92"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="NavigateToPosition" name="NavigateToPosition">
+<area shape="rect" id="Node000001" title=" " alt="" coords="86,147,276,275"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,106,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="90,84,137,146,132,148,89,89"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="131,5,231,75"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="182,72,184,131,178,129,180,77"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="283,5,338,75"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="304,72,296,100,283,124,274,136,270,132,279,121,291,98,301,76"/>
+</map>

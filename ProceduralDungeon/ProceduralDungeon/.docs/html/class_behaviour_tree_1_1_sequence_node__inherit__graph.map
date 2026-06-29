@@ -1,0 +1,7 @@
+<map id="BehaviourTree.SequenceNode" name="BehaviourTree.SequenceNode">
+<area shape="rect" id="Node000001" title=" " alt="" coords="8,277,196,400"/>
+<area shape="rect" id="Node000002" href="$class_behaviour_tree_1_1_composite_node.html" title=" " alt="" coords="5,123,198,229"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="103,242,104,278,99,277,101,247"/>
+<area shape="rect" id="Node000003" href="$interface_behaviour_tree_1_1_i_node.html" title=" " alt="" coords="35,5,168,75"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="102,87,104,123,99,123,101,92"/>
+</map>

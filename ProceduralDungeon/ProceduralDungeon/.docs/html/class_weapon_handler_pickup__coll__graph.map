@@ -1,0 +1,13 @@
+<map id="WeaponHandlerPickup" name="WeaponHandlerPickup">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,325,158,432"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="10,176,111,245"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="68,258,78,326,72,325,65,262"/>
+<area shape="rect" id="Node000003" href="$class_weapon.html" title=" " alt="" coords="135,168,312,253"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="190,251,139,315,135,311,186,255"/>
+<area shape="rect" id="Node000004" href="$class_scriptable_object.html" title=" " alt="" coords="51,5,158,75"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="137,84,197,168,192,169,136,89"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="181,5,265,75"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="224,72,226,152,221,151,222,77"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="289,5,325,75"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="302,72,294,110,279,145,273,156,269,152,274,143,289,108,299,77"/>
+</map>

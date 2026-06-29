@@ -1,0 +1,13 @@
+<map id="ScriptableObject" name="ScriptableObject">
+<area shape="rect" id="Node000001" title=" " alt="" coords="387,5,494,75"/>
+<area shape="rect" id="Node000002" href="$class_generation_1_1_area.html" title="Holds references and default data for an entire area." alt="" coords="5,317,209,691"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="371,52,335,62,295,77,256,97,223,125,190,167,164,215,144,266,130,318,125,317,139,265,159,213,185,164,219,121,253,93,292,72,333,57,375,48"/>
+<area shape="rect" id="Node000003" href="$class_generation_1_1_typed_room_list.html" title="Holds a list of rooms, of a certain type, used in an area&#39;s roomTypes list." alt="" coords="233,360,422,648"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="430,87,365,361,360,359,428,92"/>
+<area shape="rect" id="Node000005" href="$class_generation_1_1_world_gen.html" title="Holds the generation algorithm, tying all gen data together." alt="" coords="446,123,665,885"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="453,87,464,123,458,123,452,92"/>
+<area shape="rect" id="Node000006" href="$class_weapon.html" title=" " alt="" coords="690,429,866,579"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="508,45,552,54,597,68,641,90,679,121,706,155,727,193,745,233,758,275,774,357,781,430,776,428,769,358,753,277,740,235,723,195,701,158,675,125,638,95,595,73,551,59,510,50"/>
+<area shape="rect" id="Node000004" href="$class_generation_1_1_single_use_typed_room_list.html" title=" " alt="" coords="239,933,416,1035"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="330,661,330,934,325,933,325,664"/>
+</map>

@@ -1,0 +1,15 @@
+<map id="MapCameraController" name="MapCameraController">
+<area shape="rect" id="Node000001" title="A debug camera movement script made by Gemini." alt="" coords="222,189,410,365"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,106,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,85,110,126,143,163,182,196,224,226,219,227,178,200,139,167,106,129,81,90"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="130,5,166,75"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="146,72,152,119,158,142,168,164,187,189,211,214,206,214,183,193,163,167,153,144,147,120,145,77"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="212,5,308,75"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="255,72,254,118,259,165,261,174,256,172,254,166,248,118,253,77"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="342,5,399,75"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="365,73,346,166,344,174,340,171,341,165,362,77"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="423,5,478,75"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="441,73,425,120,402,167,396,177,392,173,397,164,420,117,438,77"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="530,5,565,75"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="545,72,533,121,523,145,508,167,470,204,426,233,423,228,467,200,504,164,518,143,528,119,541,76"/>
+</map>

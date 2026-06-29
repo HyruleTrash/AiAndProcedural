@@ -1,0 +1,9 @@
+<map id="NotificationItem" name="NotificationItem">
+<area shape="rect" id="Node000001" title="A simple ui element that&#39;s used in the static notif manager." alt="" coords="88,168,293,291"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,106,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="89,84,150,168,145,169,87,89"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="130,5,251,75"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="192,72,193,152,188,150,189,76"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="304,5,340,75"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="320,72,312,110,295,145,287,157,283,153,291,143,307,108,316,77"/>
+</map>

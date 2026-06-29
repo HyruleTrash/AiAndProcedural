@@ -1,0 +1,5 @@
+<map id="Generation.Area" name="Generation.Area">
+<area shape="rect" id="Node000001" title="Holds references and default data for an entire area." alt="" coords="5,123,209,496"/>
+<area shape="rect" id="Node000002" href="$class_scriptable_object.html" title=" " alt="" coords="54,5,161,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,87,110,124,105,123,107,92"/>
+</map>

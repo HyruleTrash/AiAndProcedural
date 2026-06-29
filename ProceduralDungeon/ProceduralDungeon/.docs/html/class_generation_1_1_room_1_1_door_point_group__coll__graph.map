@@ -1,0 +1,7 @@
+<map id="Generation.Room.DoorPointGroup" name="Generation.Room.DoorPointGroup">
+<area shape="rect" id="Node000001" title=" " alt="" coords="33,147,207,232"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,120,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,72,100,131,95,131,75,77"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="144,5,214,75"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="169,72,152,124,148,132,144,129,147,122,166,76"/>
+</map>

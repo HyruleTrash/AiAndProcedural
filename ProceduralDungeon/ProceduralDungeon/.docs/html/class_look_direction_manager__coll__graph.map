@@ -1,0 +1,9 @@
+<map id="LookDirectionManager" name="LookDirectionManager">
+<area shape="rect" id="Node000001" title=" " alt="" coords="55,147,259,253"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,106,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="86,84,126,147,121,148,84,89"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="130,5,184,75"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="158,72,160,131,154,129,156,77"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="208,5,352,75"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="262,73,228,124,219,136,216,132,224,121,257,76"/>
+</map>

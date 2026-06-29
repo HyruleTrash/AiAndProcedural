@@ -1,0 +1,7 @@
+<map id="Generation.RoomTile" name="Generation.RoomTile">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,147,144,232"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="22,5,58,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="38,72,45,122,47,131,42,131,40,123,37,77"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="89,5,130,75"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="103,72,91,131,86,129,100,77"/>
+</map>

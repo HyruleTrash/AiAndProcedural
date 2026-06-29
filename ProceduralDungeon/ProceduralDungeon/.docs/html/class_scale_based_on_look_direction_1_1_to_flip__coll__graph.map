@@ -1,0 +1,7 @@
+<map id="ScaleBasedOnLookDirection.ToFlip" name="ScaleBasedOnLookDirection.ToFlip">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,168,187,253"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="11,5,80,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="41,72,43,108,49,143,53,153,48,153,44,145,37,109,40,77"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="130,5,164,75"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="140,72,120,145,117,153,113,151,115,143,136,76"/>
+</map>

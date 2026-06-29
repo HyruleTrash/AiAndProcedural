@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="db56a5da-aa3f-4c02-a301-5f03de82d696" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/NotificationSystem/DirectionalStack.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/NotificationSystem/DirectionalStack.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/NotificationSystem/NotificationItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/NotificationSystem/NotificationItem.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/NotificationSystem/NotificationManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/NotificationSystem/NotificationManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ProceduralDungeon/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProceduralDungeon/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,7 +128,7 @@
       <workItem from="1775041101492" duration="45000" />
       <workItem from="1775041167037" duration="34071000" />
       <workItem from="1775107280491" duration="16054000" />
-      <workItem from="1782642370290" duration="54934000" />
+      <workItem from="1782642370290" duration="56850000" />
     </task>
     <servers />
   </component>

@@ -1,0 +1,25 @@
+<map id="Generation.RoomRuntimeRef" name="Generation.RoomRuntimeRef">
+<area shape="rect" id="Node000001" title="Container classes to deal with coroutines not allowing out parameters represents a reference to an ex..." alt="" coords="207,1101,390,1171"/>
+<area shape="rect" id="Node000002" href="$class_generation_1_1_room_runtime.html" title="a class for keeping track of a unique live room, using a room data as its reference" alt="" coords="190,843,407,1029"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="300,1027,301,1086,296,1083,297,1031"/>
+<area shape="rect" id="Node000003" href="$class_i_comparable.html" title=" " alt="" coords="5,453,90,523"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="48,535,54,588,62,648,78,710,103,769,121,797,143,822,193,868,188,869,139,826,117,800,99,772,73,712,57,649,49,588,48,540"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="114,453,179,523"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="141,520,136,581,134,657,142,739,152,779,168,817,182,841,177,842,163,820,147,781,137,740,128,657,131,581,140,525"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="210,453,283,523"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="242,520,237,580,232,653,234,736,245,818,247,827,242,826,240,819,228,736,227,653,231,579,240,525"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="312,453,381,523"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="346,520,340,653,324,819,322,827,318,825,318,818,335,652,344,525"/>
+<area shape="rect" id="Node000007" href="$class_generation_1_1_room.html" title=" " alt="" coords="405,205,645,771"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="417,768,391,820,385,830,381,827,387,817,413,772"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="388,13,430,83"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="414,80,435,181,437,189,432,189,430,182,414,85"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="474,13,499,83"/>
+<area shape="poly" id="edge8_Node000007_Node000009" title=" " alt="" coords="486,80,490,181,490,189,485,188,485,181,485,85"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="536,13,591,83"/>
+<area shape="poly" id="edge9_Node000007_Node000010" title=" " alt="" coords="562,80,554,189,549,188,560,85"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="615,5,792,91"/>
+<area shape="poly" id="edge10_Node000007_Node000011" title=" " alt="" coords="690,88,657,182,653,191,649,188,652,180,688,93"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="669,453,810,523"/>
+<area shape="poly" id="edge11_Node000002_Node000012" title=" " alt="" coords="740,520,736,576,723,642,698,710,681,743,659,772,607,820,548,858,485,887,424,908,422,904,483,882,545,853,604,816,655,769,676,740,693,708,717,640,730,575,737,525"/>
+</map>

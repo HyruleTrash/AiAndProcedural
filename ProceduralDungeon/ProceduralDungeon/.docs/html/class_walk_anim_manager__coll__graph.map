@@ -1,0 +1,20 @@
+<map id="WalkAnimManager" name="WalkAnimManager">
+<area shape="rect" id="Node000001" title=" " alt="" coords="319,363,523,549"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,13,106,83"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="61,95,70,137,82,181,99,226,123,268,165,315,215,355,268,388,322,416,316,416,266,392,212,359,162,319,119,271,94,229,77,183,65,138,61,100"/>
+<area shape="rect" id="Node000004" href="$class_scale_based_on_look_direction.html" title="Flips the transform x scale based on where the look direction is." alt="" coords="133,163,341,269"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="103,90,183,162,178,164,103,95"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="390,181,452,251"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="423,248,423,347,419,345,419,252"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="228,267,231,304,241,337,269,374,307,405,302,405,266,377,236,340,225,305,226,272"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="130,5,344,91"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="238,88,240,147,234,146,236,93"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="369,13,404,83"/>
+<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="373,80,357,112,336,140,325,153,321,149,332,137,353,109,369,84"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="437,13,485,83"/>
+<area shape="poly" id="edge7_Node000004_Node000007" title=" " alt="" coords="450,80,435,113,412,141,386,161,358,177,355,173,383,156,408,137,430,110,447,85"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="502,181,527,251"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="510,248,502,294,488,340,483,349,479,346,482,338,497,292,507,253"/>
+<area shape="rect" id="Node000009" href="$interface_default_namespace_1_1_i_entity_movement.html" title=" " alt="" coords="573,165,738,267"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="649,264,637,305,616,340,581,376,539,405,536,400,577,372,612,337,632,302,645,268"/>
+</map>

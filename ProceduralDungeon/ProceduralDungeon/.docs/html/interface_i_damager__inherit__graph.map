@@ -1,0 +1,5 @@
+<map id="IDamager" name="IDamager">
+<area shape="rect" id="Node000001" title=" " alt="" coords="25,5,156,75"/>
+<area shape="rect" id="Node000002" href="$class_guard_1_1_weapon_handler.html" title=" " alt="" coords="5,123,175,293"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="91,87,93,123,88,123,90,92"/>
+</map>

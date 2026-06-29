@@ -1,0 +1,7 @@
+<map id="HealthComponent" name="HealthComponent">
+<area shape="rect" id="Node000001" title=" " alt="" coords="34,160,232,475"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,24,106,93"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="70,105,89,160,83,161,70,110"/>
+<area shape="rect" id="Node000003" href="$interface_i_damageable.html" title=" " alt="" coords="130,5,291,112"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="191,124,182,162,177,160,189,129"/>
+</map>

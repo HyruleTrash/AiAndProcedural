@@ -1,0 +1,64 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$interface_i_damageable.html" title=" " alt="" coords="44,5,142,32"/>
+<area shape="rect" id="Node000001" href="$class_health_component.html" title=" " alt="" coords="262,5,388,32"/>
+<area shape="poly" id="edge10_Node000000_Node000001" title=" " alt="" coords="156,17,263,17,260,21,159,21"/>
+<area shape="rect" id="Node000013" href="$interface_i_damager.html" title=" " alt="" coords="54,56,132,83"/>
+<area shape="rect" id="Node000012" href="$class_guard_1_1_weapon_handler.html" title=" " alt="" coords="249,56,402,83"/>
+<area shape="poly" id="edge11_Node000013_Node000012" title=" " alt="" coords="146,67,251,67,247,71,150,71"/>
+<area shape="rect" id="Node000010" href="$interface_default_namespace_1_1_i_entity_movement.html" title=" " alt="" coords="5,128,181,171"/>
+<area shape="rect" id="Node000009" href="$class_guard_1_1_movement.html" title=" " alt="" coords="265,157,386,184"/>
+<area shape="poly" id="edge12_Node000010_Node000009" title=" " alt="" coords="195,157,266,163,262,167,198,161"/>
+<area shape="rect" id="Node000011" href="$class_player_1_1_movement.html" title=" " alt="" coords="264,107,387,133"/>
+<area shape="poly" id="edge13_Node000010_Node000011" title=" " alt="" coords="194,134,265,126,261,130,198,138"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="37,664,149,691"/>
+<area shape="poly" id="edge22_Node000002_Node000001" title=" " alt="" coords="96,648,118,510,152,318,190,140,209,77,227,42,243,30,263,23,260,27,245,35,231,46,214,79,195,142,157,320,123,511,101,649"/>
+<area shape="poly" id="edge21_Node000002_Node000012" title=" " alt="" coords="94,648,108,528,135,362,153,277,174,200,198,136,212,112,227,93,250,78,247,83,231,97,217,115,203,139,179,201,158,278,140,363,114,529,100,649"/>
+<area shape="poly" id="edge20_Node000002_Node000009" title=" " alt="" coords="91,648,93,560,99,502,109,438,126,372,150,308,183,247,227,194,244,182,266,175,262,179,246,187,230,198,188,250,155,310,131,374,114,439,104,503,98,561,96,648"/>
+<area shape="poly" id="edge31_Node000002_Node000011" title=" " alt="" coords="95,648,111,538,138,386,156,310,177,240,200,183,227,143,243,131,265,124,262,128,246,136,231,147,205,185,182,242,161,311,143,387,116,538,100,649"/>
+<area shape="rect" id="Node000003" href="$class_behaviour_tree_1_1_behaviour_tree.html" title=" " alt="" coords="229,816,422,843"/>
+<area shape="poly" id="edge14_Node000002_Node000003" title=" " alt="" coords="114,700,165,753,196,779,230,802,258,814,253,817,227,806,193,783,161,756,115,706"/>
+<area shape="rect" id="Node000004" href="$class_directional_stack.html" title="A simple layout component, for stacking ui elements." alt="" coords="267,867,384,893"/>
+<area shape="poly" id="edge15_Node000002_Node000004" title=" " alt="" coords="107,701,129,737,156,778,190,818,230,852,269,870,264,872,227,857,186,822,152,781,124,740,108,707"/>
+<area shape="rect" id="Node000005" href="$class_game_quit_manager.html" title=" " alt="" coords="260,917,390,944"/>
+<area shape="poly" id="edge16_Node000002_Node000005" title=" " alt="" coords="103,703,122,749,148,803,184,857,206,882,230,903,262,920,257,922,227,908,202,886,180,860,144,805,117,751,103,708"/>
+<area shape="rect" id="Node000006" href="$class_generation_1_1_gen_manager.html" title="Connects the world gen to unity, made to hold the references and timing." alt="" coords="244,968,406,995"/>
+<area shape="poly" id="edge17_Node000002_Node000006" title=" " alt="" coords="100,703,116,758,141,826,178,895,202,927,230,954,250,967,245,968,227,958,198,930,174,898,136,828,111,760,100,708"/>
+<area shape="rect" id="Node000007" href="$class_generation_1_1_room_tile_lookup.html" title=" " alt="" coords="232,1019,418,1045"/>
+<area shape="poly" id="edge18_Node000002_Node000007" title=" " alt="" coords="98,704,111,768,134,849,151,892,173,933,199,971,230,1005,249,1018,244,1019,227,1009,195,975,168,936,146,894,129,851,106,769,97,709"/>
+<area shape="rect" id="Node000008" href="$class_guard_1_1_guard_manager.html" title="Manages a guard instance their components and connects its functions." alt="" coords="253,1069,398,1096"/>
+<area shape="poly" id="edge19_Node000002_Node000008" title=" " alt="" coords="96,704,107,777,127,871,144,921,167,970,195,1016,230,1055,255,1071,250,1073,227,1059,191,1019,162,973,139,923,122,873,101,778,96,709"/>
+<area shape="rect" id="Node000014" href="$class_look_direction_manager.html" title=" " alt="" coords="250,1120,401,1147"/>
+<area shape="poly" id="edge23_Node000002_Node000014" title=" " alt="" coords="95,703,102,785,109,837,121,893,138,951,161,1007,191,1060,230,1106,252,1121,247,1122,227,1110,187,1063,156,1010,133,953,116,894,104,838,97,786,94,709"/>
+<area shape="rect" id="Node000015" href="$class_map_camera_controller.html" title="A debug camera movement script made by Gemini." alt="" coords="251,1171,400,1197"/>
+<area shape="poly" id="edge24_Node000002_Node000015" title=" " alt="" coords="93,704,98,794,104,852,114,915,131,981,155,1045,188,1104,230,1157,254,1173,248,1174,227,1161,183,1107,150,1047,126,982,109,916,99,853,93,794,93,709"/>
+<area shape="rect" id="Node000016" href="$class_move_towards_transform2_d.html" title=" " alt="" coords="236,1221,414,1248"/>
+<area shape="poly" id="edge25_Node000002_Node000016" title=" " alt="" coords="98,704,116,816,143,967,161,1044,182,1113,205,1170,231,1207,247,1221,242,1221,227,1211,200,1172,177,1115,156,1045,138,968,111,817,98,709"/>
+<area shape="rect" id="Node000017" href="$class_nav_mesh_rebaker.html" title=" " alt="" coords="262,1272,388,1299"/>
+<area shape="poly" id="edge26_Node000002_Node000017" title=" " alt="" coords="97,704,114,826,140,992,158,1076,179,1153,203,1216,217,1240,231,1258,245,1269,264,1279,259,1279,243,1274,227,1262,212,1243,198,1218,174,1155,153,1078,135,993,108,826,97,709"/>
+<area shape="rect" id="Node000018" href="$class_navigate_to_position.html" title=" " alt="" coords="258,1323,392,1349"/>
+<area shape="poly" id="edge27_Node000002_Node000018" title=" " alt="" coords="97,703,112,835,137,1016,154,1109,176,1193,201,1262,215,1289,231,1309,243,1319,260,1329,255,1328,241,1324,227,1313,211,1292,196,1265,171,1195,149,1110,131,1017,106,835,96,709"/>
+<area shape="rect" id="Node000019" href="$class_notification_item.html" title="A simple ui element that&#39;s used in the static notif manager." alt="" coords="269,208,382,235"/>
+<area shape="poly" id="edge28_Node000002_Node000019" title=" " alt="" coords="92,648,97,569,104,517,116,460,133,402,156,345,187,292,227,245,246,232,270,224,267,228,248,236,230,249,191,295,161,347,138,404,121,462,109,518,102,570,97,649"/>
+<area shape="rect" id="Node000020" href="$class_notification_manager.html" title="A singleton/ static ui console. made for showing notifications." alt="" coords="257,259,394,285"/>
+<area shape="poly" id="edge29_Node000002_Node000020" title=" " alt="" coords="93,648,101,577,122,482,139,431,162,382,191,336,227,295,258,279,255,283,230,299,195,339,167,384,144,433,127,483,107,578,98,649"/>
+<area shape="rect" id="Node000021" href="$class_player_1_1_look_at.html" title=" " alt="" coords="274,309,377,336"/>
+<area shape="poly" id="edge30_Node000002_Node000021" title=" " alt="" coords="95,648,106,585,129,504,146,461,168,419,195,380,227,346,249,332,275,325,272,329,251,337,230,350,199,383,173,422,151,463,134,506,111,586,100,649"/>
+<area shape="rect" id="Node000022" href="$class_player_1_1_player_manager.html" title=" " alt="" coords="251,360,400,387"/>
+<area shape="poly" id="edge32_Node000002_Node000022" title=" " alt="" coords="97,648,111,595,136,527,174,457,198,425,227,397,252,384,248,388,230,401,202,428,178,459,141,529,116,596,102,650"/>
+<area shape="rect" id="Node000023" href="$class_rotate_towards_point.html" title=" " alt="" coords="256,411,395,437"/>
+<area shape="poly" id="edge33_Node000002_Node000023" title=" " alt="" coords="100,648,117,604,144,549,180,494,202,469,227,447,257,433,254,437,230,452,206,473,184,497,148,552,122,606,106,650"/>
+<area shape="rect" id="Node000024" href="$class_scale_based_on_look_direction.html" title="Flips the transform x scale based on where the look direction is." alt="" coords="231,461,420,488"/>
+<area shape="poly" id="edge34_Node000002_Node000024" title=" " alt="" coords="105,650,124,615,152,574,186,533,227,498,253,486,249,491,230,502,190,536,156,577,129,617,110,651"/>
+<area shape="rect" id="Node000025" href="$class_set_health_text.html" title=" " alt="" coords="273,512,378,539"/>
+<area shape="poly" id="edge35_Node000002_Node000025" title=" " alt="" coords="112,650,161,598,193,571,227,548,274,532,271,536,230,553,196,576,165,602,117,653"/>
+<area shape="rect" id="Node000026" href="$class_util_1_1_tag_component.html" title=" " alt="" coords="259,563,392,589"/>
+<area shape="poly" id="edge36_Node000002_Node000026" title=" " alt="" coords="125,654,173,625,228,599,264,588,260,592,230,604,176,630,130,657"/>
+<area shape="rect" id="Node000027" href="$class_vision_cone.html" title=" " alt="" coords="281,613,370,640"/>
+<area shape="poly" id="edge37_Node000002_Node000027" title=" " alt="" coords="162,660,282,634,279,638,165,664"/>
+<area shape="rect" id="Node000028" href="$class_walk_anim_manager.html" title=" " alt="" coords="260,664,390,691"/>
+<area shape="poly" id="edge38_Node000002_Node000028" title=" " alt="" coords="162,675,262,676,258,679,165,680"/>
+<area shape="rect" id="Node000029" href="$class_weapon_handler_pickup.html" title=" " alt="" coords="249,715,402,741"/>
+<area shape="poly" id="edge39_Node000002_Node000029" title=" " alt="" coords="162,690,263,712,258,716,165,695"/>
+<area shape="rect" id="Node000030" href="$class_weapon_spawner.html" title=" " alt="" coords="266,765,385,792"/>
+<area shape="poly" id="edge40_Node000002_Node000030" title=" " alt="" coords="127,697,176,725,230,751,268,764,263,767,228,756,173,729,128,702"/>
+</map>

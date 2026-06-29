@@ -1,0 +1,17 @@
+<map id="Generation.PendingRoomPlacement" name="Generation.PendingRoomPlacement">
+<area shape="rect" id="Node000001" title="Container classes to deal with coroutines not allowing out parameters Represents a possible room." alt="" coords="213,864,435,933"/>
+<area shape="rect" id="Node000002" href="$class_generation_1_1_room.html" title=" " alt="" coords="23,205,263,771"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="182,768,201,805,222,838,234,854,229,853,218,842,196,808,180,773"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,13,48,83"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="31,80,53,181,55,189,49,189,48,182,32,85"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="92,13,116,83"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="103,80,108,181,108,189,103,188,102,181,103,85"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="154,13,209,83"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="179,80,172,189,166,188,178,85"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="232,5,410,91"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="306,93,274,182,271,191,266,189,270,180,307,88"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="287,453,361,523"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="326,521,327,848,321,847,322,524"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="443,453,520,523"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="490,520,501,586,504,670,500,715,491,759,476,802,454,842,441,856,439,851,450,838,472,800,486,758,495,714,498,670,496,587,488,525"/>
+</map>

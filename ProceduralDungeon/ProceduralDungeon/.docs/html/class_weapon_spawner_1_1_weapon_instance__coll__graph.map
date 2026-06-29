@@ -1,0 +1,12 @@
+<map id="WeaponSpawner.WeaponInstance" name="WeaponSpawner.WeaponInstance">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,325,215,395"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="70,5,153,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="109,72,104,168,104,253,108,309,102,308,99,253,99,168,107,77"/>
+<area shape="rect" id="Node000003" href="$class_weapon.html" title=" " alt="" coords="178,168,355,253"/>
+<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="139,72,203,142,215,156,210,156,199,146,139,77"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="225,252,159,316,156,312,220,254"/>
+<area shape="rect" id="Node000004" href="$class_scriptable_object.html" title=" " alt="" coords="194,5,301,75"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="254,87,264,169,259,168,252,92"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="324,5,360,75"/>
+<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="329,73,294,154,289,151,325,77"/>
+</map>

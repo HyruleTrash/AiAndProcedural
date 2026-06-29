@@ -1030,12 +1030,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9d181d104f4409995730d67bade49e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Generation.GenerationManager
-  worldGen:
-    areaData:
-    - {fileID: 11400000, guid: f7738525e4c97394db7963f5ef02cbbe, type: 2}
-    - {fileID: 11400000, guid: 3e4ee72ba7e6baf4f826678023db67ca, type: 2}
-    - {fileID: 11400000, guid: b4b810f794fb4ae47a5f096a3a8ce503, type: 2}
-    roomRepetitionAllowance: 2
+  worldGen: {fileID: 11400000, guid: 48a7a2372ec5c24419084e3ed9852a34, type: 2}
   mainSeed: 065231C443B2BCF5
   minDistToBossRoom: 80
   tempWorldGenSprite: {fileID: 2062090701}

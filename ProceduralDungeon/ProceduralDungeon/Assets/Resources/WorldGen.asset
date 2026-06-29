@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdcfb0091ef142d98286284842e1e902, type: 3}
+  m_Name: WorldGen
+  m_EditorClassIdentifier: Assembly-CSharp::Generation.WorldGen
+  areaData:
+  - {fileID: 11400000, guid: f7738525e4c97394db7963f5ef02cbbe, type: 2}
+  - {fileID: 11400000, guid: b4b810f794fb4ae47a5f096a3a8ce503, type: 2}
+  - {fileID: 11400000, guid: 3e4ee72ba7e6baf4f826678023db67ca, type: 2}
+  roomRepetitionAllowance: 2
+  minDistToBossRoom: 80
+  maxTries: 64
+  maxOverlapAttempts: 8
+  maxOverlapAttemptsBruteForce: 16

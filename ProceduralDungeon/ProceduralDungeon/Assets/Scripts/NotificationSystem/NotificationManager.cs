@@ -41,6 +41,7 @@ public class NotificationManager : MonoBehaviour
         }
 
         Debug.Log(message);
+        if (fadeOutSpeed == 0) return;
 
         Transform parentTransform = instance.spawnContainer ? instance.spawnContainer : instance.transform;
         GameObject spawnedObj = Instantiate(instance.notificationPrefab, parentTransform);

@@ -60,7 +60,10 @@ namespace Generation
             }
 
             if (indexPool.Count == 0)
-                throw new Exception("indexPool is empty");
+            {
+                Debug.LogWarning("indexPool is empty");
+                return null;
+            }
             
             if (this.lastHadRoomType != null)
             {
@@ -87,6 +90,7 @@ namespace Generation
             WorldGenRuntime genRuntime = animData.genRuntime;
             MonoBehaviour unityConnection = animData.unityConnection;
             float waitTime = animData.waitTime;
+            YieldInstruction? yieldInstruction = animData.yieldInstruction;
             
             while (this.Size > 0)
             {
@@ -119,7 +123,8 @@ namespace Generation
                 if (this.Size <= 0) break;
                 genRuntime.Walk(foundRoom);
                 
-                yield return waitTime;
+                if (yieldInstruction != null)
+                    yield return yieldInstruction;
             }
         }
         

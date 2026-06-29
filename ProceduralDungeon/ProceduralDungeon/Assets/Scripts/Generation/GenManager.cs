@@ -12,9 +12,8 @@ namespace Generation
     /// </summary>
     public class GenManager : MonoBehaviour
     {
-        [SerializeField] private WorldGen worldGen = new();
+        [SerializeField, Expandable] private WorldGen worldGen = null!;
         [SerializeField] private string mainSeed = null!;
-        [SerializeField] private float minDistToBossRoom;
         
         [SerializeField] private SpriteRenderer tempWorldGenSprite = null!;
         [SerializeField] private TMP_InputField inputFieldWaitTime = null!;
@@ -37,11 +36,16 @@ namespace Generation
 
         private void OnValidate()
         {
-            UpdateWaitTime();
-            this.enabled = this.inputFieldWaitTime;
+            if (this.worldGen)
+                UpdateWaitTime();
+            this.enabled = this.inputFieldWaitTime && this.worldGen;
         }
 
-        private void Start() => UpdateWaitTime();
+        private void Start()
+        {
+            this.worldGen = Instantiate(this.worldGen);
+            UpdateWaitTime();
+        }
 
         private void UpdateWaitTime()
         {
@@ -66,9 +70,7 @@ namespace Generation
 
             this.genRoutine = StartCoroutine(this.worldGen.InitiateGen(
                 this.mainSeed,
-                this.minDistToBossRoom,
                 OnFinish,
-                snapshotRef,
                 ss => WorldGenSnapshot.GenDebugTex(ss, this.tempWorldGenSprite)));
             return;
 

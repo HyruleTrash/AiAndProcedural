@@ -146,7 +146,7 @@ namespace Generation
                 
                 List<Room> maxPool = pickedTypeList.Rooms.RoomData.Where(room => room.Size <= this.Size).ToList();
                 
-                yield return unityConnection.StartCoroutine(genRuntime.TryToGetPossibleRoom(this, pendingRoomPlacement, maxPool, pickedTypeList.smallestRoomSize, pickedTypeList.roomType));
+                yield return unityConnection.StartCoroutine(genRuntime.TryFindRoomPlacement(this, pendingRoomPlacement, maxPool, pickedTypeList.smallestRoomSize, pickedTypeList.roomType));
 
                 if (pendingRoomPlacement.possibleRoom != null)
                 {
@@ -174,7 +174,7 @@ namespace Generation
             
             if (isSpaceNeeded) this.Size += largestSize; // make area accommodate boss room
             
-            yield return unityConnection.StartCoroutine(genRuntime.TryToGetPossibleRoom(this, pendingRoom, maxPool, this.smallestEndRoomSize, RoomType.EndRoom));
+            yield return unityConnection.StartCoroutine(genRuntime.TryFindRoomPlacement(this, pendingRoom, maxPool, this.smallestEndRoomSize, RoomType.EndRoom));
 
             if (pendingRoom.possibleRoom == null) yield break;
             pendingRoom.possibleRoomType = RoomType.EndRoom;
@@ -182,6 +182,18 @@ namespace Generation
             if (!isSpaceNeeded) yield break; // remove accommodation of boss room, to keep sizing accurate
             this.Size -= largestSize;
             this.Size += pendingRoom.possibleRoom.Size;
+        }
+
+        /// <summary>
+        /// Checks if the area has enough space left, if it doesn't. it clears its needed amount of space
+        /// </summary>
+        /// <returns>True if there's enough space for a room, false if there isn't</returns>
+        public bool SizeCheck(float smallestRoomSize)
+        {
+            if (!(smallestRoomSize > this.Size)) return true;
+            Debug.Log("No rooms exist that can fill area quota");
+            this.Size = 0; // TODO remove so that it may be used for extra filling in ANALYSE
+            return false;
         }
     }
 }

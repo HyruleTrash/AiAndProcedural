@@ -231,87 +231,77 @@ namespace Generation
         /// <summary>
         /// Tries to find a spot where it can place a room, updates result accordingly
         /// </summary>
-        public IEnumerator TryToGetPossibleRoom(AreaRuntime pickedArea, PendingRoomPlacement placement, List<Room> maxPool, float smallestRoomSize, RoomType roomType)
+        public IEnumerator TryFindRoomPlacement(AreaRuntime pickedArea, PendingRoomPlacement placement, List<Room> maxPool, float smallestRoomSize, RoomType roomType)
         {
             int tries = 0;
             int overlapAttempts = 0;
-
-            List<Room> hadRoomsTemp = new();
             
             while (true)
             {
-                if (smallestRoomSize > pickedArea.Size)
-                {
-                    Debug.Log("No rooms exist that can fill area quota");
-                    pickedArea.Size = 0;
-                    break;
-                }
-
-                List<Room> sizedPool = maxPool.Where(room => room.Size <= math.max(smallestRoomSize, pickedArea.Size)).ToList();
-                placement.possibleRoom = RoomList.TryGetRoom(this, sizedPool, this.hadRooms.ToArray());
+                if (!pickedArea.SizeCheck(smallestRoomSize)) break;
                 
-                // TryGetRoom failed
-                if (placement.possibleRoom == null) 
-                {
-                    if (tries > this.owner.MaxTries)
-                    {
-                        this.hadRooms.Clear();
-                        NotificationManager.Log($"Need room:\nsize between: {smallestRoomSize}, {pickedArea.Size}\nType:{roomType} Area:{pickedArea.AreaType}", this.owner.GetAnimWaitTime());
-
-                        #if UNITY_EDITOR
-                        break;
-                        #else
-                        continue;
-                        #endif
-                    }
-
-                    MutateRng();
-                    tries++;
-                    continue;
-                }
-
-                // register
-                if (hadRoomsTemp.Contains(placement.possibleRoom)) hadRoomsTemp.Add(placement.possibleRoom);
-
-                // move to new possible center position
-                if (this.currentWalkDirection == Vector2.zero)
-                {
-                    int halfWidth = placement.possibleRoom.Width / 2;
-                    int halfHeight = placement.possibleRoom.Height / 2;
-                    Vector2Int offset = new(this.currentWalkDirection.x * halfWidth, this.currentWalkDirection.y * halfHeight);
-                    placement.center = this.CurrentPosition + offset;
-                }
-                else if (!TryWalkThroughDoor(placement, -this.currentWalkDirection)) break;
-
-                // movement failed, so show on visual
-                Action<WorldGenSnapshot> onUpdateSnapshot = this.owner.GetOnUpdateSnapshot(this);
-                onUpdateSnapshot?.Invoke(new WorldGenSnapshot(this.gridRuntime, placement.center!.Value));
+                RoomSelectionResult selectionResult = TrySelectRoomForAvailableSpace(pickedArea, placement, maxPool, smallestRoomSize, roomType, ref tries);
+                if (selectionResult == RoomSelectionResult.Abort) break;
+                if (selectionResult == RoomSelectionResult.Retry) continue;
                 
-                if (this.gridRuntime.CheckRoomPossible(placement.possibleRoom, placement.center!.Value, out RoomRuntime? hit)) break;
-                NotificationManager.Log($"Cant place room of size {placement.possibleRoom.Size}, at {placement.center.Value}", this.owner.GetAnimWaitTime());
-
-                #region Tracking attempts
-
-                overlapAttempts++;
-                if (overlapAttempts > this.owner.MaxOverlapAttempts)
-                {
-                    if (hit != null) Walk(hit);
-                    if (overlapAttempts >= this.owner.MaxOverlapAttemptsBruteForce) this.hadRooms.Clear();
-                }
-
-                if (hadRoomsTemp.Count >= maxPool.Count)
-                {
-                    placement.possibleRoom = null;
-                    yield break;
-                }
+                if (TrySetPlacementPosition(placement)) break;
+                UpdateSnapShot();
+                
+                if (this.gridRuntime.CheckRoomPossible(placement.possibleRoom!, placement.center!.Value, out RoomRuntime? hit)) break;
+                
+                overlapAttempts = ProcessOverlapAttempts(placement, overlapAttempts, hit);
 
                 YieldInstruction? yieldInstruction = this.owner.GetAnimYieldInstruction();
-                if (yieldInstruction != null)
-                    yield return yieldInstruction;
-
-                #endregion
-                
+                if (yieldInstruction != null) yield return yieldInstruction;
             }
+        }
+
+        private int ProcessOverlapAttempts(PendingRoomPlacement placement, int overlapAttempts, RoomRuntime? hit)
+        {
+            NotificationManager.Log($"Cant place room of size {placement.possibleRoom!.Size}, at {placement.center!.Value}", this.owner.GetAnimWaitTime());
+
+            overlapAttempts++;
+            if (overlapAttempts <= this.owner.MaxOverlapAttempts) return overlapAttempts;
+            if (hit != null) Walk(hit);
+            if (overlapAttempts >= this.owner.MaxOverlapAttemptsBruteForce) this.hadRooms.Clear();
+
+            return overlapAttempts;
+        }
+
+        /// <summary>
+        /// If there's no set walk direction, it places the pending room it the center relative to current pos
+        /// if there is a direction, we need to go through the door still
+        /// </summary>
+        /// <returns>true on successful movement</returns>
+        private bool TrySetPlacementPosition(PendingRoomPlacement placement)
+        {
+            if (this.currentWalkDirection != Vector2.zero) return !TryWalkThroughDoor(placement, -this.currentWalkDirection);
+            
+            int halfWidth = placement.possibleRoom!.Width / 2;
+            int halfHeight = placement.possibleRoom.Height / 2;
+            Vector2Int offset = new(this.currentWalkDirection.x * halfWidth, this.currentWalkDirection.y * halfHeight);
+            placement.center = this.CurrentPosition + offset;
+            return true;
+        }
+
+        private enum RoomSelectionResult { Success, Retry, Abort }
+        private RoomSelectionResult TrySelectRoomForAvailableSpace(AreaRuntime pickedArea, PendingRoomPlacement placement, List<Room> maxPool, float smallestRoomSize, RoomType roomType, ref int tries)
+        {
+            List<Room> sizedPool = maxPool.Where(room => room.Size <= math.max(smallestRoomSize, pickedArea.Size)).ToList();
+            placement.possibleRoom = RoomList.TryGetRoom(this, sizedPool, this.hadRooms.ToArray());
+    
+            if (placement.possibleRoom != null) return RoomSelectionResult.Success;
+    
+            if (tries > this.owner.MaxTries)
+            {
+                this.hadRooms.Clear();
+                NotificationManager.Log($"Need room:\nsize between: {smallestRoomSize}, {pickedArea.Size}\nType:{roomType} Area:{pickedArea.AreaType}", this.owner.GetAnimWaitTime());
+                return RoomSelectionResult.Abort;
+            }
+
+            MutateRng();
+            tries++;
+            return RoomSelectionResult.Retry;
         }
 
         /// <summary>

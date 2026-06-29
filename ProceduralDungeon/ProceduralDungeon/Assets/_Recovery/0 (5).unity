@@ -1034,7 +1034,7 @@ MonoBehaviour:
   mainSeed: 065231C443B2BCF5
   tempWorldGenSprite: {fileID: 2062090701}
   inputFieldWaitTime: {fileID: 940135085}
-  waitTime: 0.01
+  waitTime: 0
 --- !u!114 &847187202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1378,7 +1378,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
-  m_Text: 0.01
+  m_Text: 0
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -1484,7 +1484,7 @@ MonoBehaviour:
   spacing: 10
   initialPadding: 0
   childAlignment: 6
-  inverseStack: 1
+  inverseStack: 0
   controlChildWidth: 1
   controlChildHeight: 1
   autoSnapAnchors: 1
@@ -1501,7 +1501,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NotificationManager
   notificationPrefab: {fileID: 1018479046733059579, guid: d4d2f3a9f71bd9d47ab4e0404d164d03, type: 3}
-  maxNotifications: 5
+  spawnContainer: {fileID: 959224301}
 --- !u!1 &1000100705
 GameObject:
   m_ObjectHideFlags: 0
@@ -2761,7 +2761,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "0.01\u200B"
+  m_text: "0\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

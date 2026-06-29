@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 /// <summary>
 /// Made with gemini, a simple console within the game
@@ -7,9 +8,8 @@ public class NotificationManager : MonoBehaviour
 {
     private static NotificationManager? instance;
 
-    [Header("Setup")]
     [SerializeField] private GameObject notificationPrefab = null!;
-    [SerializeField] private Transform spawnContainer = null!;
+    [SerializeField] private int maxNotifications = 5;
 
     private void Awake()
     {
@@ -43,8 +43,7 @@ public class NotificationManager : MonoBehaviour
         Debug.Log(message);
         if (fadeOutSpeed == 0) return;
 
-        Transform parentTransform = instance.spawnContainer ? instance.spawnContainer : instance.transform;
-        GameObject spawnedObj = Instantiate(instance.notificationPrefab, parentTransform);
+        GameObject spawnedObj = Instantiate(instance.notificationPrefab, instance.transform);
 
         // Initialize the fade logic
         NotificationItem item = spawnedObj.GetComponent<NotificationItem>();
@@ -52,5 +51,11 @@ public class NotificationManager : MonoBehaviour
             item.Initialize(message, fadeOutSpeed);
         else
             Debug.LogWarning("The Notification Prefab is missing the NotificationItem script!");
+    }
+
+    private void OnTransformChildrenChanged()
+    {
+        if (this.transform.childCount > this.maxNotifications)
+            Destroy(this.transform.GetChild(0).gameObject);
     }
 }

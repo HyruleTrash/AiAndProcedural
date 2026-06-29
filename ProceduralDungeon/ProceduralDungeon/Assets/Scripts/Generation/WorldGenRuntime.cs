@@ -16,6 +16,7 @@ namespace Generation
         private readonly MonoBehaviour unityConnection;
         private readonly WorldGen owner;
         public string currentSeed;
+        private bool isStopped;
         
         private readonly GridRuntime gridRuntime = new();
         
@@ -109,9 +110,12 @@ namespace Generation
         /// <param name="areaData">List of all desired areas</param>
         public IEnumerator StartGen(string seed, List<Area> areaData)
         {
+            this.isStopped = false;
             float waitTime = this.owner.GetAnimWaitTime();
             while (true)
             {
+                if (this.isStopped) yield break;
+                
                 yield return this.unityConnection.StartCoroutine(WalkAllAreas());
                 
                 NotificationManager.Log($"Spawn BossRoom", waitTime);
@@ -130,6 +134,12 @@ namespace Generation
             this.CurrentPosition = Vector2Int.zero;
             UpdateSnapShot();
         }
+        
+        public void StopGen()
+        {
+            this.isStopped = true;
+            NotificationManager.Log("Generation halted by user.", owner.GetAnimWaitTime());
+        }
 
         private IEnumerator WalkAllAreas()
         {
@@ -137,6 +147,8 @@ namespace Generation
             
             while (this.backlog.Count > 0)
             {
+                if (this.isStopped) yield break;
+                
                 NotificationManager.Log($"Walking through area backlog, current count: {this.backlog.Count}", animData.waitTime);
                 AreaRuntime pickedArea = GetRandomArea();
                 
@@ -208,7 +220,7 @@ namespace Generation
 
         public IEnumerator AddRoom(AreaRuntime pickedArea, PendingRoomPlacement pendingRoom, RoomRuntimeRef runtimeRef)
         {
-            if (pendingRoom.possibleRoom == null) yield break;
+            if (this.isStopped || pendingRoom.possibleRoom == null) yield break;
 
             if (pendingRoom.center != null)
             {
@@ -238,6 +250,7 @@ namespace Generation
             
             while (true)
             {
+                if (this.isStopped) break;
                 if (!pickedArea.SizeCheck(smallestRoomSize)) break;
                 
                 RoomSelectionResult selectionResult = TrySelectRoomForAvailableSpace(pickedArea, placement, maxPool, smallestRoomSize, roomType, ref tries);

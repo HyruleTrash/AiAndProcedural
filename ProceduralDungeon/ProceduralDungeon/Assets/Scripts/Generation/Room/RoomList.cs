@@ -18,15 +18,19 @@ namespace Generation
 
         public RoomList(List<Room> givenData)
         {
+#if UNITY_EDITOR
             this.rooms = new List<Texture2D>();
             this.onRoomsChanged = null!;
+#endif
             this.roomData = givenData;
         }
 
         public RoomList(RoomList givenData)
         {
+#if UNITY_EDITOR
             this.rooms = new List<Texture2D>();
             this.onRoomsChanged = null!;
+#endif
             this.roomData = givenData.RoomData;
         }
 

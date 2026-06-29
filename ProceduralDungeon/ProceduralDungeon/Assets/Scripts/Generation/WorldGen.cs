@@ -15,16 +15,19 @@ namespace Generation
         // data
         private MonoBehaviour owner = null!;
         [SerializeField] private List<Area> areaData = new();
-        [SerializeField] private int roomRepetitionAllowance = 2;
-        [SerializeField] private float minDistToBossRoom;
-        [SerializeField] private int maxTries = 64;
-        [SerializeField] private int maxOverlapAttempts = 8;
-        [SerializeField] private int maxOverlapAttemptsBruteForce = 16;
+        [SerializeField, Range(0, 24)] private int roomRepetitionAllowance = 2;
+        [SerializeField, Range(5, 200)] private float minDistToBossRoom;
+        [SerializeField, Range(0, 64)] private int maxTries = 64;
+        [SerializeField, Range(0, 64)] private int maxOverlapAttempts = 8;
+        [SerializeField, Range(0, 64)] private int maxOverlapAttemptsBruteForce = 16;
         
         // anim
         private Action<WorldGenSnapshot> onUpdateSnapshot = null!;
         private float animWaitTime;
         
+        // runtime
+        private WorldGenRuntime? genRuntime;
+
         // Simple getters and setters
         public int RoomRepetitionAllowance => this.roomRepetitionAllowance;
         public int MaxTries => this.maxTries;
@@ -49,10 +52,10 @@ namespace Generation
         public IEnumerator InitiateGen(string seed, Action onFinish, Action<WorldGenSnapshot> setOnSnapShotUpdate)
         {
             this.onUpdateSnapshot = setOnSnapShotUpdate;
-            WorldGenRuntime genRuntime = new(this.owner, this, seed, this.areaData, this.minDistToBossRoom);
+            this.genRuntime = new WorldGenRuntime(this.owner, this, seed, this.areaData, this.minDistToBossRoom);
 
             NotificationManager.Log("Starting generator", GetAnimWaitTime());
-            yield return genRuntime.StartGen(seed, this.areaData);
+            yield return this.genRuntime.StartGen(seed, this.areaData);
             
             onFinish.Invoke();
         }
@@ -61,6 +64,13 @@ namespace Generation
         {
             Area? a = this.areaData.FirstOrDefault(a => a.areaType == areaType);
             return a ? a.WalkDirectionRepetitionAllowance : 0;
+        }
+
+        public void StopGen()
+        {
+            if (this.genRuntime == null) return;
+            this.genRuntime.StopGen();
+            this.genRuntime = null;
         }
     }
 }

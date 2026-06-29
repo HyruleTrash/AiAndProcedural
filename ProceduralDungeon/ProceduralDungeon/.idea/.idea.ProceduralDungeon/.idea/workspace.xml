@@ -5,17 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="db56a5da-aa3f-4c02-a301-5f03de82d696" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI/SliderAndTextInstance.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI/SliderAndTextInstance.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Util/TagComponent.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Util/TagComponent.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ProceduralDungeon/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ProceduralDungeon/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assembly-CSharp.csproj.DotSettings" beforeDir="false" afterPath="$PROJECT_DIR$/Assembly-CSharp.csproj.DotSettings" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Castle/CastleData.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Castle/CastleData.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Plains/PlainsData.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Plains/PlainsData.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Swamp/SwampData.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Swamp/SwampData.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/GeneratorTestScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GeneratorTestScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/Area/Area.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/Area/Area.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/Area/AreaRuntime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/Area/AreaRuntime.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/GenManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/GenManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/RoomList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/RoomList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/GridRuntime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/GridRuntime.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/Type/TypedRoomList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/Room/Type/TypedRoomList.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/WorldGen.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/WorldGen.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Generation/WorldGenRuntime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Generation/WorldGenRuntime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/MapCameraController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/MapCameraController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Settings/UniversalRP.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/UniversalRP.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/UniversalRenderPipelineGlobalSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/UniversalRenderPipelineGlobalSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/GraphicsSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/GraphicsSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/MapCameraController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/MapCameraController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/MapCameraController.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/MapCameraController.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NotificationSystem.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/NotificationSystem.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NotificationSystem/DirectionalStack.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/NotificationSystem/DirectionalStack.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NotificationSystem/DirectionalStack.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/NotificationSystem/DirectionalStack.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NotificationSystem/NotificationItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/NotificationSystem/NotificationItem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NotificationSystem/NotificationItem.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/NotificationSystem/NotificationItem.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NotificationSystem/NotificationManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/NotificationSystem/NotificationManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NotificationSystem/NotificationManager.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/NotificationSystem/NotificationManager.cs.meta" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,9 +53,8 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Generation/Room/Tiles/ColorList.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Generation/Room/Tiles/RoomTile.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Generation/SimpleWrappers/RoomRuntimeRef.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Generation/WorldGenData.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/MapCameraController.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/NotificationSystem/NotificationManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/SliderAndTextInstance.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Util/TagComponent.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@a6e30d1f59f5/Runtime/2D/PixelPerfectCamera.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@11343a6274f3/Runtime/TMP/TMP_InputField.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@11343a6274f3/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs" root0="SKIP_HIGHLIGHTING" />
@@ -78,6 +92,16 @@
   }
 }]]></component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
+    <configuration name="Standalone Player" type="RunUnityExe" factoryName="Unity Executable">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/../../.Builds/Dungeon\ProceduralDungeon.exe" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\Lucas\Documents\School\HKU\AiAndProcedural\.Builds\Dungeon" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="ENV_FILE_PATHS" value="" />
+      <option name="REDIRECT_INPUT_PATH" value="" />
+      <option name="MIXED_MODE_DEBUG" value="0" />
+      <method v="2" />
+    </configuration>
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\6000.3.7f1\Editor\Unity.exe" />
       <option name="PROGRAM_PARAMETERS" value="-projectPath C:\Users\Lucas\Documents\School\HKU\AiAndProcedural\ProceduralDungeon\ProceduralDungeon -debugCodeOptimization" />
@@ -98,10 +122,10 @@
       <option name="MIXED_MODE_DEBUG" value="0" />
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" useMixedMode="false" ignored-value-for-modified-check="18240">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" useMixedMode="false" ignored-value-for-modified-check="46084">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="18240" />
+      <option name="pid" value="46084" />
       <option name="projectPathOnTarget" />
       <option name="runtimes">
         <list>
@@ -129,7 +153,7 @@
       <workItem from="1775041101492" duration="45000" />
       <workItem from="1775041167037" duration="34071000" />
       <workItem from="1775107280491" duration="16054000" />
-      <workItem from="1782642370290" duration="49813000" />
+      <workItem from="1782642370290" duration="53824000" />
     </task>
     <servers />
   </component>

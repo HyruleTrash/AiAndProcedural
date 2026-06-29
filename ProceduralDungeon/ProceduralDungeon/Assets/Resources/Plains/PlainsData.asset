@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: PlainsData
   m_EditorClassIdentifier: Assembly-CSharp::Generation.AreaData
   areaType: 0
-  minMaxSize: {x: 768, y: 2560}
+  minSize: 768
+  maxSize: 2560
   walkDirectionRepetitionAllowance: 2
   roomTypes:
   - {fileID: 11400000, guid: 54a2a4172c8917c429eb11e52299735b, type: 2}
@@ -58,3 +59,7 @@ MonoBehaviour:
           - {x: 15, y: 8}
           roomPoint: {x: 8, y: 0}
   smallestEndRoomSize: 256
+  sliderAndTextInstances:
+  - name: minSize
+  - name: maxSize
+  - name: walkDirectionRepetitionAllowance

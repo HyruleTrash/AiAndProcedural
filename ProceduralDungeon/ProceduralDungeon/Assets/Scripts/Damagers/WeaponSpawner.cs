@@ -59,7 +59,7 @@ public class WeaponSpawner : MonoBehaviour
         float distance = Vector3.Distance(posToCheck, closestInstance.instance.transform.position);
         foreach (WeaponInstance weaponInstance in this.liveWeapons)
         {
-            float newDist = Vector2.Distance(weaponInstance.instance.transform.position.xy(), posToCheck);
+            float newDist = Vector2.Distance(weaponInstance.instance.transform.position.XY(), posToCheck);
             if (!(newDist < distance)) continue;
             distance = newDist;
             closestInstance = weaponInstance;

@@ -129,8 +129,8 @@ namespace Guard
         }
 
         private Vector2 GetNearestWeaponPosition() => !this.weaponSpawnerRef
-            ? this.transform.position.xy()
-            : this.weaponSpawnerRef.GetNearest(this.transform.position.xy()).instance.transform.position.xy();
+            ? this.transform.position.XY()
+            : this.weaponSpawnerRef.GetNearest(this.transform.position.XY()).instance.transform.position.XY();
         
         #endregion
         
@@ -151,7 +151,7 @@ namespace Guard
         {
             if (this.currentlyRegisteredPlayers.Length <= 0)
                 return null;
-            return this.currentlyRegisteredPlayers.First().transform.position.xy();
+            return this.currentlyRegisteredPlayers.First().transform.position.XY();
         }
         
         private bool TryAttackPlayer()

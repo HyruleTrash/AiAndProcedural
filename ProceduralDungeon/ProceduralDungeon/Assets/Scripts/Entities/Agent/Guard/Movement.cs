@@ -66,7 +66,7 @@ namespace Guard
         
         public Vector2 GetNextWaypoint() => this.waypointManager.GetNextWaypoint(this.navigateToPosition.GetTargetPosition());
         
-        public Vector2 GetNearestWayPoint() => this.waypointManager.GetNearestWayPoint(this.transform.position.xy());
+        public Vector2 GetNearestWayPoint() => this.waypointManager.GetNearestWayPoint(this.transform.position.XY());
         
         public bool IsAgentNearCurrentWaypoint()
         {

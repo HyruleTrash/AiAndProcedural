@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: SwampData
   m_EditorClassIdentifier: Assembly-CSharp::Generation.AreaData
   areaType: 2
-  minMaxSize: {x: 768, y: 2560}
+  minSize: 768
+  maxSize: 2560
   walkDirectionRepetitionAllowance: 1
   roomTypes:
   - {fileID: 11400000, guid: 5afb1a0030b2b5f4b91d5bf2e8a380e2, type: 2}
@@ -58,3 +59,7 @@ MonoBehaviour:
           - {x: 15, y: 8}
           roomPoint: {x: 8, y: 0}
   smallestEndRoomSize: 256
+  sliderAndTextInstances:
+  - name: minSize
+  - name: maxSize
+  - name: walkDirectionRepetitionAllowance

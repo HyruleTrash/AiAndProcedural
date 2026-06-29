@@ -45,8 +45,8 @@ namespace Player
             }
             else
             {
-                this.lookDirectionManager.SetLookAt(this.inputDirection.normalized + this.transform.position.xy());
-                this.gunRotation?.UpdateRotation(this.inputDirection.normalized + this.gunRotation.transform.position.xy());
+                this.lookDirectionManager.SetLookAt(this.inputDirection.normalized + this.transform.position.XY());
+                this.gunRotation?.UpdateRotation(this.inputDirection.normalized + this.gunRotation.transform.position.XY());
                 this.inputDirection = ctx.ReadValue<Vector2>();
             }
         }

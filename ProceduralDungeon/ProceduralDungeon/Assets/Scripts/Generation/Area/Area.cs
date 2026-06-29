@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
 using UnityEditor;
@@ -14,24 +15,26 @@ namespace Generation
     public class Area : ScriptableObject
     {
         public AreaType areaType;
-        [SerializeField] private Vector2Int minMaxSize; // x is min, y is max
+        [SerializeField, Range(25, 4000)] private int minSize;
+        [SerializeField, Range(25, 4000)] private int maxSize;
         public int WalkDirectionRepetitionAllowance => this.walkDirectionRepetitionAllowance;
         [SerializeField, Range(0, 20)] private int walkDirectionRepetitionAllowance = 2;
         
         [SerializeField, Expandable] private List<TypedRoomList> roomTypes = new();
         [SerializeField] private RoomList endRooms = null!;
         [SerializeField, HideInInspector] public int smallestEndRoomSize;
+        [SerializeField] private SliderAndTextInstance[] sliderAndTextInstances = Array.Empty<SliderAndTextInstance>();
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
             int smallestRoom = this.roomTypes.Select(roomTypeList => roomTypeList.smallestRoomSize).Prepend(int.MaxValue).Min();
-            if (this.minMaxSize.x < smallestRoom * 2)
+            if (this.minSize < smallestRoom * 2)
             {
                 Debug.Log($"Area {this.name}, min size value was less then two rooms, min value has been adjusted");
-                this.minMaxSize.x = smallestRoom * 2;
+                this.minSize = smallestRoom * 2;
             }
-            if (this.minMaxSize.y < this.minMaxSize.x) this.minMaxSize.y = this.minMaxSize.x;
+            if (this.maxSize < this.minSize) this.maxSize = this.minSize;
             
             // make sure no endRooms are in weighted list
             foreach (TypedRoomList roomTypeDataList in this.roomTypes)
@@ -57,6 +60,9 @@ namespace Generation
 #endif
 
         public AreaRuntime GetAreaGenData(string seed) =>
-            new(this.areaType, Rng.RandomRange(this.minMaxSize.x, this.minMaxSize.y, seed), this.roomTypes, this.endRooms, this.smallestEndRoomSize);
+            new(this.areaType, Rng.RandomRange(this.minSize, this.maxSize, seed), this.roomTypes, this.endRooms, this.smallestEndRoomSize);
+
+        public void CreatUI(Transform parent, GameObject sliderAndTextPrefab) => 
+            SliderAndTextInstance.ConnectSlidersToWorldGenData(this.sliderAndTextInstances, typeof(Area), this, sliderAndTextPrefab, parent);
     }
 }

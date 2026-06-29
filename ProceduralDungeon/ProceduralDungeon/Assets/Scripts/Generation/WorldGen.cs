@@ -2,7 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NaughtyAttributes;
+using TMPro;
 using UnityEngine;
+using Util;
 
 namespace Generation
 {
@@ -14,7 +17,7 @@ namespace Generation
     {
         // data
         private MonoBehaviour owner = null!;
-        [SerializeField] private List<Area> areaData = new();
+        [SerializeField, Expandable] private List<Area> areaData = new();
         [SerializeField, Range(0, 24)] private int roomRepetitionAllowance = 2;
         [SerializeField, Range(5, 200)] private float minDistToBossRoom;
         [SerializeField, Range(0, 64)] private int maxTries = 64;
@@ -39,6 +42,9 @@ namespace Generation
         public float GetAnimWaitTime() => this.animWaitTime;
         public YieldInstruction GetAnimYieldInstruction() => (this.animWaitTime <= 0f ? null : new WaitForSeconds(this.animWaitTime))!;
         public Action<WorldGenSnapshot> GetOnUpdateSnapshot(WorldGenRuntime runtime) => runtime == null ? null! : this.onUpdateSnapshot;
+        
+        // Create a duplicate so that ui sliders may safely edit
+        public void InstantiateAreaData() => this.areaData = this.areaData.Select(Instantiate).ToList();
 
         /// <summary>
         /// The generation algorithm. This algorithm is a random walk through all data.
@@ -71,6 +77,19 @@ namespace Generation
             if (this.genRuntime == null) return;
             this.genRuntime.StopGen();
             this.genRuntime = null;
+        }
+
+        public void CreateAreaUI(Transform mainParent, GameObject areaUIPrefab, GameObject sliderAndTextPrefab)
+        {
+            foreach (Area? area in this.areaData)
+            {
+                GameObject? instance = Instantiate(areaUIPrefab, mainParent.transform);
+                instance.GetComponentInChildren<TextMeshProUGUI>()?.SetText(area.areaType.ToString().ToReadableString());
+                TagComponent[]? possibleParents = instance.GetComponentsInChildren<TagComponent>();
+                Transform? parent = possibleParents?.FirstOrDefault(tag => tag.name == "Content")?.transform;
+                Debug.Log(parent ? parent.name : "Empty area");
+                area.CreatUI(parent, sliderAndTextPrefab);
+            }
         }
     }
 }

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: CastleData
   m_EditorClassIdentifier: Assembly-CSharp::Generation.AreaData
   areaType: 1
-  minMaxSize: {x: 768, y: 2560}
+  minSize: 768
+  maxSize: 2560
   walkDirectionRepetitionAllowance: 5
   roomTypes:
   - {fileID: 11400000, guid: aa45fda39f7fe8349a3e0d8b3ec9f737, type: 2}
@@ -57,3 +58,7 @@ MonoBehaviour:
           - {x: 15, y: 8}
           roomPoint: {x: 8, y: 0}
   smallestEndRoomSize: 256
+  sliderAndTextInstances:
+  - name: minSize
+  - name: maxSize
+  - name: walkDirectionRepetitionAllowance

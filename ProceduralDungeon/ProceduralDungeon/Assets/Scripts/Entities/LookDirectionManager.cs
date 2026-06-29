@@ -11,7 +11,7 @@ public class LookDirectionManager : MonoBehaviour
     public void SetLookAt(Vector2 lookAt)
     {
         this.toLookAt = lookAt;
-        Vector2 newLookDirection = (this.toLookAt - this.transform.position.xy()).normalized;
+        Vector2 newLookDirection = (this.toLookAt - this.transform.position.XY()).normalized;
         if (Vector2.Dot(newLookDirection, this.LookDirection) > 0.999f) return;
         this.LookDirection = newLookDirection;
         this.onDirectionChanged.Invoke(newLookDirection);

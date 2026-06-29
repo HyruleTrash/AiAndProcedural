@@ -5,7 +5,7 @@ public class RotateTowardsPoint : MonoBehaviour
 {
     public void UpdateRotation(Vector2 pointToRotateTowards)
     {
-        Vector2 delta = pointToRotateTowards - this.transform.position.xy();
+        Vector2 delta = pointToRotateTowards - this.transform.position.XY();
         if (delta.sqrMagnitude < 0.0001f)
             return;
 

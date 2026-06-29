@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 /// <summary>
-/// Made with gemini, a simple console within the game
+/// A singleton/ static ui console. made for showing notifications
 /// </summary>
 public class NotificationManager : MonoBehaviour
 {
@@ -12,7 +12,6 @@ public class NotificationManager : MonoBehaviour
 
     private void Awake()
     {
-        // Set up the singleton instance
         if (instance && instance != this)
         {
             Destroy(this.gameObject);
@@ -21,9 +20,6 @@ public class NotificationManager : MonoBehaviour
         instance = this;
     }
 
-    /// <summary>
-    /// Globally accessible function to trigger a notification.
-    /// </summary>
     [HideInCallstack]
     public static void Log(string message, float fadeOutSpeed)
     {
@@ -44,17 +40,12 @@ public class NotificationManager : MonoBehaviour
 
         GameObject spawnedObj = Instantiate(instance.notificationPrefab, instance.transform);
 
-        // Initialize the fade logic
         NotificationItem item = spawnedObj.GetComponent<NotificationItem>();
-        if (item)
-            item.Initialize(message, fadeOutSpeed);
-        else
-            Debug.LogWarning("The Notification Prefab is missing the NotificationItem script!");
+        if (item) item.Initialize(message, fadeOutSpeed);
     }
 
     private void OnTransformChildrenChanged()
     {
-        if (this.transform.childCount > this.maxNotifications)
-            Destroy(this.transform.GetChild(0).gameObject);
+        if (this.transform.childCount > this.maxNotifications) Destroy(this.transform.GetChild(0).gameObject);
     }
 }

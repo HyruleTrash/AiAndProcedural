@@ -3,16 +3,13 @@ using UnityEngine;
 using TMPro;
 
 /// <summary>
-/// Made with gemini, a simple console text instance, with fading logic
+/// A simple ui element that's used in the static notif manager
 /// </summary>
 public class NotificationItem : MonoBehaviour
 {
-    [Header("Components")]
     [SerializeField] private TextMeshProUGUI textComponent = null!;
-
-    [Header("Settings")]
-    [SerializeField] private float visibleDuration = 2.0f; // How long it stays fully visible
-    private float fadeDuration; // How long the fade-out takes
+    [SerializeField] private float visibleDuration = 2.0f;
+    private float fadeDuration;
 
     public void Initialize(string message, float fadeOutSpeed)
     {
@@ -31,25 +28,20 @@ public class NotificationItem : MonoBehaviour
 
     private IEnumerator FadeAndDestroyRoutine()
     {
-        // 1. Wait out the solid text lifetime
         yield return new WaitForSeconds(this.visibleDuration);
 
-        // 2. Smoothly fade the alpha channel
         Color originalColor = this.textComponent.color;
-        float elapsedTime = 0f;
+        float time = 0f;
 
-        while (elapsedTime < this.fadeDuration)
+        while (time < this.fadeDuration)
         {
-            elapsedTime += Time.deltaTime;
+            time += Time.deltaTime;
             
-            // Calculate new alpha
-            float newAlpha = Mathf.Lerp(1f, 0f, elapsedTime / this.fadeDuration);
-            this.textComponent.color = new Color(originalColor.r, originalColor.g, originalColor.b, newAlpha);
-            
-            yield return null; // Wait for the next frame
+            float t = Mathf.Lerp(1f, 0f, time / this.fadeDuration);
+            this.textComponent.color = new Color(originalColor.r, originalColor.g, originalColor.b, t);
+            yield return null;
         }
 
-        // 3. Goodbye, cruel world!
         Destroy(this.gameObject);
     }
 }
